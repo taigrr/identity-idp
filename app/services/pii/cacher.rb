@@ -18,7 +18,12 @@ module Pii
     end
 
     def save_decrypted_pii(decrypted_pii, profile_id)
-      kms_encrypted_pii = SessionEncryptor.new.kms_encrypt(decrypted_pii.to_json)
+      begin
+        kms_encrypted_pii = SessionEncryptor.new.kms_encrypt(decrypted_pii.to_json)
+      rescue => error
+        Rails.logger.error("Failed to encrypt PII for profile #{profile_id}: #{error.message}")
+        raise
+      end
 
       user_session[:encrypted_profiles] ||= {}
       user_session[:encrypted_profiles][profile_id.to_s] = kms_encrypted_pii
@@ -30,8 +35,13 @@ module Pii
       encrypted_profile_pii = user_session[:encrypted_profiles][profile_id.to_s]
       return unless encrypted_profile_pii.present?
 
-      decrypted_profile_pii_json = SessionEncryptor.new.kms_decrypt(encrypted_profile_pii)
-      Pii::Attributes.new_from_json(decrypted_profile_pii_json)
+      begin
+        decrypted_profile_pii_json = SessionEncryptor.new.kms_decrypt(encrypted_profile_pii)
+        Pii::Attributes.new_from_json(decrypted_profile_pii_json)
+      rescue => error
+        Rails.logger.error("Failed to decrypt PII for profile #{profile_id}: #{error.message}")
+        nil
+      end
     end
 
     def exists_in_session?

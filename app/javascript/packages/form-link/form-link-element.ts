@@ -4,11 +4,19 @@ class FormLinkElement extends HTMLElement {
   }
 
   get form(): HTMLFormElement {
-    return this.querySelector('form')!;
+    const form = this.querySelector('form');
+    if (!form) {
+      throw new Error('FormLinkElement must contain a form element');
+    }
+    return form;
   }
 
   get link(): HTMLAnchorElement {
-    return this.querySelector('a')!;
+    const link = this.querySelector('a');
+    if (!link) {
+      throw new Error('FormLinkElement must contain an anchor element');
+    }
+    return link;
   }
 
   submit = (event: MouseEvent) => {

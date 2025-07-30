@@ -30,7 +30,7 @@ function TextInput(
 ) {
   const instanceId = useInstanceId();
   const inputId = id ?? `text-input-${instanceId}`;
-  const hintId = id ?? `text-input-hint-${instanceId}`;
+  const hintId = `text-input-hint-${instanceId}`;
   const classes = ['usa-input', className].filter(Boolean).join(' ');
 
   return (

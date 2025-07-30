@@ -214,9 +214,10 @@ function getFieldActiveErrorFieldElement(
   fields: Record<string, FieldsRefEntry>,
 ) {
   const error = errors.find(({ field }) => field && fields[field]?.element);
-  if (error) {
-    return fields[error.field!].element || undefined;
+  if (error && error.field) {
+    return fields[error.field].element;
   }
+  return undefined;
 }
 
 export function StepErrorAlert({ error }: { error: Error }) {
@@ -472,10 +473,13 @@ function FormSteps({
             if (!fields.current[field]) {
               fields.current[field] = {
                 refCallback(fieldNode) {
-                  fields.current[field].element = fieldNode;
+                  // Check if field still exists before updating
+                  if (fields.current[field]) {
+                    fields.current[field].element = fieldNode;
 
-                  if (activeErrors.length) {
-                    forceRender();
+                    if (activeErrors.length) {
+                      forceRender();
+                    }
                   }
                 },
                 element: null,

@@ -22,7 +22,11 @@ export class CountdownElement extends HTMLElement {
   }
 
   get expiration(): Date {
-    return new Date(this.getAttribute('data-expiration')!);
+    const expirationAttr = this.getAttribute('data-expiration');
+    if (!expirationAttr) {
+      throw new Error('CountdownElement requires data-expiration attribute');
+    }
+    return new Date(expirationAttr);
   }
 
   set expiration(expiration: Date) {

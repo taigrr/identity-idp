@@ -54,7 +54,11 @@ class CSRF {
   }
 
   static get #paramInputElements(): NodeListOf<HTMLInputElement> {
-    return document.querySelectorAll(`input[name="${this.param}"]`);
+    const param = this.param;
+    if (!param) {
+      return document.querySelectorAll('input[name=""]'); // Return empty NodeList
+    }
+    return document.querySelectorAll(`input[name="${param}"]`);
   }
 }
 

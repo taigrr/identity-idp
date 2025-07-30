@@ -8,14 +8,22 @@ class TooltipElement extends HTMLElement {
   }
 
   get tooltipElement(): HTMLElement {
-    return this.firstElementChild as HTMLElement;
+    const element = this.firstElementChild;
+    if (!element) {
+      throw new Error('TooltipElement must contain a child element');
+    }
+    return element as HTMLElement;
   }
 
   /**
    * Retrieves the text to be shown in the tooltip.
    */
   get tooltipText(): string {
-    return this.getAttribute('tooltip-text')!;
+    const text = this.getAttribute('tooltip-text');
+    if (!text) {
+      throw new Error('TooltipElement requires tooltip-text attribute');
+    }
+    return text;
   }
 }
 

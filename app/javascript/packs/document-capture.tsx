@@ -71,7 +71,7 @@ function getUploadEnabled() {
   return docAuthUploadEnabled === 'true';
 }
 
-function getMetaContent(name): string | null {
+function getMetaContent(name: string): string | null {
   const meta = document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`);
   return meta?.content ?? null;
 }
@@ -134,7 +134,9 @@ const {
 let parsedUsStatesTerritories = [];
 try {
   parsedUsStatesTerritories = JSON.parse(usStatesTerritories);
-} catch (e) {}
+} catch (e) {
+  console.error('Failed to parse usStatesTerritories:', e);
+}
 
 render(
   <MarketingSiteContextProvider
@@ -210,7 +212,9 @@ render(
                         )}
                         failedFingerprints={{ front: [], back: [], passport: [] }}
                       >
-                        <DocumentCapture onStepChange={() => extendSession(sessionsURL)} />
+                        <DocumentCapture onStepChange={() => extendSession(sessionsURL).catch((error) => {
+                          console.error('Failed to extend session during step change:', error);
+                        })} />
                       </FailedCaptureAttemptsContextProvider>
                     </PassportCaptureContext.Provider>
                   </SelfieCaptureContext.Provider>

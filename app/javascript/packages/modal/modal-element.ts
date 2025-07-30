@@ -22,7 +22,11 @@ class ModalElement extends HTMLElement {
   }
 
   get #dialog(): HTMLDialogElement {
-    return this.querySelector('dialog')!;
+    const dialog = this.querySelector('dialog');
+    if (!dialog) {
+      throw new Error('Modal element must contain a dialog element');
+    }
+    return dialog;
   }
 
   #handleDismiss = (event: MouseEvent) => {

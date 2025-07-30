@@ -21,7 +21,10 @@ export function trackEvent(event: string, payload?: object) {
   if (endpoint && navigator.sendBeacon) {
     const eventJson = JSON.stringify({ event, payload });
     const blob = new Blob([eventJson], { type: 'application/json' });
-    navigator.sendBeacon(endpoint, blob);
+    const success = navigator.sendBeacon(endpoint, blob);
+    if (!success) {
+      console.warn('Failed to send analytics event via sendBeacon');
+    }
   }
 }
 

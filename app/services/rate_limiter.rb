@@ -103,8 +103,8 @@ class RateLimiter
 
     minutes = RateLimiter.attempt_window_in_minutes(rate_limit_type)
     exponential_factor = RateLimiter.attempt_window_exponential_factor(rate_limit_type)
-    now = Time.zone.now
     REDIS_THROTTLE_POOL.with do |client|
+      now = Time.zone.now # Capture time inside Redis block to minimize delay
       if exponential_factor.present?
         attempt_window_max = RateLimiter.attempt_window_max_in_minutes(rate_limit_type)
         script_args = [now.to_i, minutes, exponential_factor, attempt_window_max].map(&:to_s)
@@ -120,10 +120,10 @@ class RateLimiter
           multi.expireat(key, now + minutes.minutes.in_seconds)
         end
       end
+      
+      @redis_attempts = value.to_i
+      @redis_attempted_at = now
     end
-
-    @redis_attempts = value.to_i
-    @redis_attempted_at = now
 
     attempts
   end

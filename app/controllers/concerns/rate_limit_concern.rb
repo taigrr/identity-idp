@@ -80,7 +80,7 @@ module RateLimitConcern
 
   def idv_attempter_rate_limited?(rate_limit_type)
     if rate_limit_type == :proof_ssn
-      return unless pii_ssn
+      return false unless pii_ssn
       RateLimiter.new(
         target: Pii::Fingerprinter.fingerprint(pii_ssn),
         rate_limit_type: :proof_ssn,

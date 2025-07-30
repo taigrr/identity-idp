@@ -123,7 +123,17 @@ class I18n {
       .map((entry) => (isPluralizedEntry(entry) ? getString(entry, variables?.count) : entry))
       .map((entry) => (isStringEntry(entry) ? replaceVariables(entry, variables) : entry));
 
-    return isSingular ? strings[0] : strings.flat();
+    if (isSingular) {
+      return strings[0];
+    }
+    
+    // Safely flatten array, handling mixed string/array entries
+    return strings.reduce<string[]>((acc, item) => {
+      if (Array.isArray(item)) {
+        return acc.concat(item);
+      }
+      return acc.concat([item as string]);
+    }, []);
   }
 }
 

@@ -5,7 +5,13 @@ class FormResponse
 
   def initialize(success:, errors: nil, extra: {})
     @success = success
-    @errors = errors.is_a?(ActiveModel::Errors) ? errors.messages.to_hash : errors.to_h
+    @errors = if errors.nil?
+                {}
+              elsif errors.is_a?(ActiveModel::Errors)
+                errors.messages.to_hash
+              else
+                errors.to_h
+              end
     @error_details = errors&.details if !errors.is_a?(Hash)
     @extra = extra
   end

@@ -34,9 +34,19 @@ async function verifyWebauthnDevice({
   userChallenge,
   credentials,
 }: VerifyOptions): Promise<VerifyResult> {
+  let challengeArray: number[];
+  try {
+    challengeArray = JSON.parse(userChallenge);
+    if (!Array.isArray(challengeArray) || !challengeArray.every(n => typeof n === 'number')) {
+      throw new Error('Invalid challenge format');
+    }
+  } catch (error) {
+    throw new Error('Failed to parse user challenge: ' + (error instanceof Error ? error.message : 'Unknown error'));
+  }
+
   const credential = (await navigator.credentials.get({
     publicKey: {
-      challenge: new Uint8Array(JSON.parse(userChallenge)),
+      challenge: new Uint8Array(challengeArray),
       rpId: window.location.hostname,
       allowCredentials: credentials.map(mapVerifyCredential),
       userVerification: 'discouraged',

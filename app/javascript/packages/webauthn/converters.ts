@@ -26,9 +26,11 @@ export const arrayBufferToBase64 = (arrayBuffer: ArrayBuffer): string =>
  * @param long Number to convert.
  * @return Converted number.
  */
-export const longToByteArray = (long: number): Uint8Array =>
-  new Uint8Array(8).map(() => {
-    const byte = long & 0xff; // eslint-disable-line no-bitwise
-    long = (long - byte) / 256;
+export const longToByteArray = (long: number): Uint8Array => {
+  let remaining = long;
+  return new Uint8Array(8).map(() => {
+    const byte = remaining & 0xff; // eslint-disable-line no-bitwise
+    remaining = (remaining - byte) / 256;
     return byte;
   });
+};

@@ -50,7 +50,14 @@ function keepalive(event: MouseEvent) {
   event.preventDefault();
   modal.hide();
   countdownEls.forEach((countdownEl) => countdownEl.stop());
-  extendSession(sessionsURL);
+  extendSession(sessionsURL).catch((error) => {
+    console.error('Failed to extend session:', error);
+    // Re-show modal if session extension fails
+    modal.show();
+    countdownEls.forEach((countdownEl) => {
+      countdownEl.start();
+    });
+  });
 }
 
 keepaliveButton.addEventListener('click', keepalive);
