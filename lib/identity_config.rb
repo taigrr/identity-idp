@@ -538,6 +538,7 @@ module IdentityConfig
     config.add(:state_tracking_enabled, type: :boolean)
     config.add(:stripe_identity_api_key, type: :string)
     config.add(:stripe_identity_base_url, type: :string)
+    config.add(:stripe_identity_enabled, type: :boolean)
     config.add(:stripe_identity_timeout_in_seconds, type: :integer)
     config.add(:stripe_identity_webhook_secret, type: :string)
     config.add(:team_ada_email, type: :string)

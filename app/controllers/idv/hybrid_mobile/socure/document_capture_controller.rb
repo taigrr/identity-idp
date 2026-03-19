@@ -12,7 +12,8 @@ module Idv
         include DocAuthVendorConcern
 
         check_or_render_not_found -> do
-          IdentityConfig.store.stripe_identity_api_key.present? &&
+          IdentityConfig.store.stripe_identity_enabled &&
+            IdentityConfig.store.stripe_identity_api_key.present? &&
             IdentityConfig.store.stripe_identity_base_url.present?
         end
         before_action :check_valid_document_capture_session

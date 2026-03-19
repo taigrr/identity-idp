@@ -10,7 +10,8 @@ module Idv
       include DocAuthVendorConcern
 
       check_or_render_not_found -> do
-        IdentityConfig.store.stripe_identity_api_key.present? &&
+        IdentityConfig.store.stripe_identity_enabled &&
+          IdentityConfig.store.stripe_identity_api_key.present? &&
           IdentityConfig.store.stripe_identity_base_url.present?
       end
 
@@ -177,6 +178,13 @@ module Idv
         return false if result.network_error?
 
         %w[verified requires_input canceled].include?(result.extra[:vendor_status].to_s)
+      end
+
+      def rate_limiter
+        @rate_limiter ||= RateLimiter.new(
+          user: current_user,
+          rate_limit_type: :idv_doc_auth,
+        )
       end
     end
   end

@@ -189,6 +189,7 @@ Rails.application.routes.draw do
 
         get '/telephony' => 'telephony#index'
         delete '/telephony' => 'telephony#destroy'
+        delete '/telephony/email/:id' => 'telephony#destroy_email', as: :telephony_email
         get '/push_notification' => 'push_notification#index'
         delete '/push_notification' => 'push_notification#destroy'
 
