@@ -25,6 +25,10 @@ Rails.application.routes.draw do
     end
     get '/attempts-certs' => 'attempts_certs#index', as: :attempts_certs
 
+    namespace :stripe do
+      post '/webhooks' => 'webhooks#create'
+    end
+
     namespace :proofing_agent do
       post '/search_user' => 'proofing_agent#search_user'
       post '/proof_user' => 'proofing_agent#proof_user'
@@ -395,6 +399,9 @@ Rails.application.routes.draw do
       get '/document_capture' => 'document_capture#show'
       put '/document_capture' => 'document_capture#update'
       get '/in_person/direct' => 'document_capture#direct_in_person'
+      get '/stripe/document_capture' => 'socure/document_capture#show', as: :stripe_document_capture
+      get '/stripe/document_capture_update' => 'socure/document_capture#update',
+          as: :stripe_document_capture_update
       get '/socure/document_capture' => 'socure/document_capture#show'
       get '/socure/document_capture_update' => 'socure/document_capture#update', as: :socure_document_capture_update
       get '/socure/document_capture_errors' => 'socure/errors#show', as: :socure_document_capture_errors
@@ -405,6 +412,10 @@ Rails.application.routes.draw do
       put '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#update'
       get '/hybrid_mobile/in_person/direct' => 'hybrid_mobile/document_capture#direct_in_person'
       get '/hybrid_mobile/capture_complete' => 'hybrid_mobile/capture_complete#show'
+      get '/hybrid_mobile/stripe/document_capture' => 'hybrid_mobile/socure/document_capture#show',
+          as: :hybrid_mobile_stripe_document_capture
+      get '/hybrid_mobile/stripe/document_capture_update' => 'hybrid_mobile/socure/document_capture#update',
+          as: :hybrid_mobile_stripe_document_capture_update
       get '/hybrid_mobile/socure/document_capture' => 'hybrid_mobile/socure/document_capture#show'
       get '/hybrid_mobile/socure/document_capture_update' => 'hybrid_mobile/socure/document_capture#update', as: :hybrid_mobile_socure_document_capture_update
       get '/hybrid_mobile/socure/document_capture_errors' => 'hybrid_mobile/socure/errors#show', as: :hybrid_mobile_socure_document_capture_errors

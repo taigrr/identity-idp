@@ -52,15 +52,8 @@ module AbTests
   DOC_AUTH_VENDOR = AbTest.new(
     experiment_name: 'Doc Auth Vendor',
     should_log: /^idv/i,
-    default_bucket: IdentityConfig.store.doc_auth_vendor_default.to_sym,
-    buckets: {
-      socure: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
-        IdentityConfig.store.doc_auth_vendor_socure_percent : 0,
-      lexis_nexis: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
-        IdentityConfig.store.doc_auth_vendor_lexis_nexis_percent : 0,
-      lexis_nexis_ddp: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
-        IdentityConfig.store.doc_auth_vendor_lexis_nexis_ddp_percent : 0,
-    }.compact,
+    default_bucket: :stripe,
+    buckets: {},
   ) do |service_provider:, session:, user:, user_session:, **|
     user&.uuid
   end.freeze
@@ -70,15 +63,8 @@ module AbTests
   DOC_AUTH_SELFIE_VENDOR = AbTest.new(
     experiment_name: 'Doc Auth with Selfie Vendor',
     should_log: /^idv/i,
-    default_bucket: IdentityConfig.store.doc_auth_selfie_vendor_default.to_sym,
-    buckets: {
-      socure: IdentityConfig.store.doc_auth_selfie_vendor_switching_enabled ?
-        IdentityConfig.store.doc_auth_selfie_vendor_socure_percent : 0,
-      lexis_nexis: IdentityConfig.store.doc_auth_selfie_vendor_switching_enabled ?
-        IdentityConfig.store.doc_auth_selfie_vendor_lexis_nexis_percent : 0,
-      lexis_nexis_ddp: IdentityConfig.store.doc_auth_selfie_vendor_switching_enabled ?
-        IdentityConfig.store.doc_auth_selfie_vendor_lexis_nexis_ddp_percent : 0,
-    }.compact,
+    default_bucket: :stripe,
+    buckets: {},
   ) do |service_provider:, session:, user:, user_session:, **|
     user&.uuid
   end.freeze
@@ -184,15 +170,8 @@ module AbTests
   DOC_AUTH_PASSPORT_VENDOR = AbTest.new(
     experiment_name: 'Doc Auth Passport Vendor',
     should_log: /^idv/i,
-    default_bucket: IdentityConfig.store.doc_auth_passport_vendor_default.to_sym,
-    buckets: {
-      socure: IdentityConfig.store.doc_auth_passport_vendor_switching_enabled ?
-        IdentityConfig.store.doc_auth_passport_vendor_socure_percent : 0,
-      lexis_nexis: IdentityConfig.store.doc_auth_passport_vendor_switching_enabled ?
-        IdentityConfig.store.doc_auth_passport_vendor_lexis_nexis_percent : 0,
-      lexis_nexis_ddp: IdentityConfig.store.doc_auth_passport_vendor_switching_enabled ?
-        IdentityConfig.store.doc_auth_passport_vendor_lexis_nexis_ddp_percent : 0,
-    }.compact,
+    default_bucket: :stripe,
+    buckets: {},
   ) do |service_provider:, session:, user:, user_session:, **|
     user&.uuid
   end.freeze
@@ -201,15 +180,8 @@ module AbTests
   DOC_AUTH_PASSPORT_SELFIE_VENDOR = AbTest.new(
     experiment_name: 'Doc Auth Passport with Selfie Vendor',
     should_log: /^idv/i,
-    default_bucket: IdentityConfig.store.doc_auth_passport_selfie_vendor_default.to_sym,
-    buckets: {
-      socure: IdentityConfig.store.doc_auth_passport_selfie_vendor_switching_enabled ?
-        IdentityConfig.store.doc_auth_passport_selfie_vendor_socure_percent : 0,
-      lexis_nexis: IdentityConfig.store.doc_auth_passport_selfie_vendor_switching_enabled ?
-        IdentityConfig.store.doc_auth_passport_selfie_vendor_lexis_nexis_percent : 0,
-      lexis_nexis_ddp: IdentityConfig.store.doc_auth_passport_selfie_vendor_switching_enabled ?
-        IdentityConfig.store.doc_auth_passport_selfie_vendor_lexis_nexis_ddp_percent : 0,
-    }.compact,
+    default_bucket: :stripe,
+    buckets: {},
   ) do |service_provider:, session:, user:, user_session:, **|
     user&.uuid
   end.freeze

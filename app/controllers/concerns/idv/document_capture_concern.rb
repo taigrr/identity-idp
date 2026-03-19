@@ -102,6 +102,9 @@ module Idv
 
     def correct_vendor_path(expected_doc_auth_vendor, in_hybrid_mobile:)
       case expected_doc_auth_vendor
+      when Idp::Constants::Vendors::STRIPE
+        in_hybrid_mobile ? idv_hybrid_mobile_stripe_document_capture_path
+                         : idv_stripe_document_capture_path
       when Idp::Constants::Vendors::SOCURE, Idp::Constants::Vendors::SOCURE_MOCK
         in_hybrid_mobile ? idv_hybrid_mobile_socure_document_capture_path
                          : idv_socure_document_capture_path

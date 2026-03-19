@@ -117,31 +117,35 @@ doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_mock_dos_api: false
-doc_auth_passport_selfie_vendor_default: 'mock'
+doc_auth_passport_selfie_vendor_default: 'stripe'
 doc_auth_passport_selfie_vendor_lexis_nexis_ddp_percent: 0
-doc_auth_passport_selfie_vendor_lexis_nexis_percent: 100
+doc_auth_passport_selfie_vendor_lexis_nexis_percent: 0
 doc_auth_passport_selfie_vendor_socure_percent: 0
+doc_auth_passport_selfie_vendor_stripe_percent: 100
 doc_auth_passport_selfie_vendor_switching_enabled: false
-doc_auth_passport_vendor_default: 'mock'
+doc_auth_passport_vendor_default: 'stripe'
 doc_auth_passport_vendor_lexis_nexis_ddp_percent: 0
-doc_auth_passport_vendor_lexis_nexis_percent: 100 # note, LN is currently the default vendor
+doc_auth_passport_vendor_lexis_nexis_percent: 0
 doc_auth_passport_vendor_socure_percent: 0
+doc_auth_passport_vendor_stripe_percent: 100
 doc_auth_passport_vendor_switching_enabled: false
 doc_auth_passports_enabled: true
 doc_auth_redirect_to_correct_vendor_disabled: false
-doc_auth_selfie_vendor_default: 'mock'
+doc_auth_selfie_vendor_default: 'stripe'
 doc_auth_selfie_vendor_lexis_nexis_ddp_percent: 0
-doc_auth_selfie_vendor_lexis_nexis_percent: 100 # note, LN is currently the default vendor
+doc_auth_selfie_vendor_lexis_nexis_percent: 0
 doc_auth_selfie_vendor_socure_percent: 0
+doc_auth_selfie_vendor_stripe_percent: 100
 doc_auth_selfie_vendor_switching_enabled: false
 doc_auth_socure_wait_polling_refresh_max_seconds: 15
 doc_auth_socure_wait_polling_timeout_minutes: 2
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
-doc_auth_vendor: 'mock'
-doc_auth_vendor_default: 'mock'
+doc_auth_vendor: 'stripe'
+doc_auth_vendor_default: 'stripe'
 doc_auth_vendor_lexis_nexis_ddp_percent: 0
-doc_auth_vendor_lexis_nexis_percent: 100 # note, LN is currently the default vendor
+doc_auth_vendor_lexis_nexis_percent: 0
 doc_auth_vendor_socure_percent: 0
+doc_auth_vendor_stripe_percent: 100
 doc_auth_vendor_switching_enabled: false
 doc_capture_polling_enabled: true
 doc_capture_request_valid_for_minutes: 15
@@ -506,6 +510,10 @@ sp_registration_funnel_report_configs: '[]'
 sp_verification_demographics_report_configs: '[]'
 sp_verification_report_configs: '[]'
 state_tracking_enabled: true
+stripe_identity_api_key: ''
+stripe_identity_base_url: 'https://api.stripe.com'
+stripe_identity_timeout_in_seconds: 60
+stripe_identity_webhook_secret: ''
 team_ada_email: ''
 team_all_login_emails: '[]'
 team_daily_fraud_metrics_emails: '[]'

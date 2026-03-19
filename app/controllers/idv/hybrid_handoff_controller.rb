@@ -257,10 +257,9 @@ module Idv
     end
 
     def update_vendor_if_test_mode_enabled
-      if idv_session.desktop_test_mode_enabled? &&
-         document_capture_session.doc_auth_vendor != Idp::Constants::Vendors::MOCK
-        document_capture_session.update(doc_auth_vendor: Idp::Constants::Vendors::MOCK)
-      end
+      return unless idv_session.desktop_test_mode_enabled?
+
+      document_capture_session.update(doc_auth_vendor: Idp::Constants::Vendors::STRIPE)
     end
   end
 end

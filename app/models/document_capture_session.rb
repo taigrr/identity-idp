@@ -130,6 +130,8 @@ class DocumentCaptureSession < ApplicationRecord
       doc_auth_vendor: nil,
       socure_docv_capture_app_url: nil,
       socure_docv_transaction_token: nil,
+      stripe_verification_session_id: nil,
+      stripe_last_event_id: nil,
     )
   end
 
@@ -169,6 +171,8 @@ class DocumentCaptureSession < ApplicationRecord
     {
       socure_docv_capture_app_url: nil,
       socure_docv_transaction_token: nil,
+      stripe_verification_session_id: nil,
+      stripe_last_event_id: nil,
     }
   end
 end

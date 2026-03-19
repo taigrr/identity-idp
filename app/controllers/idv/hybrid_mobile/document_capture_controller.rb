@@ -17,7 +17,7 @@ module Idv
       end, only: :show
       before_action :set_usps_form_presenter
       before_action -> do
-        redirect_to_correct_vendor(Idp::Constants::Vendors::LEXIS_NEXIS, in_hybrid_mobile: true)
+        redirect_to_correct_vendor(Idp::Constants::Vendors::STRIPE, in_hybrid_mobile: true)
       end, only: [:show], unless: -> { allow_direct_ipp? }
 
       def show

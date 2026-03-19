@@ -16,6 +16,7 @@ module Idp
       SOCURE = 'socure'
       MOCK = 'mock'
       SOCURE_MOCK = 'mock_socure'
+      STRIPE = 'stripe'
       USPS = 'usps'
       AAMVA = 'aamva'
       AAMVA_UNSUPPORTED_JURISDICTION = 'UnsupportedJurisdiction'
