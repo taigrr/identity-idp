@@ -9,13 +9,14 @@ class SocureErrorPresenter
   attr_reader :url_options, :passport_requested
 
   def initialize(error_code:, remaining_attempts:, sp_name:, issuer:, passport_requested:,
-                 flow_path:)
+                 flow_path:, doc_auth_vendor:)
     @error_code = error_code
     @remaining_attempts = remaining_attempts
     @sp_name = sp_name
     @issuer = issuer
     @passport_requested = passport_requested
     @flow_path = flow_path
+    @doc_auth_vendor = doc_auth_vendor
     @url_options = {}
   end
 
@@ -34,8 +35,13 @@ class SocureErrorPresenter
   end
 
   def action
-    url = hybrid_flow? ? idv_hybrid_mobile_socure_document_capture_path :
-                         idv_socure_document_capture_path
+    url = if @doc_auth_vendor == Idp::Constants::Vendors::STRIPE
+            hybrid_flow? ? idv_hybrid_mobile_stripe_document_capture_path :
+                           idv_stripe_document_capture_path
+          else
+            hybrid_flow? ? idv_hybrid_mobile_socure_document_capture_path :
+                           idv_socure_document_capture_path
+          end
     {
       text: I18n.t('idv.failure.button.warning'),
       url:,

@@ -12,6 +12,8 @@ RSpec.describe SocureErrorPresenter do
   let(:passport_requested) { false }
   let(:flow_path) { 'standard' }
 
+  let(:doc_auth_vendor) { Idp::Constants::Vendors::SOCURE }
+
   subject(:presenter) do
     described_class.new(
       error_code:,
@@ -20,6 +22,7 @@ RSpec.describe SocureErrorPresenter do
       issuer:,
       passport_requested:,
       flow_path:,
+      doc_auth_vendor:,
     )
   end
 

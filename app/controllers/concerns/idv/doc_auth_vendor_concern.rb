@@ -5,7 +5,12 @@ module Idv
     include AbTestingConcern
 
     def update_doc_auth_vendor(user: current_user)
-      vendor = stripe_identity_enabled? ? Idp::Constants::Vendors::STRIPE : bucketed_doc_auth_vendor(user)
+     vendor = case IdentityConfig.store.identity_provider
+               when STRIPE
+                 Idp::Constants::Vendors::STRIPE
+               when LEXIS_NEXIS
+                 bucketed_doc_auth_vendor(user)
+               end
       return if document_capture_session.doc_auth_vendor == vendor
 
       document_capture_session.update!(doc_auth_vendor: vendor)
@@ -13,9 +18,8 @@ module Idv
 
     private
 
-    def stripe_identity_enabled?
-      IdentityConfig.store.stripe_identity_enabled
-    end
+    STRIPE = 'STRIPE'
+    LEXIS_NEXIS = 'LEXIS_NEXIS'
 
     # @returns[String] String identifying the vendor to use for doc auth.
     def bucketed_doc_auth_vendor(user)

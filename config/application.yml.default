@@ -512,7 +512,7 @@ sp_verification_report_configs: '[]'
 state_tracking_enabled: true
 stripe_identity_api_key: ''
 stripe_identity_base_url: 'https://api.stripe.com'
-stripe_identity_enabled: false
+identity_provider: 'STRIPE'
 stripe_identity_timeout_in_seconds: 60
 stripe_identity_webhook_secret: ''
 team_ada_email: ''
