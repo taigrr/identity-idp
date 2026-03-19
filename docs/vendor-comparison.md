@@ -9,7 +9,14 @@
 | **Identity Resolution (KYC)** | InstantVerify: name, address, phone, SSN, DOB against 10,000+ data sources; covers ~100% US adults | Socure Verify (KYC): up to 98% auto-approval; eCBSV: SSN+name+DOB against SSA records | ID number verification against credit agencies / gov databases; SSN (last 4) in US | — | — | — |
 | **Address Verification** | InstantVerify: flags high-risk/mail-drop addresses; PhoneFinder: phone-to-address linking; Best Address: USPS COA integration | Address Risk: deliverability, tenure, property type, alternative address links | Name + DOB + address against credit/utility/gov databases (30+ countries, invite-only) | — | — | — |
 | **State ID / Driver License Verification** | — | — | — | DLDV: real-time verification of name, DOB, license #, expiration, issue date against issuing DMV; 44 jurisdictions (~73% US population) | — | — |
-| **Device Profiling / Fraud** | ThreatMetrix: device fingerprinting, behavioral analytics, bot/malware/ATO detection, cross-industry network | Digital Intelligence: device + behavioral risk signals; Sigma Fraud suite (first-party, identity, synthetic) | Built-in fraud signals: device fingerprinting, IP, network activity history, fraud score via AI models | — | — | — |
+| **Device Fingerprinting** | ThreatMetrix: browser, OS, hardware, network attributes; persistent device ID across sessions | Digital Intelligence: device attributes, browser config, OS signals | Browser + device attributes, IP geolocation; persistent device ID across Stripe network | — | — | — |
+| **Behavioral Analytics** | ThreatMetrix: keystroke dynamics, mouse movement, navigation patterns, session velocity | Digital Intelligence: behavioral signals during session (typing, interaction cadence) | Limited (session-level signals only, no deep behavioral biometrics) | — | — | — |
+| **Bot / Automation Detection** | ThreatMetrix: headless browser detection, emulator detection, automation framework fingerprinting | Digital Intelligence: automated traffic detection | Automated submission detection via Stripe network patterns | — | — | — |
+| **IP / Network Risk** | ThreatMetrix: proxy/VPN/Tor detection, IP reputation, geo-velocity checks, ISP risk scoring | Digital Intelligence: IP risk signals, proxy/VPN detection | IP reputation, proxy/VPN detection, geo-consistency checks | — | — | — |
+| **Identity Fraud Scoring** | ThreatMetrix: composite risk score from cross-industry consortium (billions of txns) | Sigma Identity Fraud: multi-dimensional score capturing 90% of fraud in riskiest 3% | Comprehensive fraud score from AI models trained on Stripe's global payment network | — | — | — |
+| **Synthetic Identity Detection** | ThreatMetrix: cross-referencing identity elements across network for fabricated identities | Sigma Synthetic: purpose-built synthetic identity risk model | Duplicate selfie + data mismatch detection; network-level identity cross-referencing | — | — | — |
+| **First-Party / Account Fraud** | ThreatMetrix: account takeover detection, credential stuffing patterns | Sigma First-Party Fraud: consortium-based matching against known fraudulent activity | Activity history on Stripe network (known good vs risky behavior) | — | — | — |
+| **Consortium / Network Data** | ThreatMetrix Digital Identity Network: 150B+ annual txns across industries | Socure consortium: shared fraud signal data across customers | Stripe network: billions of payments across millions of businesses (payment-focused) | — | — | — |
 | **Phone Risk / Verification** | PhoneFinder: phone-to-identity linking, line type, porting/spoofing detection, Caller ID; 3 tiers | Phone Risk: porting history, subscriber tenure, line type | Phone number + SMS verification against Stripe network signals (US only, invite-only) | — | — | — |
 | **Passport MRZ Validation** | TrueID: MRZ parsing as part of doc auth | — | Passport support in doc verification | — | MRZ validation against Dept. of State records | — |
 | **Email Risk** | — | Email Risk: email-to-identity correlation + risk scoring | — | — | — | — |
@@ -27,7 +34,15 @@ All prices normalized to cost per single verification/transaction in USD. LexisN
 | **Identity Resolution (KYC)** | ~$0.50–1.50 (InstantVerify) | ~$0.50–1.50 (KYC) | **$0.50** | — | — | — |
 | **Address Verification** | ~$0.25–0.75 | ~$0.10–0.50 | invite-only (unpublished) | — | — | — |
 | **State ID / DL Verification** | — | — | — | ~$0.50–1.00 | — | — |
-| **Device Profiling / Fraud** | ~$0.05–0.15 (ThreatMetrix) | ~$0.05–0.20 (Digital Intel) | included w/ doc check | — | — | — |
+| **Device Fingerprinting** | ~$0.01–0.03 | ~$0.01–0.03 | included w/ doc check | — | — | — |
+| **Behavioral Analytics** | ~$0.01–0.03 | ~$0.01–0.03 | included w/ doc check | — | — | — |
+| **Bot / Automation Detection** | included w/ ThreatMetrix | included w/ Digital Intel | included w/ doc check | — | — | — |
+| **IP / Network Risk** | included w/ ThreatMetrix | included w/ Digital Intel | included w/ doc check | — | — | — |
+| **Identity Fraud Scoring** | included w/ ThreatMetrix | ~$0.03–0.10 (Sigma) | included w/ doc check | — | — | — |
+| **Synthetic Identity Detection** | included w/ ThreatMetrix | ~$0.03–0.10 (Sigma Synthetic) | included w/ doc check | — | — | — |
+| **First-Party / Account Fraud** | included w/ ThreatMetrix | ~$0.03–0.10 (Sigma First-Party) | included w/ doc check | — | — | — |
+| **Consortium / Network Data** | included w/ ThreatMetrix | included w/ Sigma suite | included w/ doc check | — | — | — |
+| **Device/Fraud subtotal** | **~$0.05–0.15** | **~$0.05–0.20** | **included** | — | — | — |
 | **Phone Risk / Verification** | ~$0.25–0.75 (PhoneFinder) | ~$0.10–0.50 (Phone Risk) | invite-only (unpublished) | — | — | — |
 | **Passport MRZ Validation** | included w/ TrueID | — | included w/ doc check | — | gov-to-gov (no per-txn fee) | — |
 | **Email Risk** | — | ~$0.05–0.15 | — | — | — | — |
