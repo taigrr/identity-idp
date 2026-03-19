@@ -221,8 +221,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_18_120000) do
     t.string "stripe_last_event_id", comment: "sensitive=false"
     t.index ["result_id"], name: "index_document_capture_sessions_on_result_id"
     t.index ["socure_docv_transaction_token"], name: "index_socure_docv_transaction_token", unique: true
-    t.index ["stripe_last_event_id"], name: "index_document_capture_sessions_on_stripe_last_event_id"
-    t.index ["stripe_verification_session_id"], name: "index_document_capture_sessions_on_stripe_verification_session_id", unique: true
+    t.index ["stripe_last_event_id"], name: "idx_doc_capture_sessions_on_stripe_event_id"
+    t.index ["stripe_verification_session_id"], name: "idx_doc_capture_sessions_on_stripe_session_id", unique: true
     t.index ["user_id"], name: "index_document_capture_sessions_on_user_id"
     t.index ["uuid"], name: "index_document_capture_sessions_on_uuid"
   end
