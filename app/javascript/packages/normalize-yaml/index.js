@@ -1,5 +1,6 @@
 import YAML from 'yaml';
 import prettier from 'prettier';
+
 import { getUnifiedVisitor } from './visitors/index.js';
 
 /** @typedef {'smartPunctuation'|'sortKeys'|'collapseSpacing'} Formatter */

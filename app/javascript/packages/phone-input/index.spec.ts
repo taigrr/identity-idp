@@ -17,7 +17,7 @@ describe('PhoneInput', () => {
     translatedCountryCodeNames = {},
     phoneInputValue = undefined,
   }: {
-    isInternationalSingleOption?: Boolean;
+    isInternationalSingleOption?: boolean;
     deliveryMethods?: string[];
     translatedCountryCodeNames?: Record<string, string>;
     phoneInputValue?: string;

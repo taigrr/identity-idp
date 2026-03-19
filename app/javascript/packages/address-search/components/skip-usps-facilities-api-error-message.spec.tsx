@@ -1,5 +1,6 @@
 import { t } from '@18f/identity-i18n';
 import { render } from '@testing-library/react';
+
 import SkipUspsFacilitiesApiErrorMessage from './skip-usps-facilities-api-error-message';
 
 describe('SkipUspsFacilitiesApiErrorMessage', () => {

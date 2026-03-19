@@ -1,4 +1,5 @@
 const { NormalModuleReplacementPlugin } = require('webpack');
+
 const manifest = require('./package.json');
 
 const polyfillModules = Object.keys(manifest.exports)

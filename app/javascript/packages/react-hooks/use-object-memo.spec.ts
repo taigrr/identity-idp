@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
+
 import useObjectMemo from './use-object-memo';
 
 describe('useObjectMemo', () => {

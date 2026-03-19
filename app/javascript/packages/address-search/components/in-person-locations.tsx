@@ -1,7 +1,9 @@
 import { t } from '@18f/identity-i18n';
+
+import type { InPersonLocationsProps } from '../types';
+
 import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
-import type { InPersonLocationsProps } from '../types';
 
 export interface FormattedLocation {
   formattedCityStateZip: string;

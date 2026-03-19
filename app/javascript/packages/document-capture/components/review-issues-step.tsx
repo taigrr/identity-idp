@@ -2,11 +2,13 @@ import { useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { FormStepsContext } from '@18f/identity-form-steps';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
+
 import type { PII } from '../services/upload';
 import AnalyticsContext from '../context/analytics';
-import BarcodeAttentionWarning from './barcode-attention-warning';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
 import SelfieCaptureContext from '../context/selfie-capture';
+
+import BarcodeAttentionWarning from './barcode-attention-warning';
 import DocumentCaptureWarning from './document-capture-warning';
 import DocumentCaptureReviewIssues from './document-capture-review-issues';
 

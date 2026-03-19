@@ -3,6 +3,7 @@ import { screen } from '@testing-library/dom';
 import { render, fireEvent } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
+
 import FullScreen, { useInertSiblingElements } from './full-screen';
 import type { FullScreenRefHandle } from './full-screen';
 

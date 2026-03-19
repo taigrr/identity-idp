@@ -4,8 +4,10 @@ import { FormStepsButton } from '@18f/identity-form-steps';
 import { Cancel } from '@18f/identity-verify-flow';
 import { useI18n, HtmlTextWithStrongNoWrap } from '@18f/identity-react-i18n';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
-import GeneralError from './general-error';
+
 import { SelfieCaptureContext, UploadContext } from '../context';
+
+import GeneralError from './general-error';
 import { DocumentsCaptureStep } from './documents-step';
 import { SelfieCaptureStep } from './selfie-step';
 import type { ReviewIssuesStepValue } from './review-issues-step';

@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+
 import StepIndicator from './step-indicator';
 
 describe('StepIndicator', () => {

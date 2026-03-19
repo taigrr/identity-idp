@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
-/* eslint-disable no-console */
 
 import { parseArgs } from 'node:util';
 import { promises as fsPromises } from 'node:fs';
 import { join } from 'node:path';
+
 import prettier from 'prettier';
+
 import normalize from './index.js';
 
 const { readFile, writeFile } = fsPromises;

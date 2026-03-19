@@ -14,22 +14,24 @@ import type { FullScreenRefHandle } from '@18f/identity-components';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { useI18n } from '@18f/identity-react-i18n';
 import { removeUnloadProtection } from '@18f/identity-url';
-import AcuantCamera, { AcuantDocumentType } from './acuant-camera';
-import AcuantSelfieCamera from './acuant-selfie-camera';
-import AcuantSelfieCaptureCanvas from './acuant-selfie-capture-canvas';
-import type { AcuantCaptureFailureError, AcuantSuccessResponse } from './acuant-camera';
-import AcuantCaptureCanvas from './acuant-capture-canvas';
+
 import AcuantContext, { AcuantCaptureMode } from '../context/acuant';
 import AnalyticsContext from '../context/analytics';
 import DeviceContext from '../context/device';
 import SelfieCaptureContext from '../context/selfie-capture';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
 import type { DocumentSide } from '../context/failed-capture-attempts';
-import FileInput from './file-input';
 import UploadContext from '../context/upload';
 import useCookie from '../hooks/use-cookie';
 import useCounter from '../hooks/use-counter';
 import { useLogCameraInfo } from '../hooks/use-log-camera-info';
+
+import FileInput from './file-input';
+import AcuantCaptureCanvas from './acuant-capture-canvas';
+import type { AcuantCaptureFailureError, AcuantSuccessResponse } from './acuant-camera';
+import AcuantSelfieCaptureCanvas from './acuant-selfie-capture-canvas';
+import AcuantSelfieCamera from './acuant-selfie-camera';
+import AcuantCamera, { AcuantDocumentType } from './acuant-camera';
 
 type AcuantImageAssessment = 'success' | 'glare' | 'blurry' | 'unsupported';
 type ImageSource = 'acuant' | 'upload';
@@ -259,13 +261,13 @@ function getImageMetadata(
   const dimension = getImageDimensions(file);
   const fingerprint = getFingerPrint(file);
   return new Promise<{ width: number | null; height: number | null; fingerprint: string | null }>(
-    function (resolve) {
+    ((resolve) => {
       Promise.all([dimension, fingerprint])
         .then((results) => {
           resolve({ width: results[0].width, height: results[0].height, fingerprint: results[1] });
         })
         .catch(() => ({ width: null, height: null, fingerprint: null }));
-    },
+    }),
   );
 }
 

@@ -1,5 +1,7 @@
 import { TextEncoder } from 'util';
+
 import { useSandbox, useDefineProperty } from '@18f/identity-test-helpers';
+
 import verifyWebauthnDevice from './verify-webauthn-device';
 
 describe('verifyWebauthnDevice', () => {

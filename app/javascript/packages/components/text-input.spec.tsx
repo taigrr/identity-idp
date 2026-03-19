@@ -1,6 +1,7 @@
 import { createRef } from 'react';
 import { render } from '@testing-library/react';
 import { computeAccessibleDescription } from 'dom-accessibility-api';
+
 import TextInput from './text-input';
 
 describe('TextInput', () => {

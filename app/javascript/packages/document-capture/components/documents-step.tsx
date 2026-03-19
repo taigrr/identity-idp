@@ -6,14 +6,16 @@ import {
   FormStepsContext,
 } from '@18f/identity-form-steps';
 import { Cancel } from '@18f/identity-verify-flow';
-import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
-import TipList from './tip-list';
+
 import { DeviceContext, UploadContext } from '../context';
 import {
   ImageValue,
   DefaultSideProps,
   DocumentsAndSelfieStepValue,
 } from '../interface/documents-image-selfie-value';
+
+import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
+import TipList from './tip-list';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 
 export function DocumentsCaptureStep({

@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+
 import formatHTML from './format-html';
 
 describe('formatHTML', () => {

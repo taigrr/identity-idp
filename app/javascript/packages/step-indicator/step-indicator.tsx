@@ -1,5 +1,6 @@
 import type { HTMLAttributes, ReactNode } from 'react';
 import { t } from '@18f/identity-i18n';
+
 import './step-indicator-element';
 import type StepIndicatorElement from './step-indicator-element';
 

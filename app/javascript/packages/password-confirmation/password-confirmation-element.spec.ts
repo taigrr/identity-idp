@@ -1,5 +1,6 @@
 import userEvent from '@testing-library/user-event';
 import { getByLabelText, waitFor } from '@testing-library/dom';
+
 import './password-confirmation-element';
 import type PasswordConfirmationElement from './password-confirmation-element';
 

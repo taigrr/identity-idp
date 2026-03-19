@@ -1,7 +1,9 @@
 import { useState, useContext, useRef } from 'react';
-import CallbackOnMount from './callback-on-mount';
+
 import UploadContext from '../context/upload';
 import type { UploadSuccessResponse } from '../context/upload';
+
+import CallbackOnMount from './callback-on-mount';
 
 interface Resource<T> {
   /**

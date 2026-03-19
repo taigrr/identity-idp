@@ -1,8 +1,10 @@
-const sinon = require('sinon');
 const path = require('path');
 const { promises: fs } = require('fs');
+
+const sinon = require('sinon');
 const webpack = require('webpack');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
+
 const RailsI18nWebpackPlugin = require('./rails-i18n-webpack-plugin.js');
 
 const { compact } = RailsI18nWebpackPlugin;
@@ -59,7 +61,6 @@ describe('RailsI18nWebpackPlugin', () => {
           for (const expectedFile of expectedFiles) {
             const suffix = expectedFile.slice('expected'.length);
             const actualFile = `actual${suffix}`;
-            // eslint-disable-next-line no-await-in-loop
             const [expected, actual] = await Promise.all(
               [expectedFile, actualFile].map((file) =>
                 fs.readFile(path.resolve(__dirname, 'spec/fixtures', file), 'utf-8'),

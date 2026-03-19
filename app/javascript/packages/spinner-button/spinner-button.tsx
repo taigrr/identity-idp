@@ -2,6 +2,7 @@ import { useRef, useImperativeHandle, forwardRef } from 'react';
 import type { HTMLAttributes, RefAttributes, ForwardedRef } from 'react';
 import { Button } from '@18f/identity-components';
 import type { ButtonProps } from '@18f/identity-components';
+
 import type { SpinnerButtonElement } from './spinner-button-element';
 import './spinner-button-element';
 

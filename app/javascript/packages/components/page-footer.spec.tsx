@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+
 import PageFooter from './page-footer';
 
 describe('PageFooter', () => {

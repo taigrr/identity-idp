@@ -1,6 +1,7 @@
 import { render } from 'react-dom';
-import { useInstanceId } from '@18f/identity-react-hooks';
 import { ChangeEvent, useState, useEffect } from 'react';
+
+import { useInstanceId } from '@18f/identity-react-hooks';
 
 const { currentScript } = document;
 
@@ -88,7 +89,6 @@ function MockDeviceProfilingOptions() {
 
   return (
     <>
-      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label className="usa-label" htmlFor={inputId}>
         <strong className="text-accent-warm-dark">For sandbox testing only:</strong> Mock device
         profiling behavior

@@ -1,7 +1,9 @@
 import { render } from '@testing-library/react';
 import { t } from '@18f/identity-i18n';
-import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
+
 import { Provider as ServiceProviderContextProvider } from '../context/service-provider';
+
+import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 
 const APP_NAME = 'Login.gov';
 const SP_NAME = 'TEST SP';

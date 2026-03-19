@@ -1,4 +1,5 @@
 import { useSandbox, useDefineProperty } from '@18f/identity-test-helpers';
+
 import enrollWebauthnDevice from './enroll-webauthn-device';
 import extractCredentials from './extract-credentials';
 import { longToByteArray } from './converters';

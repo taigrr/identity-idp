@@ -2,7 +2,9 @@ import sinon from 'sinon';
 import { computeAccessibleName } from 'dom-accessibility-api';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
 import { AnalyticsContextProvider } from '../context/analytics';
+
 import InPersonCallToAction from './in-person-call-to-action';
 
 describe('InPersonCallToAction', () => {

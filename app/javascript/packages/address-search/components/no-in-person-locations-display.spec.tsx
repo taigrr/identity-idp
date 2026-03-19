@@ -1,5 +1,6 @@
 import { t } from '@18f/identity-i18n';
 import { render } from '@testing-library/react';
+
 import NoInPersonLocationsDisplay from './no-in-person-locations-display';
 
 describe('NoInPersonLocationsDisplay', () => {

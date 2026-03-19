@@ -1,4 +1,5 @@
 import { useDefineProperty } from '@18f/identity-test-helpers';
+
 import { I18n, replaceVariables } from './index';
 
 describe('replaceVariables', () => {

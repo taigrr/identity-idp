@@ -2,6 +2,7 @@ import { render } from '@testing-library/react';
 import { Alert } from '@18f/identity-components';
 import { screen } from '@testing-library/dom';
 import sinon from 'sinon';
+
 import type { FormattedLocation } from './in-person-locations';
 import InPersonLocations from './in-person-locations';
 

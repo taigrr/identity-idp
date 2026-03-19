@@ -2,6 +2,7 @@ import { t } from '@18f/identity-i18n';
 import { Alert } from '@18f/identity-components';
 import { useContext } from 'react';
 import { getConfigValue } from '@18f/identity-config';
+
 import { InPersonContext } from '../context';
 
 function InPersonOutageAlert() {

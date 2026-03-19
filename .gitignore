@@ -100,6 +100,7 @@ saml_*.key
 yarn-debug.log*
 yarn-error.log*
 .yarn-integrity
+*.tsbuildinfo
 
 # Devenv
 .devenv*

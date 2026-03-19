@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+
 import Link, { isExternalURL } from './link';
 
 describe('isExternalURL', () => {

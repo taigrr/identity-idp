@@ -1,6 +1,7 @@
 import sinon from 'sinon';
 import type { SinonStub } from 'sinon';
 import { useSandbox } from '@18f/identity-test-helpers';
+
 import { request, ResponseError } from '.';
 
 describe('request', () => {

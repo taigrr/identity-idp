@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
 import sinon from 'sinon';
+
 import LocationCollectionItem from './location-collection-item';
 
 describe('LocationCollectionItem', () => {

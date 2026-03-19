@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { useSandbox } from '@18f/identity-test-helpers';
 import { t } from '@18f/identity-i18n';
 import * as analytics from '@18f/identity-analytics';
+
 import BarcodeAttentionWarning from './barcode-attention-warning';
 
 describe('BarcodeAttentionWarning', () => {

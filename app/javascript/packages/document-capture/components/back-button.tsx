@@ -1,5 +1,4 @@
 import type { ComponentProps } from 'react';
-
 import { Button } from '@18f/identity-components';
 import { t } from '@18f/identity-i18n';
 

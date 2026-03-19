@@ -1,16 +1,18 @@
 #!/usr/bin/env node
 
-/* eslint-disable no-console */
 
 import { mkdir } from 'node:fs/promises';
 import { parseArgs } from 'node:util';
 import { fileURLToPath } from 'node:url';
+
 import { watch } from 'chokidar';
 import { initAsyncCompiler as initAsyncSassCompiler } from 'sass-embedded';
 import { isDependency } from '@aduth/is-dependency';
-import { buildFile } from './index.js';
+
 import getDefaultLoadPaths from './get-default-load-paths.js';
 import getErrorSassStackPaths from './get-error-sass-stack-paths.js';
+
+import { buildFile } from './index.js';
 
 /** @typedef {import('sass-embedded').Options<'sync'>} SyncSassOptions */
 /** @typedef {import('sass-embedded').Exception} SassException */

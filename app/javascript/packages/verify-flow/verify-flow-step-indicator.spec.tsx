@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
 import { StepStatus } from '@18f/identity-step-indicator';
+
 import VerifyFlowStepIndicator, {
   getStepStatus,
   VerifyFlowPath,

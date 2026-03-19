@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
+
 import useForceRender from './use-force-render';
 
 describe('useForceRender', () => {

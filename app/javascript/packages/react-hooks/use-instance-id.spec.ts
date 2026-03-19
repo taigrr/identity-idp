@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
+
 import useInstanceId from './use-instance-id';
 
 describe('useInstanceId', () => {

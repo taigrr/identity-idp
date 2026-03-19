@@ -1,5 +1,6 @@
 import { trackEvent, trackError } from '@18f/identity-analytics';
 import type SubmitButtonElement from '@18f/identity-submit-button/submit-button-element';
+
 import verifyWebauthnDevice from './verify-webauthn-device';
 import isExpectedWebauthnError from './is-expected-error';
 import isUserVerificationScreenLockError from './is-user-verification-screen-lock-error';

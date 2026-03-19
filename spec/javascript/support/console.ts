@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 
 import { format } from 'node:util';
 import sinon from 'sinon';

@@ -1,5 +1,6 @@
 import userEvent from '@testing-library/user-event';
 import { getByLabelText } from '@testing-library/dom';
+
 import './password-toggle-element';
 import type PasswordToggleElement from './password-toggle-element';
 

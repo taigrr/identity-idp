@@ -2,6 +2,7 @@ import baseUserEvent from '@testing-library/user-event';
 import { render } from '@testing-library/react';
 import { createRef } from 'react';
 import { useSandbox } from '@18f/identity-test-helpers';
+
 import { SpinnerButtonElement } from './spinner-button-element';
 import SpinnerButton from './spinner-button';
 

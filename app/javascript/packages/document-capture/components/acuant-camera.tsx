@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { useImmutableCallback } from '@18f/identity-react-hooks';
+
 import AcuantContext from '../context/acuant';
 
 declare global {

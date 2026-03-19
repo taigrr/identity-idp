@@ -1,6 +1,7 @@
 import { getByLabelText, waitFor } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import { useSandbox, useDefineProperty } from '@18f/identity-test-helpers';
+
 import OneTimeCodeInputElement from './one-time-code-input-element';
 
 describe('OneTimeCodeInputElementElement', () => {

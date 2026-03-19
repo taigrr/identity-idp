@@ -8,6 +8,7 @@ import type { SetupServer } from 'msw/node';
 import { SWRConfig } from 'swr';
 import { I18n } from '@18f/identity-i18n';
 import { I18nContext } from '@18f/identity-react-i18n';
+
 import FullAddressSearch from './full-address-search';
 
 describe('FullAddressSearch', () => {

@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import SpinnerButton, { SpinnerButtonRefHandle } from '@18f/identity-spinner-button/spinner-button';
+
 import FormStepsContext from './form-steps-context';
 
 interface FormStepsButtonProps {

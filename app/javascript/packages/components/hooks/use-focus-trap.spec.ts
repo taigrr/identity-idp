@@ -3,6 +3,7 @@ import { useRef } from 'react';
 import { screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import { renderHook } from '@testing-library/react-hooks';
+
 import useFocusTrap from './use-focus-trap';
 
 const delay = () => new Promise((resolve) => setTimeout(resolve, 0));

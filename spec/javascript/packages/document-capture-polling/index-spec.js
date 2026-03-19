@@ -22,7 +22,6 @@ describe('DocumentCapturePolling', () => {
    *
    * @return {Promise<void>}
    */
-  // eslint-disable-next-line no-underscore-dangle, no-void
   const flushPromises = () => Promise.resolve(void process._tickCallback());
 
   beforeEach(() => {
@@ -159,9 +158,7 @@ describe('DocumentCapturePolling', () => {
 
     for (let i = MAX_DOC_CAPTURE_POLL_ATTEMPTS; i; i--) {
       sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
-      // eslint-disable-next-line no-await-in-loop
       await flushPromises(); // Flush `fetch`
-      // eslint-disable-next-line no-await-in-loop
       await flushPromises(); // Flush `json`
     }
 

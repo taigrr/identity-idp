@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useMemo, useCallback } from 'react';
 import type { ReactNode } from 'react';
+
 import useCounter from '../hooks/use-counter';
+
 import SelfieCaptureContext from './selfie-capture';
 
 interface CaptureAttemptMetadata {

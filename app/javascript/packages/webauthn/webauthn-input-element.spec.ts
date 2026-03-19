@@ -1,6 +1,7 @@
 import sinon from 'sinon';
 import quibble from 'quibble';
 import { waitFor } from '@testing-library/dom';
+
 import type { IsWebauthnPlatformAvailable } from './is-webauthn-platform-authenticator-available';
 
 describe('WebauthnInputElement', () => {

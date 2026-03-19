@@ -1,4 +1,5 @@
 import { useSandbox } from '@18f/identity-test-helpers';
+
 import forceRedirect from './force-redirect';
 
 describe('forceRedirect', () => {

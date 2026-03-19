@@ -1,5 +1,6 @@
 import { createRef } from 'react';
 import { render } from '@testing-library/react';
+
 import Alert from './alert';
 import type { AlertType } from './alert';
 

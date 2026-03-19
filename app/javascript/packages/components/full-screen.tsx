@@ -5,6 +5,7 @@ import type { FocusTrap } from 'focus-trap';
 import { useI18n } from '@18f/identity-react-i18n';
 import { useIfStillMounted, useImmutableCallback } from '@18f/identity-react-hooks';
 import { getAssetPath } from '@18f/identity-assets';
+
 import useToggleBodyClassByPresence from './hooks/use-toggle-body-class-by-presence';
 import useFocusTrap from './hooks/use-focus-trap';
 

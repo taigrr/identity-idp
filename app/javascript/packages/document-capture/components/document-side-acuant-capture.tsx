@@ -8,8 +8,10 @@ import type {
   OnErrorCallback,
   RegisterFieldCallback,
 } from '@18f/identity-form-steps';
-import AcuantCapture, { AcuantDocumentType } from './acuant-capture';
+
 import SelfieCaptureContext from '../context/selfie-capture';
+
+import AcuantCapture, { AcuantDocumentType } from './acuant-capture';
 
 interface DocumentSideAcuantCaptureProps {
   side: 'front' | 'back' | 'passport' | 'selfie';

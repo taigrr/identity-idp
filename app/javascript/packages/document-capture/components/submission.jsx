@@ -1,6 +1,8 @@
 import { useContext } from 'react';
+
 import useAsync from '../hooks/use-async';
 import UploadContext from '../context/upload';
+
 import SubmissionComplete from './submission-complete';
 
 /**
@@ -19,7 +21,6 @@ export async function resolveObjectValues(object) {
   for (const [key, value] of Object.entries(object)) {
     // Disable reason: While typically inadvisable since await blocks continued iteration of the
     // loop, the intent of the function is to not resolve until all member values have settled.
-    // eslint-disable-next-line no-await-in-loop
     resolved[key] = await value;
   }
 

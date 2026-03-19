@@ -16,10 +16,12 @@ import type {
 import { useI18n } from '@18f/identity-react-i18n';
 import { SpinnerDots } from '@18f/identity-components';
 import { useInstanceId } from '@18f/identity-react-hooks';
-import FileImage from './file-image';
-import StatusMessage, { Status } from './status-message';
+
 import DeviceContext from '../context/device';
 import usePrevious from '../hooks/use-previous';
+
+import FileImage from './file-image';
+import StatusMessage, { Status } from './status-message';
 
 interface FileInputProps {
   /**
@@ -244,7 +246,7 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
   // they don't have a preview. This shows the name of the file in the upload
   // box (using the existing preview) when the file name ends with .yml
   const isYAMLFile: boolean = value instanceof window.File && value.name.endsWith('.yml');
-  const isIdCapture: boolean = !(label === t('doc_auth.headings.document_capture_selfie'));
+  const isIdCapture = !(label === t('doc_auth.headings.document_capture_selfie'));
 
   /**
    * In response to a file input change event, confirms that the file is valid before calling

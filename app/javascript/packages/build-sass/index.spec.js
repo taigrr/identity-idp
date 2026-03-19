@@ -1,6 +1,7 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { stat } from 'node:fs/promises';
+
 import { buildFile } from './index.js';
 
 const cwd = dirname(fileURLToPath(import.meta.url));

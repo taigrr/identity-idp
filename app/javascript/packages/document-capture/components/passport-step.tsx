@@ -7,14 +7,16 @@ import {
 } from '@18f/identity-form-steps';
 import { Cancel } from '@18f/identity-verify-flow';
 import { SpinnerButton } from '@18f/identity-spinner-button';
-import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
-import TipList from './tip-list';
+
 import { DeviceContext, UploadContext, PassportCaptureContext } from '../context';
 import {
   ImageValue,
   DefaultSideProps,
   DocumentsAndSelfieStepValue,
 } from '../interface/documents-image-selfie-value';
+
+import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
+import TipList from './tip-list';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import AcuantPassportInstructions from './acuant-passport-instructions';
 

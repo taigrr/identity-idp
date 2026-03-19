@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+
 import BlockLink from './block-link';
 
 describe('BlockLink', () => {

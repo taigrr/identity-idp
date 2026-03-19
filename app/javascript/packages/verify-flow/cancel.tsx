@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { addSearchParams } from '@18f/identity-url';
 import { PageFooter } from '@18f/identity-components';
+
 import FlowContext from './context/flow-context';
 
 function Cancel() {

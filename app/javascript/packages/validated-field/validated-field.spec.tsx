@@ -2,6 +2,7 @@ import sinon from 'sinon';
 import { render } from '@testing-library/react';
 import { computeAccessibleDescription } from 'dom-accessibility-api';
 import { createRef, useMemo, useRef } from 'react';
+
 import ValidatedField, { getErrorMessages } from './validated-field';
 import type ValidatedFieldElement from './validated-field-element';
 

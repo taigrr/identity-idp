@@ -38,7 +38,6 @@ function getEntry(strings: Entries, key: string): Entry {
     // String data is not populated in JavaScript tests, so falling back to the key is the expected
     // behavior. In all other environments this is an unexpected behavior, so log accordingly.
 
-    // eslint-disable-next-line no-console
     console.error(`Missing translation for key \`${key}\`.`);
   }
 
@@ -127,7 +126,6 @@ class I18n {
   }
 }
 
-// eslint-disable-next-line no-underscore-dangle
 const i18n = new I18n({ strings: globalThis._locale_data });
 const { t } = i18n;
 

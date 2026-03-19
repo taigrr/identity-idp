@@ -165,11 +165,7 @@ const CHECKS = {
 /**
  * @type {Record<string, string[]>}
  */
-const EXCEPTIONS = {
-  // Reason: ESLint plugins must follow a specific format for their package names, which conflicts
-  // with our standard "identity-" prefix.
-  checkHaveCorrectPackageName: ['app/javascript/packages/eslint-plugin/package.json'],
-};
+const EXCEPTIONS = {};
 
 const manifestPaths = await Array.fromAsync(glob('app/javascript/packages/*/package.json'));
 Promise.all(manifestPaths.map(async (path) => [path, await readFile(path, 'utf-8')]))

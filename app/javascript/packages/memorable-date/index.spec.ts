@@ -198,7 +198,7 @@ describe('MemorableDateElement', () => {
         context(
           'user has entered a day and year, then clicks an element outside the memorable date fields',
           () => {
-            beforeEach(async function () {
+            beforeEach(async () => {
               await userEvent.click(dayInput);
               await userEvent.type(dayInput, '1');
               await userEvent.click(yearInput);

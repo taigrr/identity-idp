@@ -1,6 +1,6 @@
-/* eslint-disable react/function-component-definition */
 
 import { renderHook, cleanup } from '@testing-library/react-hooks';
+
 import useToggleBodyClassByPresence from './use-toggle-body-class-by-presence';
 
 describe('useToggleBodyClassByPresence', () => {

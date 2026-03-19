@@ -1,6 +1,7 @@
-import { trackEvent, trackError } from '@18f/identity-analytics';
 import { useSandbox } from '@18f/identity-test-helpers';
 import type { SinonStub } from 'sinon';
+
+import { trackEvent, trackError } from '@18f/identity-analytics';
 
 describe('trackEvent', () => {
   const sandbox = useSandbox();

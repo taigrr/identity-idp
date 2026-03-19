@@ -1,5 +1,6 @@
 import type { SinonSpy } from 'sinon';
 import { useSandbox } from '@18f/identity-test-helpers';
+
 import forceSubmit from './force-submit';
 
 describe('forceSubmit', () => {

@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+
 import AcuantSelfieInstructions from './acuant-selfie-instructions';
 
 describe('SelfieInstructions', () => {

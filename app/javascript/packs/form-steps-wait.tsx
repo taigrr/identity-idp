@@ -1,5 +1,6 @@
 import { render, unmountComponentAtNode } from 'react-dom';
 import { Alert } from '@18f/identity-components';
+
 import { forceRedirect } from '@18f/identity-url';
 import type { Navigate } from '@18f/identity-url';
 

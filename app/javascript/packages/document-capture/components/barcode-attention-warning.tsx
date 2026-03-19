@@ -3,9 +3,11 @@ import { t } from '@18f/identity-i18n';
 import { trackEvent } from '@18f/identity-analytics';
 import { useContext } from 'react';
 import { removeUnloadProtection } from '@18f/identity-url';
+
 import type { PII } from '../services/upload';
-import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 import SelfieCaptureContext from '../context/selfie-capture';
+
+import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 
 interface BarcodeAttentionWarningProps {
   /**

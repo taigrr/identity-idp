@@ -1,6 +1,8 @@
 import { render } from '@testing-library/react';
-import InPersonOutageAlert from './in-person-outage-alert';
+
 import { InPersonContext } from '../context';
+
+import InPersonOutageAlert from './in-person-outage-alert';
 
 describe('InPersonOutageAlert', () => {
   let getByText;

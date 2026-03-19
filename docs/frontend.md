@@ -98,7 +98,7 @@ during application deployment.
 
 - All new code is expected to be written using [TypeScript](https://www.typescriptlang.org/) (`.ts` or `.tsx` file extension)
 - The site should be functional even when JavaScript is disabled, with a few specific exceptions (identity proofing)
-- The code follows [TTS JavaScript standards](https://guides.18f.org/engineering/languages-runtimes/javascript/), using a [custom ESLint configuration](https://github.com/18F/identity-idp/tree/main/app/javascript/packages/eslint-plugin)
+- The code follows [TTS JavaScript standards](https://guides.18f.org/engineering/languages-runtimes/javascript/)
 - Code styling is formatted automatically using [Prettier](https://prettier.io/)
 - Packages are managed with [npm](https://docs.npmjs.com/), organized using [npm workspaces](https://docs.npmjs.com/cli/using-npm/workspaces)
 - JavaScript is transpiled, bundled, and minified via [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/)
@@ -123,8 +123,8 @@ eliminate the effort involved with applying correct formatting. As a reviewer, i
 debates over code style, since there is a consistent style being enforced through the adopted
 tooling.
 
-Prettier is integrated with [the project's linting setup](#eslint). Most issues can be resolved
-automatically by running `npm run lint -- --fix`. You may also consider one of the
+Prettier is integrated with the project's formatting workflow. Most issues can be resolved
+automatically by running `npx prettier --write .`. You may also consider one of the
 [available editor integrations](https://prettier.io/docs/en/editors.html), which can simplify your
 workflow to apply formatting automatically on save.
 
@@ -419,22 +419,6 @@ For example, to watch a file and rerun tests after any change:
 
 ```
 npm exec mocha app/javascript/packages/analytics/index.spec.ts -- --watch
-```
-
-### ESLint
-
-[ESLint](https://eslint.org/) is used to ensure code quality and enforce styling conventions.
-
-To analyze all JavaScript files:
-
-```
-npm run lint
-```
-
-Many issues can be fixed automatically by appending a `--fix` flag to the command:
-
-```
-npm run lint -- --fix
 ```
 
 ## Forms

@@ -1,7 +1,9 @@
 const { promises: fs, readdirSync } = require('fs');
 const { format } = require('util');
 const path = require('path');
+
 const YAML = require('yaml');
+
 const ExtractKeysWebpackPlugin = require('./extract-keys-webpack-plugin.js');
 
 /**

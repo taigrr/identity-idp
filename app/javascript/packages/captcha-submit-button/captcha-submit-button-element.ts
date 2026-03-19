@@ -90,10 +90,8 @@ class CaptchaSubmitButtonElement extends HTMLElement {
       const failedLoadTimeoutId = setTimeout(() => this.submit(), FAILED_LOAD_DELAY_MS);
       const clearFailedLoadTimeout = () => clearTimeout(failedLoadTimeoutId);
 
-      /* eslint-disable no-underscore-dangle */
       globalThis.___grecaptcha_cfg ??= { fns: [] };
       globalThis.___grecaptcha_cfg.fns.push(clearFailedLoadTimeout, callback);
-      /* eslint-enable no-underscore-dangle */
     }
   }
 }

@@ -134,7 +134,6 @@ class ManageableAuthenticatorElement extends HTMLElement {
 
   async delete() {
     // Disable reason: This is an intentional user-facing confirmation prompt.
-    /* eslint-disable-next-line no-alert */
     if (!window.confirm(this.strings.deleteConfirm)) {
       this.deleteButton.toggleSpinner(false);
       return;

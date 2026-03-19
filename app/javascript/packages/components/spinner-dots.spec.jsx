@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+
 import SpinnerDots from './spinner-dots';
 
 describe('SpinnerDots', () => {

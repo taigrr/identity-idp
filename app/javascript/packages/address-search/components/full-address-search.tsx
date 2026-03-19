@@ -3,9 +3,11 @@ import { useState } from 'react';
 import { t } from '@18f/identity-i18n';
 import { InPersonLocations, NoInPersonLocationsDisplay } from '@18f/identity-address-search';
 import type { LocationQuery, FormattedLocation } from '@18f/identity-address-search/types';
+
+import type { FullAddressSearchProps } from '../types';
+
 import FullAddressSearchInput from './full-address-search-input';
 import SkipUspsFacilitiesApiErrorMessage from './skip-usps-facilities-api-error-message';
-import type { FullAddressSearchProps } from '../types';
 
 function FullAddressSearch({
   disabled,

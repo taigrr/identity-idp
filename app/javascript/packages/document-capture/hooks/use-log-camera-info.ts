@@ -1,4 +1,5 @@
 import { useEffect, useContext, useRef } from 'react';
+
 import AnalyticsContext from '../context/analytics';
 
 type TrackEventType = (event: string, payload?: object | undefined) => void;

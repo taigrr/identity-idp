@@ -16,6 +16,7 @@ import type {
 } from 'react';
 import { useInstanceId } from '@18f/identity-react-hooks';
 import { t } from '@18f/identity-i18n';
+
 import './validated-field-element';
 import type ValidatedFieldElement from './validated-field-element';
 
@@ -87,7 +88,7 @@ function ValidatedField<InputType extends HTMLInputElement | HTMLSelectElement>(
     if (fieldRef.current && fieldRef.current.input) {
       const { input } = fieldRef.current;
       input.checkValidity = () => {
-        let nextError: string = '';
+        let nextError = '';
         try {
           validate(input.value);
         } catch (error) {

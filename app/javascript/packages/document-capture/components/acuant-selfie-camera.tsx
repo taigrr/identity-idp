@@ -1,6 +1,7 @@
 import { useContext, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { t } from '@18f/identity-i18n';
+
 import AcuantContext from '../context/acuant';
 
 declare global {

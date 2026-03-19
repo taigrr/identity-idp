@@ -1,6 +1,7 @@
 import { render, act } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import userEvent from '@testing-library/user-event';
+
 import useHistoryParam, { getStepParam } from './use-history-param';
 
 describe('getStepParam', () => {
@@ -24,8 +25,6 @@ describe('useHistoryParam', () => {
 
     return (
       <>
-        {/* Disable reason: https://github.com/jsx-eslint/eslint-plugin-jsx-a11y/issues/566 */}
-        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label>
           Count: <input value={count} onChange={(event) => setCount(event.target.value)} />
         </label>

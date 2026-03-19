@@ -2,6 +2,7 @@ import sinon from 'sinon';
 import quibble from 'quibble';
 import { screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
+
 import '@18f/identity-submit-button/submit-button-element';
 import { SCREEN_LOCK_ERROR } from './is-user-verification-screen-lock-error';
 import type { WebauthnVerifyButtonDataset } from './webauthn-verify-button-element';

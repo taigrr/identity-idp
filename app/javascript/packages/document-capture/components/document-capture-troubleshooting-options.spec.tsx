@@ -1,12 +1,15 @@
 import { render } from '@testing-library/react';
 import type { ComponentType, ReactNode } from 'react';
+
 import {
   MarketingSiteContextProvider,
   ServiceProviderContextProvider,
 } from '@18f/identity-document-capture';
-import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
+
 import type { ServiceProviderContextType } from '../context/service-provider';
 import InPersonContext, { InPersonContextProps } from '../context/in-person';
+
+import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 
 describe('DocumentCaptureTroubleshootingOptions', () => {
   const helpCenterRedirectURL = 'https://example.com/redirect/';

@@ -141,13 +141,11 @@ describe('CaptchaSubmitButtonElement', () => {
           await userEvent.click(button);
 
           expect(form.submit).not.to.have.been.called();
-          /* eslint-disable no-underscore-dangle */
           expect((globalThis as any).___grecaptcha_cfg).to.have.keys('fns');
           expect((globalThis as any).___grecaptcha_cfg.fns)
             .to.be.an('array')
             .with.lengthOf.greaterThan(0);
           (globalThis as any).___grecaptcha_cfg.fns.forEach((callback) => callback());
-          /* eslint-enable no-underscore-dangle */
 
           await expect(form.submit).to.eventually.be.called();
         });

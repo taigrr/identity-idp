@@ -1,8 +1,10 @@
 import { render } from '@testing-library/react';
 import type { ComponentType } from 'react';
+
 import { Provider as MarketingSiteContextProvider } from '../context/marketing-site';
-import InPersonPrepareStep from './in-person-prepare-step';
 import { InPersonContext } from '../context';
+
+import InPersonPrepareStep from './in-person-prepare-step';
 
 describe('InPersonPrepareStep', () => {
   const DEFAULT_PROPS = { toPreviousStep() {}, value: {} };

@@ -6,7 +6,13 @@ import { VerifyFlowStepIndicator, VerifyFlowPath } from '@18f/identity-verify-fl
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import type { FormStep } from '@18f/identity-form-steps';
 import { getConfigValue } from '@18f/identity-config';
+
 import { UploadFormEntriesError } from '../services/upload';
+import UploadContext from '../context/upload';
+import AnalyticsContext from '../context/analytics';
+import withProps from '../higher-order/with-props';
+import { InPersonContext, SelfieCaptureContext } from '../context';
+
 import SelfieStep from './selfie-step';
 import DocumentsStep from './documents-step';
 import PassportStep from './passport-step';
@@ -14,15 +20,12 @@ import InPersonPrepareStep from './in-person-prepare-step';
 import InPersonLocationFullAddressEntryPostOfficeSearchStep from './in-person-location-full-address-entry-post-office-search-step';
 import InPersonSwitchBackStep from './in-person-switch-back-step';
 import ReviewIssuesStep from './review-issues-step';
-import UploadContext from '../context/upload';
-import AnalyticsContext from '../context/analytics';
 import Submission from './submission';
 import SubmissionStatus from './submission-status';
 import { RetrySubmissionError } from './submission-complete';
 import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
-import withProps from '../higher-order/with-props';
-import { InPersonContext, SelfieCaptureContext } from '../context';
+
 
 interface DocumentCaptureProps {
   /**

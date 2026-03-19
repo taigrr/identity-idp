@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+
 import PromptOnNavigate from './prompt-on-navigate';
 
 describe('PromptOnNavigate', () => {

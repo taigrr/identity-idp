@@ -15,7 +15,6 @@ declare global {
  * @param {import('chai/lib/chai/utils')} utils Chai plugin utilities.
  */
 export function sinonChaiAsPromised({ Assertion }, utils) {
-  /* eslint-disable no-underscore-dangle */
   Assertion.overwriteProperty(
     'eventually',
     (originalGetter) =>
@@ -59,5 +58,4 @@ export function sinonChaiAsPromised({ Assertion }, utils) {
       });
     }),
   );
-  /* eslint-enable no-underscore-dangle */
 }

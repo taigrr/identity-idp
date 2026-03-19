@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import { renderHook } from '@testing-library/react-hooks';
+
 import MarketingSiteContext, { Provider } from './marketing-site';
 
 describe('MarketingSiteContext', () => {

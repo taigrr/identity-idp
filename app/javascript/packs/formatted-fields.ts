@@ -21,7 +21,6 @@ const SELECTOR_CONFIGS: Record<string, CleaveOptions> = {
 for (const [selector, config] of Object.entries(SELECTOR_CONFIGS)) {
   const element = document.querySelector(selector);
   if (element) {
-    // eslint-disable-next-line no-new
     new Cleave(element as HTMLElement, config);
   }
 }

@@ -28,7 +28,7 @@ export const arrayBufferToBase64 = (arrayBuffer: ArrayBuffer): string =>
  */
 export const longToByteArray = (long: number): Uint8Array =>
   new Uint8Array(8).map(() => {
-    const byte = long & 0xff; // eslint-disable-line no-bitwise
+    const byte = long & 0xff;
     long = (long - byte) / 256;
     return byte;
   });

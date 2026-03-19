@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { getAssetPath } from '@18f/identity-assets';
 import { useI18n } from '@18f/identity-react-i18n';
+
 import AcuantContext from '../context/acuant';
 
 function LoadingSpinner() {

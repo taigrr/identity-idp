@@ -4,11 +4,13 @@ import { getConfigValue } from '@18f/identity-config';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton } from '@18f/identity-form-steps';
 import { forceRedirect } from '@18f/identity-url';
+
 import UploadContext from '../context/upload';
 import MarketingSiteContext from '../context/marketing-site';
+import { InPersonContext } from '../context';
+
 import BackButton from './back-button';
 import InPersonTroubleshootingOptions from './in-person-troubleshooting-options';
-import { InPersonContext } from '../context';
 import InPersonOutageAlert from './in-person-outage-alert';
 
 function InPersonPrepareStep({ toPreviousStep }) {

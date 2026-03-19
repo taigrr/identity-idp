@@ -7,17 +7,20 @@ import {
 } from '@18f/identity-form-steps';
 import { Cancel } from '@18f/identity-verify-flow';
 import { SpinnerButton } from '@18f/identity-spinner-button';
-import AcuantSelfieInstructions from './acuant-selfie-instructions';
+
 import SelfieCaptureContext from '../context/selfie-capture';
-import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
-import DocumentSideAcuantCapture from './document-side-acuant-capture';
-import TipList from './tip-list';
 import { UploadContext } from '../context';
 import {
   ImageValue,
   DefaultSideProps,
   DocumentsAndSelfieStepValue,
 } from '../interface/documents-image-selfie-value';
+
+import AcuantSelfieInstructions from './acuant-selfie-instructions';
+import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
+import DocumentSideAcuantCapture from './document-side-acuant-capture';
+import TipList from './tip-list';
+
 
 export function SelfieCaptureStep({
   defaultSideProps,

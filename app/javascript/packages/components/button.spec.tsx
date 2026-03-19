@@ -1,6 +1,7 @@
 import { render } from '@testing-library/react';
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
+
 import Button from './button';
 
 describe('Button', () => {

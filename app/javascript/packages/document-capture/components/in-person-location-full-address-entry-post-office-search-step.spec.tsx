@@ -8,7 +8,9 @@ import { http, HttpResponse } from 'msw';
 import { SWRConfig } from 'swr';
 import { usePropertyValue } from '@18f/identity-test-helpers';
 import { ComponentType } from 'react';
+
 import { InPersonContext } from '../context';
+
 import InPersonLocationFullAddressEntryPostOfficeSearchStep from './in-person-location-full-address-entry-post-office-search-step';
 
 const USPS_RESPONSE = [

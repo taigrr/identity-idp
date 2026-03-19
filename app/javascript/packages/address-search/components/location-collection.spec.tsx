@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+
 import LocationCollection from './location-collection';
 
 describe('LocationCollection', () => {

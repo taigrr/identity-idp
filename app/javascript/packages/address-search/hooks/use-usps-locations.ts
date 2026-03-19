@@ -1,4 +1,5 @@
 import { request } from '@18f/identity-request';
+
 import type { FormattedLocation, LocationQuery, PostOffice } from '../types';
 import { formatLocations, snakeCase, transformKeys } from '../utils';
 

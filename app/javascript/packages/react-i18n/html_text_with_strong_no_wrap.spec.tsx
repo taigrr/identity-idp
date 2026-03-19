@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+
 import HtmlTextWithStrongNoWrap from './html_text_with_strong_no_wrap';
 
 describe('htmlTextWithStrongNoWrap', () => {

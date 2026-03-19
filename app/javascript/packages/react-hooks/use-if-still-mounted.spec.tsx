@@ -1,5 +1,6 @@
 import sinon from 'sinon';
 import { renderHook } from '@testing-library/react-hooks';
+
 import useIfStillMounted from './use-if-still-mounted';
 
 describe('document-capture/hooks/use-if-still-mounted', () => {

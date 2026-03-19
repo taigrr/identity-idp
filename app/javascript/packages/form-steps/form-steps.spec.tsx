@@ -6,6 +6,7 @@ import sinon from 'sinon';
 import { PageHeading } from '@18f/identity-components';
 import * as analytics from '@18f/identity-analytics';
 import { t } from '@18f/identity-i18n';
+
 import FormSteps, { FormStepComponentProps, getStepIndexByName } from './form-steps';
 import FormError from './form-error';
 import FormStepsContext from './form-steps-context';

@@ -1,5 +1,6 @@
 import { createRef } from 'react';
 import { render } from '@testing-library/react';
+
 import PageHeading from './page-heading';
 
 describe('document-capture/components/page-heading', () => {

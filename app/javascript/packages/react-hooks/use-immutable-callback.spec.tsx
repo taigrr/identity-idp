@@ -1,5 +1,6 @@
 import sinon from 'sinon';
 import { renderHook } from '@testing-library/react-hooks';
+
 import useImmutableCallback from './use-immutable-callback';
 
 describe('useImmutableCallback', () => {

@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { useI18n, formatHTML } from '@18f/identity-react-i18n';
 import { getConfigValue } from '@18f/identity-config';
 import { Alert } from '@18f/identity-components';
+
 import ServiceProviderContext from '../context/service-provider';
 
 function formatWithStrong(text: string): ReactNode {

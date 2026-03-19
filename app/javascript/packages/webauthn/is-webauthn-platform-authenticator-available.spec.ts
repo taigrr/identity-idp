@@ -1,4 +1,5 @@
 import { useDefineProperty } from '@18f/identity-test-helpers';
+
 import isWebauthnPlatformAuthenticatorAvailable from './is-webauthn-platform-authenticator-available';
 
 describe('isWebauthnPlatformAuthenticatorAvailable', () => {

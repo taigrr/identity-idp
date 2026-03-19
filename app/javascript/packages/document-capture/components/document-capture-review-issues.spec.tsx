@@ -1,10 +1,11 @@
 import { render, screen } from '@testing-library/react';
-import DocumentCaptureReviewIssues from '@18f/identity-document-capture/components/document-capture-review-issues';
-import { InPersonContext } from '@18f/identity-document-capture/context';
-import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
 import { I18nContext } from '@18f/identity-react-i18n';
 import { I18n } from '@18f/identity-i18n';
 import { expect } from 'chai';
+
+import DocumentCaptureReviewIssues from '@18f/identity-document-capture/components/document-capture-review-issues';
+import { InPersonContext } from '@18f/identity-document-capture/context';
+import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
 
 describe('DocumentCaptureReviewIssues', () => {
   const DEFAULT_OPTIONS = {
