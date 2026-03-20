@@ -2,7 +2,6 @@ import { createContext, useCallback } from 'react';
 import type { ReactNode } from 'react';
 
 import { addSearchParams } from '@/utils/url';
-import { useObjectMemo } from '@/hooks';
 
 interface HelpCenterURLParameters {
   category: string;
@@ -43,7 +42,7 @@ function MarketingSiteContextProvider({
     (params) => addSearchParams(helpCenterRedirectURL, params),
     [helpCenterRedirectURL],
   );
-  const value = useObjectMemo({ getHelpCenterURL, securityAndPrivacyHowItWorksURL });
+  const value = { getHelpCenterURL, securityAndPrivacyHowItWorksURL };
 
   return <MarketingSiteContext.Provider value={value}>{children}</MarketingSiteContext.Provider>;
 }

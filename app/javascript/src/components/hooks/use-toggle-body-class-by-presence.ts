@@ -1,7 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import type { ComponentType } from 'react';
 
-const activeInstancesByType = new WeakMap<any, number>();
+type AnyComponent = ComponentType<never>;
+
+const activeInstancesByType = new WeakMap<AnyComponent, number>();
 
 /**
  * React hook to add a CSS class to the page body element as long as any instance of the given
@@ -10,27 +12,33 @@ const activeInstancesByType = new WeakMap<any, number>();
  * @param className Class name to add to body element
  * @param Component React component definition
  */
-function useToggleBodyClassByPresence(className: string, Component: ComponentType<any>) {
-  /**
-   * Increments the number of active instances for the current component by the given amount, adding
-   * or removing the body class for the first and last instance respectively.
-   */
-  function incrementActiveInstances(amount: number) {
-    const activeInstances = activeInstancesByType.get(Component) || 0;
-    const nextActiveInstances = activeInstances + amount;
-
-    if (!activeInstances && nextActiveInstances) {
-      document.body.classList.add(className);
-    } else if (activeInstances && !nextActiveInstances) {
-      document.body.classList.remove(className);
-    }
-
-    activeInstancesByType.set(Component, nextActiveInstances);
-  }
+function useToggleBodyClassByPresence<P>(className: string, Component: ComponentType<P>) {
+  const classNameRef = useRef(className);
+  const componentRef = useRef(Component as AnyComponent);
 
   useEffect(() => {
-    incrementActiveInstances(1);
-    return () => incrementActiveInstances(-1);
+    const cls = classNameRef.current;
+    const comp = componentRef.current;
+
+    const activeInstances = activeInstancesByType.get(comp) || 0;
+    const nextActiveInstances = activeInstances + 1;
+
+    if (!activeInstances && nextActiveInstances) {
+      document.body.classList.add(cls);
+    }
+
+    activeInstancesByType.set(comp, nextActiveInstances);
+
+    return () => {
+      const currentInstances = activeInstancesByType.get(comp) || 0;
+      const decrementedInstances = currentInstances - 1;
+
+      if (currentInstances && !decrementedInstances) {
+        document.body.classList.remove(cls);
+      }
+
+      activeInstancesByType.set(comp, decrementedInstances);
+    };
   }, []);
 }
 

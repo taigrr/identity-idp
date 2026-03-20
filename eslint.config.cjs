@@ -2,6 +2,7 @@ const js = require("@eslint/js");
 const tseslint = require("typescript-eslint");
 const reactPlugin = require("eslint-plugin-react");
 const reactHooksPlugin = require("eslint-plugin-react-hooks");
+const reactCompilerPlugin = require("eslint-plugin-react-compiler");
 const importPlugin = require("eslint-plugin-import");
 const prettierConfig = require("eslint-config-prettier");
 const globals = require("globals");
@@ -22,6 +23,7 @@ module.exports = tseslint.config(
     plugins: {
       react: reactPlugin,
       "react-hooks": reactHooksPlugin,
+      "react-compiler": reactCompilerPlugin,
       import: importPlugin,
     },
     languageOptions: {
@@ -61,7 +63,8 @@ module.exports = tseslint.config(
 
       "react/react-in-jsx-scope": "off",
       "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "warn",
+      "react-hooks/exhaustive-deps": "error",
+      "react-compiler/react-compiler": "error",
 
       "import/order": [
         "error",

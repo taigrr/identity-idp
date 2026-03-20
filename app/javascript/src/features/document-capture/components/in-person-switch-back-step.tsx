@@ -1,16 +1,17 @@
-import { useLayoutEffect } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 
 import { PageHeading } from '@/components';
 import { getAssetPath } from '@/utils/assets';
 import { t } from '@/i18n';
 import type { FormStepComponentProps } from '@/features/form-steps';
 
-function InPersonSwitchBackStep({ onChange }: FormStepComponentProps<any>) {
-  // Resetting the value prevents the user from being prompted about unsaved changes when closing
-  // the tab. `useLayoutEffect` is used to avoid race conditions where the callback could occur at
-  // the same time as the change handler's `ifStillMounted` wrapping `useEffect`, which would treat
-  // it as unmounted and not update the value.
-  useLayoutEffect(() => onChange({}, { patch: false }), []);
+function InPersonSwitchBackStep({ onChange }: FormStepComponentProps<Record<string, unknown>>) {
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+
+  useLayoutEffect(() => {
+    onChangeRef.current({}, { patch: false });
+  }, []);
 
   return (
     <>

@@ -1,8 +1,7 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef, useCallback } from 'react';
 import type { ReactNode } from 'react';
 
 import { useI18n } from '@/i18n/react';
-import { useImmutableCallback } from '@/hooks';
 
 import AcuantContext from '../context/acuant';
 
@@ -271,7 +270,19 @@ function AcuantCamera({
   const { t } = useI18n();
   const uncroppedImageDataRef = useRef<string | null>(null);
 
-  const processUncropped = useImmutableCallback((response: AcuantCaptureImage) => {
+  const onImageCaptureSuccessRef = useRef(onImageCaptureSuccess);
+  const onImageCaptureFailureRef = useRef(onImageCaptureFailure);
+  const onCropStartRef = useRef(onCropStart);
+  const tRef = useRef(t);
+  const setIsActiveRef = useRef(setIsActive);
+
+  onImageCaptureSuccessRef.current = onImageCaptureSuccess;
+  onImageCaptureFailureRef.current = onImageCaptureFailure;
+  onCropStartRef.current = onCropStart;
+  tRef.current = t;
+  setIsActiveRef.current = setIsActive;
+
+  const processUncropped = useCallback((response: AcuantCaptureImage) => {
     try {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
@@ -289,68 +300,69 @@ function AcuantCamera({
     } catch { /* intentionally empty */ }
   }, []);
 
-  const onCaptured = useImmutableCallback(
+  const onCaptured = useCallback(
     (response: AcuantCaptureImage) => {
-      onCropStart();
+      onCropStartRef.current();
 
       if (response && response.data) {
         processUncropped(response);
       }
     },
-    [onCropStart, processUncropped],
+    [processUncropped],
   );
 
-  const onCropped = useImmutableCallback(
-    (response) => {
+  const onCropped = useCallback(
+    (response: AcuantSuccessResponse | null) => {
       if (response && response.image) {
-        onImageCaptureSuccess(response, uncroppedImageDataRef.current || undefined);
+        onImageCaptureSuccessRef.current(response, uncroppedImageDataRef.current || undefined);
       } else {
-        onImageCaptureFailure();
+        onImageCaptureFailureRef.current();
       }
       uncroppedImageDataRef.current = null;
     },
-    [onImageCaptureSuccess, onImageCaptureFailure],
+    [],
   );
 
   useEffect(() => {
+    if (!isReady) {
+      return;
+    }
+
     const textOptions = {
       text: {
-        NONE: t('doc_auth.info.capture_status_none'),
-        SMALL_DOCUMENT: t('doc_auth.info.capture_status_small_document'),
-        BIG_DOCUMENT: t('doc_auth.info.capture_status_big_document'),
-        GOOD_DOCUMENT: null, // auto-capture only - SDK doesn't support switching modes mid-session
-        CAPTURING: t('doc_auth.info.capture_status_capturing'),
-        TAP_TO_CAPTURE: t('doc_auth.info.capture_status_tap_to_capture'),
+        NONE: tRef.current('doc_auth.info.capture_status_none'),
+        SMALL_DOCUMENT: tRef.current('doc_auth.info.capture_status_small_document'),
+        BIG_DOCUMENT: tRef.current('doc_auth.info.capture_status_big_document'),
+        GOOD_DOCUMENT: null,
+        CAPTURING: tRef.current('doc_auth.info.capture_status_capturing'),
+        TAP_TO_CAPTURE: tRef.current('doc_auth.info.capture_status_tap_to_capture'),
       },
     };
-    if (isReady) {
-      const callbacks = {
-        onCaptured,
-        onCropped,
-        onError: onImageCaptureFailure,
-      };
 
-      const onFailureCallbackWithOptions = (...args: Parameters<AcuantFailureCallback>) =>
-        onImageCaptureFailure(...args);
-      Object.keys(textOptions).forEach((key) => {
-        onFailureCallbackWithOptions[key] = textOptions[key];
-      });
+    const callbacks = {
+      onCaptured,
+      onCropped,
+      onError: (...args: Parameters<AcuantFailureCallback>) => onImageCaptureFailureRef.current(...args),
+    };
 
-      try {
-        window.AcuantCameraUI.start(callbacks, onFailureCallbackWithOptions, textOptions);
-        setIsActive(true);
-      } catch (error) {
-        onImageCaptureFailure(error);
-      }
+    const onFailureCallbackWithOptions = (...args: Parameters<AcuantFailureCallback>) =>
+      onImageCaptureFailureRef.current(...args);
+    Object.keys(textOptions).forEach((key) => {
+      onFailureCallbackWithOptions[key] = textOptions[key];
+    });
+
+    try {
+      window.AcuantCameraUI.start(callbacks, onFailureCallbackWithOptions, textOptions);
+      setIsActiveRef.current(true);
+    } catch (error) {
+      onImageCaptureFailureRef.current(error);
     }
 
     return () => {
-      if (isReady) {
-        window.AcuantCameraUI.end();
-        setIsActive(false);
-      }
+      window.AcuantCameraUI.end();
+      setIsActiveRef.current(false);
     };
-  }, [isReady]);
+  }, [isReady, onCaptured, onCropped]);
 
   return <>{children}</>;
 }

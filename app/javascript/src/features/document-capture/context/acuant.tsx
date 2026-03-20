@@ -1,7 +1,6 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState, useRef } from 'react';
 import type { ReactNode } from 'react';
 
-import useObjectMemo from '@/hooks/use-object-memo';
 
 import AnalyticsContext from './analytics';
 import DeviceContext from './device';
@@ -184,7 +183,16 @@ function AcuantContextProvider({
   const [isActive, setIsActive] = useState(false);
   const [acuantCaptureMode, setAcuantCaptureMode] = useState<AcuantCaptureMode>('AUTO');
 
-  const value = useObjectMemo({
+  const sdkSrcRef = useRef(sdkSrc);
+  const cameraSrcRef = useRef(cameraSrc);
+  const passiveLivenessOpenCVSrcRef = useRef(passiveLivenessOpenCVSrc);
+  const passiveLivenessSrcRef = useRef(passiveLivenessSrc);
+  const credentialsRef = useRef(credentials);
+  const endpointRef = useRef(endpoint);
+  const trackEventRef = useRef(trackEvent);
+  const isSelfieCaptureEnabledRef = useRef(isSelfieCaptureEnabled);
+
+  const value = {
     isReady,
     isAcuantLoaded,
     isError,
@@ -197,7 +205,7 @@ function AcuantContextProvider({
     credentials,
     glareThreshold,
     sharpnessThreshold,
-  });
+  };
 
   useEffect(() => {
     // If state is already ready (via consideration of device type), skip loading Acuant SDK.
@@ -221,21 +229,21 @@ function AcuantContextProvider({
 
       // Unclear if/how this is called. Implemented just in case, but this is untested.
       window.AcuantJavascriptWebSdk.setUnexpectedErrorCallback((errorMessage) => {
-        trackEvent('idv_sdk_error_before_init', {
+        trackEventRef.current('idv_sdk_error_before_init', {
           success: false,
           error_message: errorMessage,
-          liveness_checking_required: isSelfieCaptureEnabled,
+          liveness_checking_required: isSelfieCaptureEnabledRef.current,
         });
       });
 
-      window.AcuantJavascriptWebSdk.initialize(credentials, endpoint, {
+      window.AcuantJavascriptWebSdk.initialize(credentialsRef.current, endpointRef.current, {
         onSuccess: () => {
           window.AcuantJavascriptWebSdk.start?.(() => {
             const { isCameraSupported: nextIsCameraSupported } = window.AcuantCamera;
-            trackEvent('IdV: Acuant SDK loaded', {
+            trackEventRef.current('IdV: Acuant SDK loaded', {
               success: true,
               isCameraSupported: nextIsCameraSupported,
-              liveness_checking_required: isSelfieCaptureEnabled,
+              liveness_checking_required: isSelfieCaptureEnabledRef.current,
             });
 
             setIsCameraSupported(nextIsCameraSupported);
@@ -244,11 +252,11 @@ function AcuantContextProvider({
           });
         },
         onFail(code, description) {
-          trackEvent('IdV: Acuant SDK loaded', {
+          trackEventRef.current('IdV: Acuant SDK loaded', {
             success: false,
             code,
             description,
-            liveness_checking_required: isSelfieCaptureEnabled,
+            liveness_checking_required: isSelfieCaptureEnabledRef.current,
           });
 
           setIsError(true);
@@ -257,11 +265,11 @@ function AcuantContextProvider({
     }
 
     const originalAcuantConfig = window.acuantConfig;
-    window.acuantConfig = { path: dirname(sdkSrc) };
+    window.acuantConfig = { path: dirname(sdkSrcRef.current) };
 
     // SDK Main script load
     const sdkScript = document.createElement('script');
-    sdkScript.src = sdkSrc;
+    sdkScript.src = sdkSrcRef.current;
     sdkScript.onload = onAcuantSdkLoaded;
     sdkScript.onerror = () => setIsError(true);
     sdkScript.dataset.acuantSdk = '';
@@ -269,7 +277,7 @@ function AcuantContextProvider({
     // Camera script load
     const cameraScript = document.createElement('script');
     cameraScript.async = true;
-    cameraScript.src = cameraSrc;
+    cameraScript.src = cameraSrcRef.current;
     cameraScript.onerror = () => setIsError(true);
     document.body.appendChild(cameraScript);
     // Passive liveness (Selfie) script load
@@ -278,12 +286,12 @@ function AcuantContextProvider({
     const passiveLivenessScript = document.createElement('script');
     // Open CV script load. Open CV is required only for passive liveness
     const passiveLivenessOpenCVScript = document.createElement('script');
-    if (passiveLivenessSrc) {
+    if (passiveLivenessSrcRef.current) {
       passiveLivenessScript.async = true;
-      passiveLivenessScript.src = passiveLivenessSrc;
+      passiveLivenessScript.src = passiveLivenessSrcRef.current;
       passiveLivenessScript.onerror = () => setIsError(true);
       passiveLivenessOpenCVScript.async = true;
-      passiveLivenessOpenCVScript.src = passiveLivenessOpenCVSrc;
+      passiveLivenessOpenCVScript.src = passiveLivenessOpenCVSrcRef.current;
       passiveLivenessOpenCVScript.onerror = () => setIsError(true);
     }
     document.body.appendChild(passiveLivenessScript);
@@ -297,7 +305,7 @@ function AcuantContextProvider({
       document.body.removeChild(passiveLivenessScript);
       document.body.removeChild(passiveLivenessOpenCVScript);
     };
-  }, []);
+  }, [isReady]);
 
   return <AcuantContext.Provider value={value}>{children}</AcuantContext.Provider>;
 }

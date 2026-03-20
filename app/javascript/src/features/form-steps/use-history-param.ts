@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 export type ParamValue = string | undefined;
 
@@ -31,23 +31,24 @@ function useHistoryParam(
   initialValue?: string,
   validValues?: string[],
 ): [string | undefined, (nextParamValue: ParamValue) => void] {
-  function getCurrentValue(currentValue?: string): ParamValue {
+  const initialValueRef = useRef(initialValue);
+  const validValuesRef = useRef(validValues);
+
+  const getCurrentValue = useCallback((currentValue?: string): ParamValue => {
     const path = window.location.hash.slice(1);
 
     if (path) {
       const value = getStepParam(path);
-      return !validValues || validValues.includes(value) ? value : currentValue;
+      return !validValuesRef.current || validValuesRef.current.includes(value) ? value : currentValue;
     }
 
-    return initialValue;
-  }
+    return initialValueRef.current;
+  }, []);
 
   const [value, setValue] = useState(initialValue ?? getCurrentValue);
-  const syncValue = useCallback(() => setValue(getCurrentValue), [setValue]);
+  const syncValue = useCallback(() => setValue(getCurrentValue()), [getCurrentValue]);
 
   function setParamValue(nextValue: ParamValue) {
-    // Push the next value to history, both to update the URL, and to allow the user to return to
-    // an earlier value (see `popstate` sync behavior).
     if (nextValue !== value) {
       window.history.pushState(null, '', getParamURL(nextValue));
       subscribers.forEach((sync) => sync());
@@ -59,22 +60,22 @@ function useHistoryParam(
   }
 
   useEffect(() => {
-    if (initialValue && initialValue !== getCurrentValue()) {
-      window.history.replaceState(null, '', getParamURL(initialValue));
+    if (initialValueRef.current && initialValueRef.current !== getCurrentValue()) {
+      window.history.replaceState(null, '', getParamURL(initialValueRef.current));
     }
 
     window.addEventListener('popstate', syncValue);
     return () => {
       window.removeEventListener('popstate', syncValue);
     };
-  }, []);
+  }, [getCurrentValue, syncValue]);
 
   useEffect(() => {
     subscribers.push(syncValue);
     return () => {
       subscribers.splice(subscribers.indexOf(syncValue), 1);
     };
-  }, []);
+  }, [syncValue]);
 
   return [value, setParamValue];
 }

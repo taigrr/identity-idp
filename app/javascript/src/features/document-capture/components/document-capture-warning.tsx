@@ -131,18 +131,25 @@ function DocumentCaptureWarning({
 
   const subheadingRef = useRef<HTMLDivElement>(null);
   const errorMessageDisplayedRef = useRef<HTMLDivElement>(null);
+  const trackEventRef = useRef(trackEvent);
+  const trackingDataRef = useRef({
+    remainingSubmitAttempts,
+    heading,
+    isSelfieCaptureEnabled,
+  });
 
   useEffect(() => {
     const subheadingText = subheadingRef.current?.textContent;
     const errorMessageDisplayed = errorMessageDisplayedRef.current?.textContent;
+    const { remainingSubmitAttempts: attempts, heading: h, isSelfieCaptureEnabled: selfieEnabled } = trackingDataRef.current;
 
-    trackEvent('IdV: warning shown', {
+    trackEventRef.current('IdV: warning shown', {
       location: 'doc_auth_review_issues',
-      remaining_submit_attempts: remainingSubmitAttempts,
-      heading,
+      remaining_submit_attempts: attempts,
+      heading: h,
       subheading: subheadingText,
       error_message_displayed: errorMessageDisplayed,
-      liveness_checking_required: isSelfieCaptureEnabled,
+      liveness_checking_required: selfieEnabled,
     });
   }, []);
 

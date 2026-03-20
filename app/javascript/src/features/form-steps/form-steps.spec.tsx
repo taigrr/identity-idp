@@ -1,4 +1,4 @@
-import { useContext, useCallback } from 'react';
+import { useContext, useCallback, useRef } from 'react';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
@@ -257,15 +257,19 @@ describe('FormSteps', () => {
 
   it('provides set onChange option for non-patch value change', async () => {
     function NonPatchTestForm({ onChange, value }: FormStepComponentProps<{ a?: number; b?: number }>) {
-      const handleClick = useCallback(
-        sinon
-          .stub()
-          .onFirstCall()
-          .callsFake(() => onChange({ a: 1 }))
-          .onSecondCall()
-          .callsFake(() => onChange({ b: 2 }, { patch: false })),
-        [],
-      );
+      const clickCountRef = useRef(0);
+      const onChangeRef = useRef(onChange);
+      onChangeRef.current = onChange;
+
+      const handleClick = useCallback(() => {
+        clickCountRef.current += 1;
+        if (clickCountRef.current === 1) {
+          onChangeRef.current({ a: 1 });
+        } else {
+          onChangeRef.current({ b: 2 }, { patch: false });
+        }
+      }, []);
+
       return (
         <>
           <button type="button" onClick={handleClick}>

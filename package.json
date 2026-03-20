@@ -7,16 +7,14 @@
     "node": ">=22",
     "npm": ">=10.0.0"
   },
-  "workspaces": [
-    "app/javascript/packages/*"
-  ],
+
   "scripts": {
-    "postinstall:analytics": "cd app/javascript/packages/analytics && make digital-analytics-program.js",
+
     "typecheck": "tsc",
-    "lint": "eslint 'app/javascript/packages/**/*.{js,jsx,ts,tsx}' 'app/javascript/packs/**/*.{js,jsx,ts,tsx}' 'app/components/**/*.{js,jsx,ts,tsx}'",
+    "lint": "eslint 'app/javascript/src/**/*.{js,jsx,ts,tsx}' 'app/javascript/packs/**/*.{js,jsx,ts,tsx}' 'app/components/**/*.{js,jsx,ts,tsx}'",
     "lint:css": "stylelint 'app/assets/stylesheets/**/*.scss' 'app/javascript/**/*.scss' 'app/components/*.scss'",
     "lint:openapi": "./scripts/lint-openapi-spec.mjs",
-    "test": "mocha 'spec/javascript/**/**spec.+(j|t)s?(x)' 'app/javascript/packages/**/*.spec.+(j|t)s?(x)'",
+    "test": "mocha 'spec/javascript/**/**spec.+(j|t)s?(x)' 'app/javascript/src/**/*.spec.+(j|t)s?(x)'",
     "normalize-yaml": "normalize-yaml",
     "generate-browsers-json": "./scripts/generate-browsers-json.js",
     "clean": "rm -rf public/vite/*",
@@ -76,6 +74,7 @@
     "eslint-import-resolver-typescript": "^3.10.1",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-compiler": "^19.1.0-rc.2",
     "eslint-plugin-react-hooks": "^5.2.0",
     "globals": "^17.4.0",
     "jsdom": "^25.0.1",

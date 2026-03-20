@@ -3,6 +3,7 @@ import {
   useState,
   useEffect,
   useCallback,
+  useMemo,
   Children,
   cloneElement,
   createElement,
@@ -75,7 +76,10 @@ function ValidatedField<InputType extends HTMLInputElement | HTMLSelectElement>(
   const instanceId = useInstanceId();
   const errorId = `validated-field-error-${instanceId}`;
 
-  const errorStrings = { ...getErrorMessages(inputProps.type), ...messages };
+  const errorStrings = useMemo(
+    () => ({ ...getErrorMessages(inputProps.type), ...messages }),
+    [inputProps.type, messages],
+  );
 
   useImperativeHandle(forwardedRef, () => inputRef.current!);
 

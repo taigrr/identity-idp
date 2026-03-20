@@ -1,7 +1,0 @@
-{
-  "name": "@18f/identity-lite-webpack-dev-server",
-  "version": "1.0.0",
-  "private": true,
-  "sideEffects": false,
-  "main": "./webpack-plugin.js"
-}

@@ -26,8 +26,20 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
   const [disabledAddressSearch, setDisabledAddressSearch] = useState<boolean>(false);
   const { flowPath } = useContext(UploadContext);
 
-  // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
+  const onChangeRef = useRef(onChange);
+  const trackEventRef = useRef(trackEvent);
+  const setSubmitEventMetadataRef = useRef(setSubmitEventMetadata);
+  const flowPathRef = useRef(flowPath);
+  const inPersonURLRef = useRef(inPersonURL);
+  const locationsURLRef = useRef(locationsURL);
+
+  onChangeRef.current = onChange;
+  trackEventRef.current = trackEvent;
+  setSubmitEventMetadataRef.current = setSubmitEventMetadata;
+  flowPathRef.current = flowPath;
+  inPersonURLRef.current = inPersonURL;
+  locationsURLRef.current = locationsURL;
 
   useEffect(() => {
     mountedRef.current = true;
@@ -36,9 +48,8 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
     };
   }, []);
 
-  // useCallBack here prevents unnecessary rerenders due to changing function identity
   const handleLocationSelect = useCallback(
-    async (e: any, id: number | null) => {
+    async (e: { preventDefault: () => void; target: { disabled: boolean } }, id: number | null) => {
       const isNullLocation = id === null;
       const selectedLocation = isNullLocation ? null : locationResults![id];
 
@@ -46,13 +57,13 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
         ? 'Location Selection Skipped'
         : `${selectedLocation?.streetAddress}, ${selectedLocation?.formattedCityStateZip}`;
 
-      if (flowPath !== 'hybrid') {
+      if (flowPathRef.current !== 'hybrid') {
         e.preventDefault();
       } else {
-        setSubmitEventMetadata({ selected_location: selectedLocationAddress });
+        setSubmitEventMetadataRef.current({ selected_location: selectedLocationAddress });
       }
 
-      onChange({ selectedLocationAddress });
+      onChangeRef.current({ selectedLocationAddress });
 
       if (autoSubmit) {
         setDisabledAddressSearch(true);
@@ -74,26 +85,23 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
       setInProgress(true);
 
       try {
-        await request(locationsURL, {
+        await request(locationsURLRef.current, {
           json: selectedLocationDto,
           method: 'PUT',
         });
 
-        // In try block set success of request. If the request is successful, fire remaining code?
         if (mountedRef.current) {
           setAutoSubmit(true);
           setImmediate(() => {
             e.target.disabled = false;
 
-            // Skip analytics track event since hybrid has its own logging
-            if (flowPath !== 'hybrid') {
-              trackEvent('IdV: location submitted', {
+            if (flowPathRef.current !== 'hybrid') {
+              trackEventRef.current('IdV: location submitted', {
                 selected_location: selectedLocationAddress,
               });
-              forceRedirect(inPersonURL!);
+              forceRedirect(inPersonURLRef.current!);
             }
 
-            // allow process to be re-triggered in case submission did not work as expected
             setAutoSubmit(false);
           });
         }
@@ -105,7 +113,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
         }
       }
     },
-    [locationResults, inProgress],
+    [locationResults, inProgress, autoSubmit],
   );
 
   return (

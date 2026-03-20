@@ -54,8 +54,12 @@ interface AppRootData {
 
 const appRoot = document.getElementById('document-capture-form')!;
 const isMockClient = appRoot.hasAttribute('data-mock-client');
-const glareThreshold = Number(appRoot.getAttribute('data-glare-threshold')) ?? undefined;
-const sharpnessThreshold = Number(appRoot.getAttribute('data-sharpness-threshold')) ?? undefined;
+const glareThreshold = appRoot.dataset.glareThreshold
+  ? Number(appRoot.dataset.glareThreshold)
+  : null;
+const sharpnessThreshold = appRoot.dataset.sharpnessThreshold
+  ? Number(appRoot.dataset.sharpnessThreshold)
+  : null;
 
 function getServiceProvider() {
   const { spName: name = null, failureToProofUrl: failureToProofURL = '' } = appRoot.dataset;
@@ -137,7 +141,9 @@ const {
 let parsedUsStatesTerritories = [];
 try {
   parsedUsStatesTerritories = JSON.parse(usStatesTerritories);
-} catch {}
+} catch {
+  // Invalid JSON, use empty array
+}
 
 const app = (
   <MarketingSiteContextProvider

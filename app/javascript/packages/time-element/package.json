@@ -1,9 +1,0 @@
-{
-  "name": "@18f/identity-time-element",
-  "private": true,
-  "version": "1.0.0",
-  "type": "module",
-  "sideEffects": [
-    "./time-element.ts"
-  ]
-}

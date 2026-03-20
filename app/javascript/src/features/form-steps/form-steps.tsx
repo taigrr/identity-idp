@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { FC, FormEventHandler, RefCallback } from 'react';
 
 import { Alert } from '@/components';
 import { replaceVariables } from '@/i18n';
-import { useDidUpdateEffect, useIfStillMounted } from '@/hooks';
+import { useIfStillMounted } from '@/hooks';
 
 import RequiredValueMissingError from './required-value-missing-error';
 import FormStepsContext from './form-steps-context';
@@ -189,7 +189,7 @@ function useStepTitle(step?: FormStep<any>, titleFormat?: string) {
     if (titleFormat && step?.title) {
       document.title = replaceVariables(titleFormat, { step: step.title });
     }
-  }, [step]);
+  }, [step, titleFormat]);
 }
 
 /**
@@ -258,6 +258,17 @@ function FormSteps({
   const forceRender = useForceRender();
   const ifStillMounted = useIfStillMounted();
 
+  // Track previous values for change detection
+  const prevStepRef = useRef<FormStep | undefined>(undefined);
+  const prevValuesRef = useRef(values);
+  const isMountedRef = useRef(false);
+
+  // Store callbacks in refs to avoid dependency issues
+  const onChangeRef = useRef(onChange);
+  const onStepChangeRef = useRef(onStepChange);
+  onChangeRef.current = onChange;
+  onStepChangeRef.current = onStepChange;
+
   useEffect(() => {
     if (activeErrors.length && didSubmitWithErrors.current) {
       const activeErrorFieldElement = getFieldActiveErrorFieldElement(activeErrors, fields.current);
@@ -271,13 +282,14 @@ function FormSteps({
 
     didSubmitWithErrors.current = false;
   }, [activeErrors]);
+
   useEffect(() => {
     // reset stepName if it doesn't correspond to an existing step
     const stepsCheck = steps.map((step) => step?.name).filter(Boolean);
     if (stepName && !stepsCheck.includes(stepName)) {
       setStepName(undefined);
     }
-  }, [stepName, steps]);
+  }, [stepName, steps, setStepName]);
 
   const stepIndex = Math.max(getStepIndexByName(steps, stepName), 0);
   const step = steps[stepIndex] as FormStep | undefined;
@@ -296,34 +308,55 @@ function FormSteps({
   /**
    * After a change in content, maintain focus by resetting to the beginning of the new content.
    */
-  function onPageTransition() {
+  const onPageTransition = useCallback(() => {
     const firstElementChild = formRef.current?.firstElementChild;
     if (firstElementChild instanceof window.HTMLElement) {
       firstElementChild.classList.add('form-steps__focus-anchor');
       firstElementChild.setAttribute('tabindex', '-1');
       firstElementChild.focus();
     }
-
-    setStepName(stepName);
-  }
+  }, []);
 
   useStepTitle(step, titleFormat);
-  useDidUpdateEffect(() => onStepChange(stepName!), [step]);
-  useDidUpdateEffect(onPageTransition, [step]);
-  useDidUpdateEffect(() => onChange(values), [values]);
 
+  // Handle step change callbacks (skip initial mount)
   useEffect(() => {
-    // Treat explicit initial step the same as step transition, placing focus to header.
+    if (!isMountedRef.current) {
+      isMountedRef.current = true;
+      prevStepRef.current = step;
+      prevValuesRef.current = values;
+      return;
+    }
+
+    // Step changed
+    if (prevStepRef.current !== step) {
+      if (stepName) {
+        onStepChangeRef.current(stepName);
+      }
+      onPageTransition();
+      prevStepRef.current = step;
+    }
+
+    // Values changed
+    if (prevValuesRef.current !== values) {
+      onChangeRef.current(values);
+      prevValuesRef.current = values;
+    }
+  }, [step, stepName, values, onPageTransition]);
+
+  // Handle initial autoFocus
+  useEffect(() => {
     if (autoFocus) {
       onPageTransition();
     }
-  }, []);
+  }, [autoFocus, onPageTransition]);
 
+  // Handle step errors - trigger page transition when errors occur
   useEffect(() => {
     if (stepErrors.length) {
       onPageTransition();
     }
-  }, [stepErrors]);
+  }, [stepErrors, onPageTransition]);
 
   /**
    * Returns array of form errors for the current set of values.

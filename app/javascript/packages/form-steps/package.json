@@ -1,9 +1,0 @@
-{
-  "name": "@18f/identity-form-steps",
-  "version": "1.0.0",
-  "private": true,
-  "peerDependencies": {
-    "react": "*"
-  },
-  "sideEffects": false
-}

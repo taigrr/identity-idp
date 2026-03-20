@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
 
 import { t } from '@/i18n';
@@ -105,45 +105,57 @@ function AcuantSelfieCamera({
 }: AcuantSelfieCameraContextProps) {
   const { isReady, setIsActive } = useContext(AcuantContext);
 
+  const onImageCaptureInitializedRef = useRef(onImageCaptureInitialized);
+  const onImageCaptureSuccessRef = useRef(onImageCaptureSuccess);
+  const onImageCaptureFailureRef = useRef(onImageCaptureFailure);
+  const onImageCaptureOpenRef = useRef(onImageCaptureOpen);
+  const onImageCaptureCloseRef = useRef(onImageCaptureClose);
+  const onImageCaptureFeedbackRef = useRef(onImageCaptureFeedback);
+  const onSelfieTakenRef = useRef(onSelfieTaken);
+  const onSelfieRetakenRef = useRef(onSelfieRetaken);
+  const setIsActiveRef = useRef(setIsActive);
+
+  onImageCaptureInitializedRef.current = onImageCaptureInitialized;
+  onImageCaptureSuccessRef.current = onImageCaptureSuccess;
+  onImageCaptureFailureRef.current = onImageCaptureFailure;
+  onImageCaptureOpenRef.current = onImageCaptureOpen;
+  onImageCaptureCloseRef.current = onImageCaptureClose;
+  onImageCaptureFeedbackRef.current = onImageCaptureFeedback;
+  onSelfieTakenRef.current = onSelfieTaken;
+  onSelfieRetakenRef.current = onSelfieRetaken;
+  setIsActiveRef.current = setIsActive;
+
   useEffect(() => {
+    if (!isReady) {
+      return;
+    }
+
     const faceCaptureCallback: FaceCaptureCallback = {
       onDetectorInitialized: () => {
-        // This callback is triggered when the face detector is ready.
-        // Until then, no actions are executed and the user sees only the camera stream.
-        // You can opt to display an alert before the callback is triggered.
-        onImageCaptureInitialized();
+        onImageCaptureInitializedRef.current();
       },
       onDetection: (text) => {
-        onImageCaptureFeedback(text);
-        // Triggered when the face does not pass the scan. The UI element
-        // should be updated here to provide guidence to the user
+        onImageCaptureFeedbackRef.current(text);
       },
       onOpened: () => {
-        // Camera has opened
-        onImageCaptureFeedback('');
-        onImageCaptureOpen();
+        onImageCaptureFeedbackRef.current('');
+        onImageCaptureOpenRef.current();
       },
       onClosed: () => {
-        // Camera has closed
-        onImageCaptureFeedback('');
-        onImageCaptureClose();
+        onImageCaptureFeedbackRef.current('');
+        onImageCaptureCloseRef.current();
       },
       onError: (error) => {
-        // Error occurred. Camera permission not granted will
-        // manifest here with 1 as error code. Unexpected errors will have 2 as error code.
-        onImageCaptureFailure(error);
+        onImageCaptureFailureRef.current(error);
       },
       onPhotoTaken: () => {
-        // The photo has been taken and it's showing a preview with a button to accept or retake the image.
-        onSelfieTaken();
+        onSelfieTakenRef.current();
       },
       onPhotoRetake: () => {
-        // Triggered when retake button is tapped
-        onSelfieRetaken();
+        onSelfieRetakenRef.current();
       },
       onCaptured: (base64Image) => {
-        // Triggered when accept button is tapped
-        onImageCaptureSuccess({ image: `data:image/jpeg;base64,${base64Image}` });
+        onImageCaptureSuccessRef.current({ image: `data:image/jpeg;base64,${base64Image}` });
       },
     };
 
@@ -158,21 +170,14 @@ function AcuantSelfieCamera({
       SUBMIT_ALT: t('doc_auth.info.selfie_capture.action.submit'),
       CAPTURE_ALT: t('doc_auth.info.selfie_capture.action.capture'),
     };
-    const cleanupSelfieCamera = () => {
+
+    window.AcuantPassiveLiveness?.start(faceCaptureCallback, faceDetectionStates);
+    setIsActiveRef.current(true);
+
+    return () => {
       window.AcuantPassiveLiveness?.end();
-      setIsActive(false);
+      setIsActiveRef.current(false);
     };
-
-    const startSelfieCamera = () => {
-      window.AcuantPassiveLiveness?.start(faceCaptureCallback, faceDetectionStates);
-      setIsActive(true);
-    };
-
-    if (isReady) {
-      startSelfieCamera();
-    }
-    // Cleanup when the AcuantSelfieCamera component is unmounted
-    return () => (isReady ? cleanupSelfieCamera() : undefined);
   }, [isReady]);
 
   return <>{children}</>;

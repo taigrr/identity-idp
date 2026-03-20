@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 
 interface CallbackOnMountProps {
   onMount: () => void;
@@ -6,8 +6,11 @@ interface CallbackOnMountProps {
 }
 
 function CallbackOnMount({ onMount, children = null }: CallbackOnMountProps) {
+  const onMountRef = useRef(onMount);
+  onMountRef.current = onMount;
+
   useEffect(() => {
-    onMount();
+    onMountRef.current();
   }, []);
 
   return children;

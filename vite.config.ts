@@ -5,37 +5,9 @@ import ViteRuby from 'vite-plugin-ruby';
 import { railsI18nPlugin } from './vite-plugins/rails-i18n-plugin';
 import { railsAssetsPlugin } from './vite-plugins/rails-assets-plugin';
 import { resolve, dirname } from 'path';
-import { readdirSync, existsSync, readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
-// Generate aliases for all workspace packages to resolve subpath imports
-function generatePackageAliases(): Record<string, string> {
-  const packagesDir = resolve(__dirname, 'app/javascript/packages');
-  const aliases: Record<string, string> = {};
-
-  for (const dir of readdirSync(packagesDir, { withFileTypes: true })) {
-    if (!dir.isDirectory()) continue;
-
-    const pkgPath = resolve(packagesDir, dir.name, 'package.json');
-    if (!existsSync(pkgPath)) continue;
-
-    try {
-      const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
-      if (pkg.name) {
-        // Map @18f/identity-foo -> app/javascript/packages/foo
-        aliases[pkg.name] = resolve(packagesDir, dir.name);
-      }
-    } catch {
-      // Skip packages with invalid package.json
-    }
-  }
-
-  return aliases;
-}
-
-const packageAliases = generatePackageAliases();
 
 export default defineConfig({
   plugins: [
@@ -58,10 +30,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      // New consolidated src/ directory
       '@': resolve(__dirname, 'app/javascript/src'),
-      // Keep old package aliases for backwards compat during migration
-      ...packageAliases,
     },
     // Enable source condition to resolve TypeScript source files directly
     conditions: ['source', 'import', 'module', 'browser', 'default'],

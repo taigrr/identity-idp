@@ -1,6 +1,5 @@
-import { useContext, useEffect, useLayoutEffect, useState } from 'react';
+import { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
-import { useDidUpdateEffect } from '@/hooks';
 import { FormStepsContext } from '@/features/form-steps';
 import type { FormStepComponentProps } from '@/features/form-steps';
 
@@ -82,12 +81,26 @@ function ReviewIssuesStep({
   const [hasDismissed, setHasDismissed] = useState(remainingSubmitAttempts === Infinity);
   const { onPageTransition, changeStepCanComplete } = useContext(FormStepsContext);
   const [skipWarning, setSkipWarning] = useState(false);
-  useDidUpdateEffect(onPageTransition, [hasDismissed]);
+
+  // Track previous hasDismissed for update detection
+  const prevHasDismissedRef = useRef(hasDismissed);
+  useEffect(() => {
+    if (prevHasDismissedRef.current !== hasDismissed && prevHasDismissedRef.current !== undefined) {
+      onPageTransition();
+    }
+    prevHasDismissedRef.current = hasDismissed;
+  }, [hasDismissed, onPageTransition]);
 
   const { onFailedSubmissionAttempt, failedSubmissionImageFingerprints } = useContext(
     FailedCaptureAttemptsContext,
   );
-  useEffect(() => onFailedSubmissionAttempt(failedImageFingerprints), []);
+
+  // Store in ref to avoid re-running on prop changes - this should only run once on mount
+  const failedImageFingerprintsRef = useRef(failedImageFingerprints);
+  const onFailedSubmissionAttemptRef = useRef(onFailedSubmissionAttempt);
+  useEffect(() => {
+    onFailedSubmissionAttemptRef.current(failedImageFingerprintsRef.current);
+  }, []);
 
   useLayoutEffect(() => {
     let frontMetaData: { fingerprint: string | null } = { fingerprint: null };
@@ -123,7 +136,14 @@ function ReviewIssuesStep({
     if (frontHasFailed || backHasFailed || passportHasFailed) {
       setSkipWarning(true);
     }
-  }, []);
+  }, [
+    failedSubmissionImageFingerprints?.front,
+    failedSubmissionImageFingerprints?.back,
+    failedSubmissionImageFingerprints?.passport,
+    value.front_image_metadata,
+    value.back_image_metadata,
+    value.passport_image_metadata,
+  ]);
 
   function onWarningPageDismissed() {
     trackEvent('IdV: Capture troubleshooting dismissed', {
@@ -138,7 +158,7 @@ function ReviewIssuesStep({
   // is ready to submit form values
   useEffect(() => {
     changeStepCanComplete(!!hasDismissed && !skipWarning);
-  }, [hasDismissed]);
+  }, [hasDismissed, skipWarning, changeStepCanComplete]);
 
   if (!hasDismissed && pii) {
     return <BarcodeAttentionWarning onDismiss={onWarningPageDismissed} pii={pii} />;

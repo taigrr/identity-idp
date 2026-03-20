@@ -1,10 +1,10 @@
-import { useImperativeHandle, useRef, useEffect } from 'react';
+import { useImperativeHandle, useRef, useEffect, useCallback } from 'react';
 import type { ReactNode, Ref, MutableRefObject } from 'react';
 import { createPortal } from 'react-dom';
 import type { FocusTrap } from 'focus-trap';
 
 import { useI18n } from '@/i18n/react';
-import { useIfStillMounted, useImmutableCallback } from '@/hooks';
+import { useIfStillMounted } from '@/hooks';
 import { getAssetPath } from '@/utils/assets';
 
 import useToggleBodyClassByPresence from './hooks/use-toggle-body-class-by-presence';
@@ -94,7 +94,13 @@ function FullScreen({
   const { t } = useI18n();
   const ifStillMounted = useIfStillMounted();
   const containerRef = useRef(null as HTMLDivElement | null);
-  const onFocusTrapDeactivate = useImmutableCallback(ifStillMounted(onRequestClose));
+  const onRequestCloseRef = useRef(onRequestClose);
+  onRequestCloseRef.current = onRequestClose;
+
+  const onFocusTrapDeactivate = useCallback(() => {
+    ifStillMounted(() => onRequestCloseRef.current())();
+  }, [ifStillMounted]);
+
   const focusTrap = useFocusTrap(containerRef, {
     clickOutsideDeactivates: true,
     onDeactivate: onFocusTrapDeactivate,

@@ -12,7 +12,6 @@ import type { FocusTrap } from 'focus-trap';
 
 import { Button, FullScreen } from '@/components';
 import type { FullScreenRefHandle } from '@/components';
-import { useDidUpdateEffect } from '@/hooks';
 import { useI18n } from '@/i18n/react';
 import { removeUnloadProtection } from '@/utils/url';
 
@@ -481,7 +480,16 @@ function AcuantCapture(
   useEffect(() => {
     setOwnErrorMessage(null);
   }, [value]);
-  useDidUpdateEffect(() => setHasStartedCropping(false), [isCapturingEnvironment]);
+
+  // Reset hasStartedCropping when isCapturingEnvironment changes (but not on mount)
+  const prevIsCapturingEnvironmentRef = useRef(isCapturingEnvironment);
+  useEffect(() => {
+    if (prevIsCapturingEnvironmentRef.current !== isCapturingEnvironment) {
+      setHasStartedCropping(false);
+    }
+    prevIsCapturingEnvironmentRef.current = isCapturingEnvironment;
+  }, [isCapturingEnvironment]);
+
   useImperativeHandle(ref, () => inputRef.current!);
 
   useEffect(

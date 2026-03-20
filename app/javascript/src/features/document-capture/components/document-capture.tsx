@@ -1,10 +1,9 @@
-import { useState, useMemo, useContext, useEffect } from 'react';
+import { useState, useMemo, useContext, useEffect, useRef } from 'react';
 
 import { Alert } from '@/components';
 import { useI18n } from '@/i18n/react';
 import { FormSteps, PromptOnNavigate } from '@/features/form-steps';
 import { VerifyFlowStepIndicator, VerifyFlowPath } from '@/features/verify-flow';
-import { useDidUpdateEffect } from '@/hooks';
 import type { FormStep } from '@/features/form-steps';
 import { getConfigValue } from '@/utils/config';
 
@@ -45,12 +44,25 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
   const { inPersonURL, skipDocAuthFromHandoff, skipDocAuthFromHowToVerify, skipDocAuthFromSocure } =
     useContext(InPersonContext);
-  useDidUpdateEffect(onStepChange, [stepName]);
+
+  // Track previous stepName for update detection
+  const prevStepNameRef = useRef(stepName);
+  const onStepChangeRef = useRef(onStepChange);
+  onStepChangeRef.current = onStepChange;
+
+  useEffect(() => {
+    // Only call on update, not on mount
+    if (prevStepNameRef.current !== stepName && prevStepNameRef.current !== undefined) {
+      onStepChangeRef.current();
+    }
+    prevStepNameRef.current = stepName;
+  }, [stepName]);
+
   useEffect(() => {
     if (stepName) {
       trackVisitEvent(stepName);
     }
-  }, [stepName]);
+  }, [stepName, trackVisitEvent]);
   const appName = getConfigValue('appName');
   const inPersonLocationPostOfficeSearchForm = InPersonLocationFullAddressEntryPostOfficeSearchStep;
 

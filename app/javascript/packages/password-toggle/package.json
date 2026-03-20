@@ -1,8 +1,0 @@
-{
-  "name": "@18f/identity-password-toggle",
-  "private": true,
-  "version": "1.0.0",
-  "sideEffects": [
-    "./password-toggle-element.ts"
-  ]
-}

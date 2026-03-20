@@ -8,11 +8,11 @@ const warningEl = document.getElementById('session-timeout-cntnr');
 
 const defaultTime = '60';
 
-const frequency = parseInt(warningEl?.dataset.frequency || defaultTime, 10) * 1000;
-const warning = parseInt(warningEl?.dataset.warning || defaultTime, 10) * 1000;
-const start = parseInt(warningEl?.dataset.start || defaultTime, 10) * 1000;
-const timeoutURL = warningEl?.dataset.timeoutUrl!;
-const sessionsURL = warningEl?.dataset.sessionsUrl!;
+const frequency = parseInt(warningEl?.dataset.frequency ?? defaultTime, 10) * 1000;
+const warning = parseInt(warningEl?.dataset.warning ?? defaultTime, 10) * 1000;
+const start = parseInt(warningEl?.dataset.start ?? defaultTime, 10) * 1000;
+const timeoutURL = warningEl?.dataset.timeoutUrl ?? '';
+const sessionsURL = warningEl?.dataset.sessionsUrl ?? '';
 
 const modal = document.querySelector<ModalElement>('lg-modal.session-timeout-modal')!;
 const keepaliveButton = document.getElementById('session-keepalive-btn')!;

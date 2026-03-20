@@ -1,7 +1,6 @@
 import { createContext, useState } from 'react';
 import type { ReactNode } from 'react';
 
-import { useObjectMemo } from '@/hooks';
 
 import defaultUpload, { UploadFormEntriesError } from '../services/upload';
 import type { PII } from '../services/upload';
@@ -236,7 +235,7 @@ function UploadContextProvider({
       ? upload({ ...formData }, { endpoint: statusEndpoint, method: 'PUT' })
       : Promise.reject(new Error('No status endpoint configured'));
 
-  const value = useObjectMemo({
+  const value = {
     upload: uploadWithFormData,
     getStatus,
     statusPollInterval,
@@ -245,7 +244,7 @@ function UploadContextProvider({
     idType,
     formData,
     submitAttempts,
-  });
+  };
 
   return <UploadContext.Provider value={value}>{children}</UploadContext.Provider>;
 }

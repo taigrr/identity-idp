@@ -96,12 +96,11 @@ describe('ValidatedField', () => {
 
   // error changed on input during validate call
   it('handles error changing on input during validate call', () => {
-    let validate;
     const initialMessage = 'this is the initial error message';
     const overrideMessage = 'this is the override error message';
     function TestComponent() {
       const ref = useRef<HTMLInputElement>(null);
-      validate = useMemo(
+      const validate = useMemo(
         () =>
           sinon
             .stub()

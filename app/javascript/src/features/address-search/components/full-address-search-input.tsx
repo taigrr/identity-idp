@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { TextInput, SelectInput } from '@/components';
-import { useDidUpdateEffect } from '@/hooks';
 import { SpinnerButtonRefHandle, SpinnerButton } from '@/components/spinner-button';
 import { ValidatedField } from '@/components/validated-field';
 import { useI18n } from '@/i18n/react';
@@ -39,6 +38,16 @@ export default function FullAddressSearchInput({
     validatedZipCodeFieldRef,
   } = useValidatedUspsLocations(locationsURL);
 
+  const prevLocationResultsRef = useRef(locationResults);
+  const onFoundLocationsRef = useRef(onFoundLocations);
+  const onLoadingLocationsRef = useRef(onLoadingLocations);
+  const onErrorRef = useRef(onError);
+
+  // Keep refs in sync
+  onFoundLocationsRef.current = onFoundLocations;
+  onLoadingLocationsRef.current = onLoadingLocations;
+  onErrorRef.current = onError;
+
   const inputChangeHandler =
     <T extends HTMLElement & { value: string }>(input) =>
     (event: React.ChangeEvent<T>) => {
@@ -55,25 +64,30 @@ export default function FullAddressSearchInput({
 
   useEffect(() => {
     spinnerButtonRef.current?.toggleSpinner(isLoading);
-    onLoadingLocations(isLoading);
+    onLoadingLocationsRef.current(isLoading);
   }, [isLoading]);
 
   useEffect(() => {
     if (uspsError) {
-      onError(uspsError);
+      onErrorRef.current(uspsError);
     }
   }, [uspsError]);
 
-  useDidUpdateEffect(() => {
-    onFoundLocations(locationQuery, locationResults);
-  }, [locationResults]);
+  useEffect(() => {
+    // Skip initial mount - only fire on updates
+    if (prevLocationResultsRef.current === locationResults) {
+      return;
+    }
+    prevLocationResultsRef.current = locationResults;
+    onFoundLocationsRef.current(locationQuery, locationResults);
+  }, [locationResults, locationQuery]);
 
   const handleSearch = useCallback(
     (event) => {
-      onError(null);
+      onErrorRef.current(null);
       onSearch(event, addressValue, cityValue, stateValue, zipCodeValue);
     },
-    [addressValue, cityValue, stateValue, zipCodeValue],
+    [onSearch, addressValue, cityValue, stateValue, zipCodeValue],
   );
 
   const handleContinue = useCallback(
@@ -81,7 +95,7 @@ export default function FullAddressSearchInput({
       // Run LocationSelect with null as the location
       onContinue!(event, null);
     },
-    [uspsApiError],
+    [onContinue],
   );
 
   const getErroneousAddressChars = () => {

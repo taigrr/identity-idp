@@ -133,10 +133,16 @@ export class CountdownPhaseAlertElement extends HTMLElement {
     const text = this.#htmlToText(active.label);
 
     if (active.at_s > 0) {
-      this.#srPhaseEl && (this.#srPhaseEl.textContent = text);
+      if (this.#srPhaseEl) {
+        this.#srPhaseEl.textContent = text;
+      }
     } else {
-      this.#srExpiryEl && (this.#srExpiryEl.textContent = text);
-      this.#srPhaseEl && (this.#srPhaseEl.textContent = '');
+      if (this.#srExpiryEl) {
+        this.#srExpiryEl.textContent = text;
+      }
+      if (this.#srPhaseEl) {
+        this.#srPhaseEl.textContent = '';
+      }
     }
   }
 

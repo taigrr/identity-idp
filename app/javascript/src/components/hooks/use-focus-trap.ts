@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { MutableRefObject } from 'react';
 import { createFocusTrap } from 'focus-trap';
 import type { FocusTrap, Options } from 'focus-trap';
@@ -11,11 +11,13 @@ import type { FocusTrap, Options } from 'focus-trap';
  */
 function useFocusTrap(containerRef: MutableRefObject<HTMLElement | null>, options?: Options) {
   const [trap, setTrap] = useState(null as FocusTrap | null);
+  const optionsRef = useRef(options);
+  optionsRef.current = options;
 
   useEffect(() => {
-    let focusTrap;
+    let focusTrap: FocusTrap | undefined;
     if (containerRef.current) {
-      focusTrap = createFocusTrap(containerRef.current, options);
+      focusTrap = createFocusTrap(containerRef.current, optionsRef.current);
       focusTrap.activate();
       setTrap(focusTrap);
     }
@@ -23,7 +25,7 @@ function useFocusTrap(containerRef: MutableRefObject<HTMLElement | null>, option
     return () => {
       focusTrap?.deactivate();
     };
-  }, []);
+  }, [containerRef]);
 
   return trap;
 }
