@@ -105,5 +105,8 @@
     "lightningcss-linux-x64-musl": "^1.18.0",
     "lightningcss-win32-x64-msvc": "^1.18.0",
     "sass-embedded-linux-x64": "^1.88.0"
+  },
+  "overrides": {
+    "serialize-javascript": ">=7.0.3"
   }
 }
