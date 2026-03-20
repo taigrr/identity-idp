@@ -143,7 +143,7 @@ interface AcuantCameraUIInterface {
 
 type AcuantCameraStart = (
   callback: (response: AcuantImage) => void,
-  errorCallback: Function,
+  errorCallback: (error: unknown) => void,
 ) => void;
 type AcuantCameraTriggerCapture = (callback: (response: AcuantImage) => void) => void;
 type AcuantCameraCrop = (

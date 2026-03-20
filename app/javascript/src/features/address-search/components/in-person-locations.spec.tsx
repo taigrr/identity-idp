@@ -136,7 +136,7 @@ describe('InPersonLocations', () => {
       );
 
       expect(queryByText('in_person_proofing.body.location.po_search.results_instructions')).to.be
-        .null;
+        .null();
       expect(queryByText('in_person_proofing.body.location.retail_hours_heading')).not.to.exist();
     });
   });
@@ -155,7 +155,7 @@ describe('InPersonLocations', () => {
 
       expect(queryByText('123 Test Address')).to.exist();
       expect(queryByText('456 Test Address')).to.exist();
-      expect(queryByText('No PO found')).to.be.null;
+      expect(queryByText('No PO found')).to.be.null();
     });
   });
 });

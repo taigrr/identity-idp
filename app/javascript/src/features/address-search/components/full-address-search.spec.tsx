@@ -67,8 +67,8 @@ describe('FullAddressSearch', () => {
       const aboutMessage = queryByText(
         'in_person_proofing.body.location.po_search.po_search_about',
       );
-      expect(heading).to.be.empty;
-      expect(aboutMessage).to.be.empty;
+      expect(heading).to.be.null();
+      expect(aboutMessage).to.be.null();
     });
   });
 
@@ -91,7 +91,7 @@ describe('FullAddressSearch', () => {
       );
 
       const searchLabel = queryByText('in_person_proofing.headings.po_search.address_search_label');
-      expect(searchLabel).to.be.empty;
+      expect(searchLabel).to.be.null();
     });
 
     it('renders when handleLocationSelect is null', () => {
@@ -275,7 +275,7 @@ describe('FullAddressSearch', () => {
         await findByText('in_person_proofing.body.location.po_search.search_button'),
       );
 
-      expect(queryByText('idv.errors.pattern_mismatch.zipcode')).to.be.null;
+      expect(queryByText('idv.errors.pattern_mismatch.zipcode')).to.be.null();
     });
   });
 

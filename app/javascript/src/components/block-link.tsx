@@ -1,7 +1,7 @@
 import Link, { LinkProps } from './link';
 import BlockLinkArrow from './block-link-arrow';
 
-export interface BlockLinkProps extends LinkProps {}
+export type BlockLinkProps = LinkProps;
 
 function BlockLink({ children, className, ...linkProps }: BlockLinkProps) {
   const classes = ['block-link', className].filter(Boolean).join(' ');

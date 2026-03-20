@@ -234,7 +234,7 @@ function UploadContextProvider({
   const getStatus = () =>
     statusEndpoint
       ? upload({ ...formData }, { endpoint: statusEndpoint, method: 'PUT' })
-      : Promise.reject();
+      : Promise.reject(new Error('No status endpoint configured'));
 
   const value = useObjectMemo({
     upload: uploadWithFormData,

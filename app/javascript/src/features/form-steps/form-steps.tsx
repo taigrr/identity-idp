@@ -77,7 +77,7 @@ export interface FormStepComponentProps<V> {
   toPreviousStep: () => void;
 }
 
-export interface FormStep<V extends FormValues = {}> {
+export interface FormStep<V extends FormValues = FormValues> {
   /**
    * Step name, used in history parameter.
    */

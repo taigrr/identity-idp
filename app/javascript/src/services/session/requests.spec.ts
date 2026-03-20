@@ -13,7 +13,7 @@ describe('requestSessionStatus', () => {
   context('session inactive', () => {
     before(() => {
       server = setupServer(
-        http.get<{}, {}, SessionTimedOutStatusResponse>(SESSIONS_URL, () =>
+        http.get<Record<string, never>, Record<string, never>, SessionTimedOutStatusResponse>(SESSIONS_URL, () =>
           HttpResponse.json({ live: false, timeout: null }),
         ),
       );
@@ -37,7 +37,7 @@ describe('requestSessionStatus', () => {
     before(() => {
       timeout = new Date(Date.now() + 1000).toISOString();
       server = setupServer(
-        http.get<{}, {}, SessionLiveStatusResponse>(SESSIONS_URL, () =>
+        http.get<Record<string, never>, Record<string, never>, SessionLiveStatusResponse>(SESSIONS_URL, () =>
           HttpResponse.json({ live: true, timeout }),
         ),
       );
@@ -58,7 +58,7 @@ describe('requestSessionStatus', () => {
   context('server responds with 401', () => {
     before(() => {
       server = setupServer(
-        http.get<{}, {}>(SESSIONS_URL, () => new HttpResponse(null, { status: 401 })),
+        http.get<Record<string, never>, Record<string, never>>(SESSIONS_URL, () => new HttpResponse(null, { status: 401 })),
       );
       server.listen();
     });
@@ -77,7 +77,7 @@ describe('requestSessionStatus', () => {
   context('server responds with 500', () => {
     before(() => {
       server = setupServer(
-        http.get<{}, {}>(SESSIONS_URL, () => new HttpResponse(null, { status: 500 })),
+        http.get<Record<string, never>, Record<string, never>>(SESSIONS_URL, () => new HttpResponse(null, { status: 500 })),
       );
       server.listen();
     });
@@ -100,7 +100,7 @@ describe('extendSession', () => {
 
     before(() => {
       server = setupServer(
-        http.put<{}, {}, SessionLiveStatusResponse>(SESSIONS_URL, () =>
+        http.put<Record<string, never>, Record<string, never>, SessionLiveStatusResponse>(SESSIONS_URL, () =>
           HttpResponse.json({ live: true, timeout }),
         ),
       );
@@ -121,7 +121,7 @@ describe('extendSession', () => {
   context('server responds with 401', () => {
     before(() => {
       server = setupServer(
-        http.put<{}, {}>(SESSIONS_URL, () => new HttpResponse(null, { status: 401 })),
+        http.put<Record<string, never>, Record<string, never>>(SESSIONS_URL, () => new HttpResponse(null, { status: 401 })),
       );
       server.listen();
     });
@@ -140,7 +140,7 @@ describe('extendSession', () => {
   context('server responds with 500', () => {
     before(() => {
       server = setupServer(
-        http.put<{}, {}>(SESSIONS_URL, () => new HttpResponse(null, { status: 500 })),
+        http.put<Record<string, never>, Record<string, never>>(SESSIONS_URL, () => new HttpResponse(null, { status: 500 })),
       );
       server.listen();
     });

@@ -283,7 +283,9 @@ class MemorableDateElement extends HTMLElement {
     return ([messageType, fields]: ErrorMessageFieldMapping): boolean => {
       if (fields.every((field) => !field?.value)) {
         const message = errs[messageType];
-        message && this.setValidity(message, ...(fields as HTMLInputElement[]));
+        if (message) {
+          this.setValidity(message, ...(fields as HTMLInputElement[]));
+        }
         return true;
       }
       return false;
@@ -298,7 +300,9 @@ class MemorableDateElement extends HTMLElement {
     return ([messageType, fields]: ErrorMessageFieldMapping): boolean => {
       const message = errs[messageType];
       if (fields.every((field) => field?.validity.patternMismatch)) {
-        message && this.setValidity(message, ...(fields as HTMLInputElement[]));
+        if (message) {
+          this.setValidity(message, ...(fields as HTMLInputElement[]));
+        }
         return true;
       }
       return false;

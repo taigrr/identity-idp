@@ -59,7 +59,9 @@ export default function FullAddressSearchInput({
   }, [isLoading]);
 
   useEffect(() => {
-    uspsError && onError(uspsError);
+    if (uspsError) {
+      onError(uspsError);
+    }
   }, [uspsError]);
 
   useDidUpdateEffect(() => {
