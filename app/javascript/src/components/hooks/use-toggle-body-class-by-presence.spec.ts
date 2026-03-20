@@ -1,5 +1,5 @@
 
-import { renderHook, cleanup } from '@testing-library/react-hooks';
+import { renderHook, cleanup } from '@testing-library/react';
 
 import useToggleBodyClassByPresence from './use-toggle-body-class-by-presence';
 

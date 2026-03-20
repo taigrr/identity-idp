@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import FailedCaptureAttemptsContext, {
   Provider as FailedCaptureAttemptsContextProvider,
 } from '@/features/document-capture/context/failed-capture-attempts';

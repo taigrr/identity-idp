@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import ServiceProviderContext from '@/features/document-capture/context/service-provider';
 
 describe('document-capture/context/service-provider', () => {

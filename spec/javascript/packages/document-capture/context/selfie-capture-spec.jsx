@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import SelfieCaptureContext from '@/features/document-capture/context/selfie-capture';
 
 describe('document-capture/context/selfie-capture', () => {

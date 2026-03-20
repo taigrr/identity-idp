@@ -1,7 +1,7 @@
 import { useRef, createRef } from 'react';
 import { screen } from '@testing-library/dom';
 import { render, fireEvent } from '@testing-library/react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import sinon from 'sinon';
 
 import FullScreen, { useInertSiblingElements } from './full-screen';

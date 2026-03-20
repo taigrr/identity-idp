@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { useObservableProperty } from '@/features/document-capture/hooks/use-observable-property';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 
 describe('document-capture/hooks/use-observable-property', () => {
   describe('useObservableProperty', () => {

@@ -1,5 +1,5 @@
-import { act } from 'react-test-renderer';
-import { renderHook } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
+import { renderHook } from '@testing-library/react';
 import useCounter from '@/features/document-capture/hooks/use-counter';
 
 describe('document-capture/hooks/use-counter', () => {

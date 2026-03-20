@@ -3,7 +3,7 @@ import AcuantContext, {
   dirname,
 } from '@/features/document-capture/context/acuant';
 import { AnalyticsContext, DeviceContext } from '@/features/document-capture';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import sinon from 'sinon';
 import { useContext } from 'react';
 import { render, useAcuant } from '../../../support/document-capture';

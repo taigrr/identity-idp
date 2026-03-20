@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import UploadContext, {
   Provider as UploadContextProvider,
 } from '@/features/document-capture/context/upload';
