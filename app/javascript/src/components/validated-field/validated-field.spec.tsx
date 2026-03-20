@@ -4,7 +4,6 @@ import { computeAccessibleDescription } from 'dom-accessibility-api';
 import { createRef, useMemo, useRef } from 'react';
 
 import ValidatedField, { getErrorMessages } from './validated-field';
-import type ValidatedFieldElement from './validated-field-element';
 
 describe('getErrorMessages', () => {
   context('undefined type', () => {
@@ -157,7 +156,7 @@ describe('ValidatedField', () => {
   });
 
   it('assigns text input to be the ref', () => {
-    const ref = createRef<ValidatedFieldElement>();
+    const ref = createRef<HTMLInputElement>();
     render(<ValidatedField ref={ref} />);
     expect(ref.current).to.be.an.instanceOf(window.HTMLInputElement);
   });

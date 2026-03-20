@@ -4,8 +4,8 @@ import { createRef } from 'react';
 
 import { useSandbox } from '@/test-helpers';
 
-import { SpinnerButtonElement } from './spinner-button-element';
 import SpinnerButton from './spinner-button';
+import type { SpinnerButtonRefHandle } from './spinner-button';
 
 describe('SpinnerButton', () => {
   const { clock } = useSandbox({ useFakeTimers: true });
@@ -15,18 +15,19 @@ describe('SpinnerButton', () => {
     const { getByRole } = render(<SpinnerButton>Spin!</SpinnerButton>);
 
     const button = getByRole('button', { name: 'Spin!' }) as HTMLButtonElement;
-    const spinner = button.closest('lg-spinner-button')!;
+    const spinner = button.closest('.spinner-button')!;
 
     await userEvent.click(button);
 
     expect(spinner.classList.contains('spinner-button--spinner-active')).to.be.true();
   });
 
-  it('exposes SpinnerButtonElement instance via forwarded ref', () => {
-    const ref = createRef<SpinnerButtonElement>();
+  it('exposes toggleSpinner and isSpinning via forwarded ref', () => {
+    const ref = createRef<SpinnerButtonRefHandle>();
     render(<SpinnerButton ref={ref} />);
 
-    expect(ref.current).to.be.instanceOf(SpinnerButtonElement);
+    expect(ref.current).to.have.property('toggleSpinner').that.is.a('function');
+    expect(ref.current).to.have.property('isSpinning').that.is.a('boolean');
   });
 
   it('renders actionMessage as accessible message for click', async () => {
@@ -51,19 +52,20 @@ describe('SpinnerButton', () => {
   });
 
   it('forwards options for SpinnerButton', async () => {
+    const ref = createRef<SpinnerButtonRefHandle>();
     const { getByRole } = render(
-      <SpinnerButton longWaitDurationMs={1} spinOnClick={false} actionMessage="Loading..." />,
+      <SpinnerButton ref={ref} longWaitDurationMs={1} spinOnClick={false} actionMessage="Loading..." />,
     );
 
     const button = getByRole('button') as HTMLButtonElement;
-    const spinner = button.closest('lg-spinner-button')!;
+    const spinner = button.closest('.spinner-button')!;
     const status = getByRole('status')!;
 
     await userEvent.click(button);
 
     expect(spinner.classList.contains('spinner-button--spinner-active')).to.be.false();
 
-    spinner.toggleSpinner(true);
+    ref.current?.toggleSpinner(true);
     clock.tick(1);
     expect(status.classList.contains('usa-sr-only')).to.be.false();
   });
@@ -80,7 +82,7 @@ describe('SpinnerButton', () => {
     const { getByRole } = render(<SpinnerButton isOutline />);
 
     const button = getByRole('button')!;
-    const spinner = button.closest('lg-spinner-button')!;
+    const spinner = button.closest('.spinner-button')!;
 
     expect(spinner.classList.contains('spinner-button--outline')).to.be.true();
   });

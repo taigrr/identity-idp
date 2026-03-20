@@ -1,6 +1,8 @@
 import {
   useRef,
+  useState,
   useEffect,
+  useCallback,
   Children,
   cloneElement,
   createElement,
@@ -8,55 +10,24 @@ import {
   forwardRef,
 } from 'react';
 import type {
-  MutableRefObject,
   ReactNode,
-  HTMLAttributes,
   InputHTMLAttributes,
   ReactHTMLElement,
+  ForwardedRef,
 } from 'react';
 
 import { useInstanceId } from '@/hooks';
 import { t } from '@/i18n';
 
-import './validated-field-element';
-import type ValidatedFieldElement from './validated-field-element';
-
-declare module 'react' {
-  namespace JSX {
-    interface IntrinsicElements {
-      'lg-validated-field': HTMLAttributes<ValidatedFieldElement> & {
-        class?: string;
-        ref?: MutableRefObject<ValidatedFieldElement | null>;
-      };
-    }
-  }
-}
-
 export type ValidatedFieldValidator = (value: string) => void;
 
 interface ValidatedFieldProps {
-  /**
-   * Callback to check validity of the current value, throwing an error with the message to be shown
-   * if invalid.
-   */
   validate?: ValidatedFieldValidator;
-
-  /**
-   * Optional key and value that indicates the error and resulting error message
-   */
   messages?: Record<string, string>;
-
-  /**
-   * Optional input to use in place of the default rendered input. The input will be cloned and
-   * extended with behaviors for validation.
-   */
   children?: ReactNode;
 }
 
-/**
- * Returns validity string error messages according to the given input type.
- */
-export function getErrorMessages(inputType?: string) {
+export function getErrorMessages(inputType?: string): Partial<Record<keyof ValidityState, string>> {
   const messages: Partial<Record<keyof ValidityState, string>> = {
     valueMissing:
       inputType === 'checkbox'
@@ -71,6 +42,24 @@ export function getErrorMessages(inputType?: string) {
   return messages;
 }
 
+function getNormalizedValidationMessage(
+  input: HTMLInputElement | HTMLSelectElement | null,
+  errorStrings: Partial<Record<keyof ValidityState, string>>,
+): string {
+  if (!input || input.validity.valid) {
+    return '';
+  }
+
+  for (const type in input.validity) {
+    const key = type as keyof ValidityState;
+    if (key !== 'valid' && input.validity[key] && errorStrings[key]) {
+      return errorStrings[key]!;
+    }
+  }
+
+  return input.validationMessage;
+}
+
 function ValidatedField<InputType extends HTMLInputElement | HTMLSelectElement>(
   {
     validate = () => {},
@@ -78,68 +67,106 @@ function ValidatedField<InputType extends HTMLInputElement | HTMLSelectElement>(
     children,
     ...inputProps
   }: ValidatedFieldProps & InputHTMLAttributes<InputType>,
-  forwardedRef,
+  forwardedRef: ForwardedRef<HTMLInputElement | HTMLSelectElement | null>,
 ) {
-  const fieldRef = useRef<ValidatedFieldElement>(null);
+  const inputRef = useRef<HTMLInputElement | HTMLSelectElement>(null);
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [isValid, setIsValid] = useState(true);
   const instanceId = useInstanceId();
-  // WILLFIX: we shouldn't be returning the HTML input child below as it could
-  //          result in a stale reference. This will be fixed with LG-8494
-  useImperativeHandle(forwardedRef, () => fieldRef.current?.input);
+  const errorId = `validated-field-error-${instanceId}`;
+
+  const errorStrings = { ...getErrorMessages(inputProps.type), ...messages };
+
+  useImperativeHandle(forwardedRef, () => inputRef.current!);
+
+  const updateValidState = useCallback((valid: boolean, message: string = '') => {
+    setIsValid(valid);
+    setErrorMessage(message);
+  }, []);
+
   useEffect(() => {
-    if (fieldRef.current && fieldRef.current.input) {
-      const { input } = fieldRef.current;
-      input.checkValidity = () => {
-        let nextError = '';
-        try {
-          validate(input.value);
-        } catch (error) {
-          nextError = error.message;
-        }
-        // this is here in case the component validation state changes during the validate call
-        nextError = nextError || (input.validity.customError && input.validationMessage) || '';
+    const input = inputRef.current;
+    if (!input) return;
 
-        input.setCustomValidity(nextError);
-        return (
-          !nextError &&
-          (input instanceof HTMLSelectElement
-            ? HTMLSelectElement.prototype.checkValidity.call(input)
-            : HTMLInputElement.prototype.checkValidity.call(input))
-        );
-      };
+    const originalCheckValidity = input.checkValidity.bind(input);
+    const originalReportValidity = input.reportValidity.bind(input);
 
-      input.reportValidity = () => {
-        input.checkValidity();
-        if (input instanceof HTMLSelectElement) {
-          return HTMLSelectElement.prototype.reportValidity.call(input);
-        }
-        return HTMLInputElement.prototype.reportValidity.call(input);
-      };
-    }
+    input.checkValidity = () => {
+      let nextError = '';
+      try {
+        validate(input.value);
+      } catch (error) {
+        nextError = (error as Error).message;
+      }
+      nextError = nextError || (input.validity.customError && input.validationMessage) || '';
+
+      input.setCustomValidity(nextError);
+      return !nextError && originalCheckValidity();
+    };
+
+    input.reportValidity = () => {
+      input.checkValidity();
+      return originalReportValidity();
+    };
+
+    return () => {
+      input.checkValidity = originalCheckValidity;
+      input.reportValidity = originalReportValidity;
+    };
   }, [validate]);
 
-  const errorId = `validated-field-error-${instanceId}`;
+  const handleInput = useCallback(() => {
+    updateValidState(true);
+  }, [updateValidState]);
+
+  const handleInvalid = useCallback((event: React.FormEvent<HTMLInputElement | HTMLSelectElement>) => {
+    event.preventDefault();
+    const input = event.currentTarget;
+    const message = getNormalizedValidationMessage(input, errorStrings);
+    const valid = !message;
+
+    updateValidState(valid, message);
+
+    if (!valid && !document.activeElement?.classList.contains('usa-input--error')) {
+      input.focus();
+    }
+  }, [errorStrings, updateValidState]);
 
   const input: ReactHTMLElement<HTMLInputElement | HTMLSelectElement> = children
     ? (Children.only(children) as ReactHTMLElement<InputType>)
     : createElement('input');
 
-  const inputClasses = ['validated-field__input', inputProps.className, input.props.className]
-    .filter(Boolean)
-    .join(' ');
+  const inputClasses = [
+    'validated-field__input',
+    !isValid && 'usa-input--error',
+    inputProps.className,
+    input.props.className,
+  ].filter(Boolean).join(' ');
+
+  const describedBy = [
+    inputProps['aria-describedby'],
+    !isValid && errorId,
+  ].filter(Boolean).join(' ') || undefined;
 
   return (
-    <lg-validated-field ref={fieldRef} error-id={errorId}>
-      <script type="application/json" className="validated-field__error-strings">
-        {JSON.stringify({ ...getErrorMessages(inputProps.type), ...messages })}
-      </script>
+    <div className="validated-field">
       <div className="validated-field__input-wrapper">
         {cloneElement(input, {
           ...inputProps,
-          'aria-invalid': false,
+          ref: inputRef,
+          'aria-invalid': !isValid,
+          'aria-describedby': describedBy,
           className: inputClasses,
+          onInput: handleInput,
+          onInvalid: handleInvalid,
         })}
+        {errorMessage && (
+          <div id={errorId} className="usa-error-message">
+            {errorMessage}
+          </div>
+        )}
       </div>
-    </lg-validated-field>
+    </div>
   );
 }
 

@@ -1,39 +1,68 @@
-import type { HTMLAttributes, ReactNode } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
+import type { ReactNode } from 'react';
 
 import { t } from '@/i18n';
 
-import './step-indicator-element';
-import type StepIndicatorElement from './step-indicator-element';
-
-declare module 'react' {
-  namespace JSX {
-    interface IntrinsicElements {
-      'lg-step-indicator': HTMLAttributes<StepIndicatorElement> & { class?: string };
-    }
-  }
-}
+const SMALL_VIEWPORT_MEDIA_QUERY = '(max-width: 639px)';
 
 interface StepIndicatorProps {
-  /**
-   * Extra CSS classes to apply to wrapper.
-   */
   className?: string;
-
-  /**
-   * Step indicator children, expected to be provided as StepIndicatorStep elements.
-   */
   children?: ReactNode;
 }
 
 function StepIndicator({ className, children }: StepIndicatorProps) {
+  const scrollerRef = useRef<HTMLOListElement>(null);
+
+  const setScrollOffset = useCallback(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+
+    const currentStep = scroller.querySelector('.step-indicator__step--current') as HTMLElement | null;
+    if (!currentStep) return;
+
+    const scrollerPaddingLeft = parseInt(window.getComputedStyle(scroller).paddingLeft, 10);
+    const { scrollWidth, clientWidth } = scroller;
+    const { offsetLeft } = currentStep;
+    scroller.scrollLeft = offsetLeft - scrollerPaddingLeft - (scrollWidth - clientWidth) / 2;
+  }, []);
+
+  const toggleWrapperFocusable = useCallback((isSmallViewport: boolean) => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+
+    if (isSmallViewport) {
+      scroller.setAttribute('tabindex', '0');
+    } else {
+      scroller.removeAttribute('tabindex');
+    }
+  }, []);
+
+  useEffect(() => {
+    const mediaQueryList = window.matchMedia(SMALL_VIEWPORT_MEDIA_QUERY);
+
+    const handleChange = () => {
+      toggleWrapperFocusable(mediaQueryList.matches);
+    };
+
+    handleChange();
+    if (mediaQueryList.matches) {
+      setScrollOffset();
+    }
+
+    mediaQueryList.addEventListener('change', handleChange);
+    return () => {
+      mediaQueryList.removeEventListener('change', handleChange);
+    };
+  }, [setScrollOffset, toggleWrapperFocusable]);
+
+  const classes = ['step-indicator', className].filter(Boolean).join(' ');
+
   return (
-    <lg-step-indicator
-      role="region"
-      aria-label={t('step_indicator.accessible_label')}
-      class={className}
-    >
-      <ol className="step-indicator__scroller">{children}</ol>
-    </lg-step-indicator>
+    <nav role="region" aria-label={t('step_indicator.accessible_label')} className={classes}>
+      <ol ref={scrollerRef} className="step-indicator__scroller">
+        {children}
+      </ol>
+    </nav>
   );
 }
 

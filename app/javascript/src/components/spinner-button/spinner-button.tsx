@@ -1,43 +1,19 @@
-import { useRef, useImperativeHandle, forwardRef } from 'react';
-import type { HTMLAttributes, RefAttributes, ForwardedRef } from 'react';
+import { useRef, useState, useEffect, useCallback, useImperativeHandle, forwardRef } from 'react';
+import type { ForwardedRef, MouseEvent } from 'react';
 
 import { Button } from '@/components';
 import type { ButtonProps } from '@/components';
 
-import type { SpinnerButtonElement } from './spinner-button-element';
-import './spinner-button-element';
-
-declare module 'react' {
-  namespace JSX {
-    interface IntrinsicElements {
-      'lg-spinner-button': HTMLAttributes<SpinnerButtonElement> &
-        RefAttributes<SpinnerButtonElement> & {
-          class?: string;
-          'spin-on-click'?: boolean;
-          'long-wait-duration-ms'?: number;
-        };
-    }
-  }
+export interface SpinnerButtonRefHandle {
+  toggleSpinner: (isVisible: boolean) => void;
+  isSpinning: boolean;
 }
 
 interface SpinnerButtonProps extends ButtonProps {
-  /**
-   * Whether to start spinner automatically on click.
-   */
   spinOnClick?: boolean;
-
-  /**
-   * Text to show after long delay in processing.
-   */
   actionMessage?: string;
-
-  /**
-   * Time after which to show action message, in milliseconds.
-   */
   longWaitDurationMs?: number;
 }
-
-export type SpinnerButtonRefHandle = SpinnerButtonElement;
 
 function SpinnerButton(
   {
@@ -45,25 +21,98 @@ function SpinnerButton(
     actionMessage,
     longWaitDurationMs,
     isOutline,
+    onClick,
     children,
     ...buttonProps
   }: SpinnerButtonProps,
-  ref: ForwardedRef<SpinnerButtonElement | null>,
+  ref: ForwardedRef<SpinnerButtonRefHandle>,
 ) {
-  const elementRef = useRef<SpinnerButtonRefHandle>(null);
-  useImperativeHandle(ref, () => elementRef.current!);
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [showLongWaitMessage, setShowLongWaitMessage] = useState(false);
+  const longWaitTimeoutRef = useRef<number | undefined>(undefined);
+  const wrapperRef = useRef<HTMLSpanElement>(null);
 
-  const classes = isOutline ? 'spinner-button--outline' : undefined;
+  const toggleSpinner = useCallback((isVisible: boolean) => {
+    setIsSpinning(isVisible);
+    setShowLongWaitMessage(false);
+
+    window.clearTimeout(longWaitTimeoutRef.current);
+    if (isVisible && longWaitDurationMs && Number.isFinite(longWaitDurationMs)) {
+      longWaitTimeoutRef.current = window.setTimeout(() => {
+        setShowLongWaitMessage(true);
+      }, longWaitDurationMs);
+    }
+  }, [longWaitDurationMs]);
+
+  useImperativeHandle(ref, () => ({
+    toggleSpinner,
+    isSpinning,
+  }), [toggleSpinner, isSpinning]);
+
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+
+    const handleSpinnerStart = () => toggleSpinner(true);
+    const handleSpinnerStop = () => toggleSpinner(false);
+
+    wrapper.addEventListener('spinner.start', handleSpinnerStart);
+    wrapper.addEventListener('spinner.stop', handleSpinnerStop);
+
+    return () => {
+      window.clearTimeout(longWaitTimeoutRef.current);
+      wrapper.removeEventListener('spinner.start', handleSpinnerStart);
+      wrapper.removeEventListener('spinner.stop', handleSpinnerStop);
+    };
+  }, [toggleSpinner]);
+
+  useEffect(() => {
+    if (!spinOnClick) return;
+
+    const wrapper = wrapperRef.current;
+    const form = wrapper?.closest('form');
+    if (!form) return;
+
+    const handleSubmit = () => toggleSpinner(true);
+    form.addEventListener('submit', handleSubmit);
+
+    return () => {
+      form.removeEventListener('submit', handleSubmit);
+    };
+  }, [spinOnClick, toggleSpinner]);
+
+  const handleClick = useCallback((event: MouseEvent) => {
+    if (isSpinning) {
+      event.preventDefault();
+      return;
+    }
+
+    if (spinOnClick) {
+      const form = wrapperRef.current?.closest('form');
+      if (!form) {
+        toggleSpinner(true);
+      }
+    }
+
+    onClick?.(event);
+  }, [isSpinning, spinOnClick, toggleSpinner, onClick]);
+
+  const wrapperClasses = [
+    'spinner-button',
+    isOutline && 'spinner-button--outline',
+    isSpinning && 'spinner-button--spinner-active',
+  ].filter(Boolean).join(' ');
 
   return (
-    <lg-spinner-button
-      spin-on-click={spinOnClick}
-      long-wait-duration-ms={longWaitDurationMs}
-      ref={elementRef}
-      class={classes}
-    >
-      <Button isOutline={isOutline} {...buttonProps}>
-        <div className="spinner-button__content">{children}</div>
+    <span ref={wrapperRef} className={wrapperClasses}>
+      <Button
+        isOutline={isOutline}
+        onClick={handleClick}
+        aria-disabled={isSpinning || undefined}
+        className={isSpinning ? 'usa-button--active' : undefined}
+        {...buttonProps}
+      >
+        <span className="spinner-button__content">{children}</span>
         <span className="spinner-dots spinner-dots--centered" aria-hidden="true">
           <span className="spinner-dots__dot" />
           <span className="spinner-dots__dot" />
@@ -71,13 +120,14 @@ function SpinnerButton(
         </span>
       </Button>
       {actionMessage && (
-        <div
+        <span
           role="status"
-          data-message={actionMessage}
-          className="spinner-button__action-message usa-sr-only"
-        />
+          className={`spinner-button__action-message${showLongWaitMessage ? '' : ' usa-sr-only'}`}
+        >
+          {isSpinning ? actionMessage : ''}
+        </span>
       )}
-    </lg-spinner-button>
+    </span>
   );
 }
 
