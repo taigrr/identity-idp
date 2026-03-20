@@ -2,7 +2,7 @@
   "name": "@18f/identity-idp",
   "version": "0.0.1",
   "private": true,
-  "type": "commonjs",
+  "type": "module",
   "engines": {
     "node": ">=22",
     "npm": ">=10.0.0"
@@ -11,7 +11,7 @@
     "app/javascript/packages/*"
   ],
   "scripts": {
-    "postinstall": "npm run postinstall --workspace=@18f/identity-analytics",
+    "postinstall:analytics": "cd app/javascript/packages/analytics && make digital-analytics-program.js",
     "typecheck": "tsc",
     "lint": "eslint 'app/javascript/packages/**/*.{js,jsx,ts,tsx}' 'app/javascript/packs/**/*.{js,jsx,ts,tsx}' 'app/components/**/*.{js,jsx,ts,tsx}'",
     "lint:css": "stylelint 'app/assets/stylesheets/**/*.scss' 'app/javascript/**/*.scss' 'app/components/*.scss'",
@@ -19,37 +19,27 @@
     "test": "mocha 'spec/javascript/**/**spec.+(j|t)s?(x)' 'app/javascript/packages/**/*.spec.+(j|t)s?(x)'",
     "normalize-yaml": "normalize-yaml",
     "generate-browsers-json": "./scripts/generate-browsers-json.js",
-    "clean": "rm -rf public/packs/*",
+    "clean": "rm -rf public/vite/*",
     "prebuild": "npm run clean",
     "build:js_and_css": "concurrently 'npm run build:js' 'npm run build:css'",
     "build": "npm run build:js",
-    "build:js": "concurrently 'webpack' 'make browsers.json'",
-    "build:css": "build-sass app/assets/stylesheets/*.css.scss app/components/*.scss --load-path=app/assets/stylesheets --out-dir=app/assets/builds"
+    "build:js": "concurrently 'vite build' 'make browsers.json'",
+    "build:css": "build-sass app/assets/stylesheets/*.css.scss app/components/*.scss --load-path=app/assets/stylesheets --out-dir=app/assets/builds",
+    "dev": "vite"
   },
   "dependencies": {
     "@18f/identity-design-system": "^9.4.0",
-    "@babel/core": "^7.20.7",
-    "@babel/preset-env": "^7.15.6",
-    "@babel/preset-react": "^7.14.5",
-    "@babel/preset-typescript": "^7.16.7",
-    "@babel/register": "^7.15.3",
-    "babel-loader": "^9.1.0",
-    "babel-plugin-polyfill-corejs3": "^0.5.2",
     "browserslist": "^4.22.3",
     "cleave.js": "^1.6.0",
     "concurrently": "^8.2.2",
-    "core-js": "^3.21.1",
     "foundation-emails": "^2.3.1",
     "intl-tel-input": "^24.5.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "source-map-loader": "^4.0.0",
-    "webpack": "^5.97.1",
-    "webpack-assets-manifest": "^5.2.1",
-    "webpack-cli": "^5.1.4"
+    "vite": "^8.0.0",
+    "vite-plugin-ruby": "^5.2.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.22.15",
     "@eslint/js": "^9.39.4",
     "@redocly/openapi-core": "^1.28.5",
     "@testing-library/dom": "^8.18.1",
@@ -68,6 +58,7 @@
     "@types/sinon": "^10.0.13",
     "@types/sinon-chai": "^3.2.8",
     "@types/zxcvbn": "^4.4.4",
+    "@vitejs/plugin-react": "^4.5.2",
     "chai": "^4.3.10",
     "chai-as-promised": "^7.1.1",
     "clipboard-polyfill": "^4.1.1",
@@ -93,7 +84,9 @@
     "svgo": "^3.2.0",
     "swr": "^2.0.0",
     "typescript": "^5.7.2",
-    "typescript-eslint": "^8.57.1"
+    "typescript-eslint": "^8.57.1",
+    "vite-plugin-manifest-sri": "^0.2.0",
+    "yaml": "^2.7.1"
   },
   "optionalDependencies": {
     "lightningcss-darwin-arm64": "^1.18.0",

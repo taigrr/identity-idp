@@ -39,8 +39,9 @@ module Identity
       &IdentityConfig::BUILDER
     )
 
+    # Vite puts manifest at .vite/manifest.json within the output directory
     config.asset_sources = AssetSources.new(
-      manifest_path: Rails.public_path.join('packs', 'manifest.json'),
+      manifest_path: Rails.public_path.join('packs', '.vite', 'manifest.json'),
       cache_manifest: Rails.env.production? || Rails.env.test?,
       i18n_locales: Identity::Hostdata.config.available_locales,
     )

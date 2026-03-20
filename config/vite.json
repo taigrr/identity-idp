@@ -1,0 +1,17 @@
+{
+  "all": {
+    "sourceCodeDir": "app/javascript",
+    "entrypointsDir": "packs",
+    "publicOutputDir": "packs",
+    "additionalEntrypoints": [
+      "app/components/**/*_component.{js,ts,tsx}"
+    ]
+  },
+  "development": {
+    "autoBuild": true,
+    "port": 3036
+  },
+  "test": {
+    "autoBuild": true
+  }
+}
