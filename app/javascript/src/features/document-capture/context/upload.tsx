@@ -6,14 +6,14 @@ import { useObjectMemo } from '@/hooks';
 import defaultUpload, { UploadFormEntriesError } from '../services/upload';
 import type { PII } from '../services/upload';
 
-const UploadContext = createContext({
-  upload: defaultUpload,
-  getStatus: () => Promise.resolve({} as UploadSuccessResponse),
-  statusPollInterval: undefined as number | undefined,
+const UploadContext = createContext<UploadContextValue>({
+  upload: () => Promise.resolve({ success: true, isPending: false }),
+  getStatus: () => Promise.resolve({ success: true, isPending: false }),
+  statusPollInterval: undefined,
   isMockClient: false,
-  flowPath: 'standard' as FlowPath,
+  flowPath: 'standard',
   idType: 'state_id_card',
-  formData: {} as Record<string, any>,
+  formData: {},
   submitAttempts: 0,
 });
 
@@ -140,6 +140,19 @@ export type UploadImplementation = (
   options: UploadOptions,
 ) => Promise<UploadSuccessResponse>;
 
+export type ContextUploadFunction = (payload: Record<string, any>) => Promise<UploadSuccessResponse>;
+
+interface UploadContextValue {
+  upload: ContextUploadFunction;
+  getStatus: () => Promise<UploadSuccessResponse>;
+  statusPollInterval: number | undefined;
+  isMockClient: boolean;
+  flowPath: FlowPath;
+  idType: string;
+  formData: Record<string, any>;
+  submitAttempts: number;
+}
+
 interface UploadContextProviderProps {
   /**
    * Custom upload implementation.
@@ -206,7 +219,7 @@ function UploadContextProvider({
 }: UploadContextProviderProps) {
   const [submitAttempts, setSubmitAttempts] = useState(0);
 
-  const uploadWithFormData = async (payload) => {
+  const uploadWithFormData: ContextUploadFunction = async (payload) => {
     try {
       const result = await upload({ ...payload, ...formData }, { endpoint });
       return result;

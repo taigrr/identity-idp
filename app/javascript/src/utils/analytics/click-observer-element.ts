@@ -17,7 +17,7 @@ class ClickObserverElement extends HTMLElement {
     if (payload) {
       try {
         return JSON.parse(payload);
-      } catch {}
+      } catch { /* intentionally empty */ }
     }
     return undefined;
   }

@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import type { ReactNode } from 'react';
 
 import { useI18n, formatHTML } from '@/i18n/react';
@@ -20,7 +20,7 @@ interface HybridDocCaptureWarningProps {
   className?: string;
 }
 
-function HybridDocCaptureWarning({ className = '' }: HybridDocCaptureWarningProps): JSX.Element {
+function HybridDocCaptureWarning({ className = '' }: HybridDocCaptureWarningProps): React.JSX.Element {
   const { t } = useI18n();
   // Determine the Service Provider name to display,
   // in some circumstances.

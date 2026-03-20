@@ -7,8 +7,8 @@ import { longToByteArray } from './converters';
 describe('enrollWebauthnDevice', () => {
   const sandbox = useSandbox();
   const defineProperty = useDefineProperty();
-  const user = {
-    id: longToByteArray(123),
+  const user: PublicKeyCredentialUserEntity = {
+    id: longToByteArray(123) as BufferSource,
     displayName: 'test@test.com',
     name: 'test@test.com',
   };

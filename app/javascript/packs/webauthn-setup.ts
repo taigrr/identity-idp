@@ -44,7 +44,7 @@ function webauthn() {
     enrollWebauthnDevice({
       platformAuthenticator,
       user: {
-        id: longToByteArray(Number((document.getElementById('user_id') as HTMLInputElement).value)),
+        id: longToByteArray(Number((document.getElementById('user_id') as HTMLInputElement).value)) as BufferSource,
         name: (document.getElementById('user_email') as HTMLInputElement).value,
         displayName: (document.getElementById('user_email') as HTMLInputElement).value,
       },

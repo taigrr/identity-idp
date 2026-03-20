@@ -1,8 +1,8 @@
-import MaskedTextToggle from '@/elements/masked-text-toggle';
+import createMaskedTextToggle from '@/elements/masked-text-toggle';
 import { screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 
-describe('MaskedTextToggle', () => {
+describe('createMaskedTextToggle', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <span id="masked-text-1fd0eb71134c">
@@ -32,8 +32,8 @@ describe('MaskedTextToggle', () => {
     `;
   });
 
-  const getToggle = () => screen.getByRole('checkbox');
-  const initialize = () => new MaskedTextToggle(getToggle()).bind();
+  const getToggle = () => screen.getByRole('checkbox') as HTMLInputElement;
+  const initialize = () => createMaskedTextToggle(getToggle()).bind();
 
   it('sets initial visibility', async () => {
     await userEvent.click(getToggle());

@@ -286,7 +286,7 @@ function AcuantCamera({
 
       const base64Data = canvas.toDataURL('image/jpg');
       uncroppedImageDataRef.current = base64Data;
-    } catch {}
+    } catch { /* intentionally empty */ }
   }, []);
 
   const onCaptured = useImmutableCallback(

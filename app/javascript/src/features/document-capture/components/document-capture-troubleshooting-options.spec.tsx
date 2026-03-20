@@ -25,7 +25,7 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
         {children}
       </MarketingSiteContextProvider>
     ),
-    helpCenterAndServiceProviderContext: ({ children }) => (
+    helpCenterAndServiceProviderContext: ({ children }: { children?: ReactNode }) => (
       <MarketingSiteContextProvider helpCenterRedirectURL={helpCenterRedirectURL}>
         <ServiceProviderContextProvider value={serviceProviderContext}>
           {children}
@@ -118,7 +118,7 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
     });
 
     context('with inPersonURL', () => {
-      const wrapper: ComponentType = ({ children }) => (
+      const wrapper: ComponentType = ({ children }: { children?: ReactNode }) => (
         <InPersonContext.Provider value={{ inPersonURL } as InPersonContextProps}>
           {children}
         </InPersonContext.Provider>

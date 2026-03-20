@@ -2,6 +2,7 @@ import { isValidNumberForRegion, isValidNumber } from 'libphonenumber-js';
 import intlTelInput from 'intl-tel-input/intlTelInputWithUtils';
 import type { CountryCode } from 'libphonenumber-js';
 import type { Iti } from 'intl-tel-input';
+import type { Iso2 } from 'intl-tel-input/data';
 
 import { replaceVariables } from '@/i18n';
 import { trackEvent } from '@/utils/analytics';
@@ -42,7 +43,7 @@ export class PhoneInputElement extends HTMLElement {
     try {
       this.deliveryMethods = JSON.parse(this.dataset.deliveryMethods || '');
       this.countryCodePairs = JSON.parse(this.dataset.translatedCountryCodeNames || '');
-    } catch {}
+    } catch { /* intentionally empty */ }
 
     if (!textInput || !codeInput) {
       return;
@@ -73,7 +74,7 @@ export class PhoneInputElement extends HTMLElement {
     if (codeInput && codeInput.dataset.countries) {
       try {
         return JSON.parse(codeInput.dataset.countries);
-      } catch {}
+      } catch { /* intentionally empty */ }
     }
 
     return undefined;
@@ -122,15 +123,14 @@ export class PhoneInputElement extends HTMLElement {
   initializeIntlTelInput() {
     const { supportedCountryCodes, countryCodePairs } = this;
 
-    // @ts-ignore - intl-tel-input types expect lowercase country codes
     const iti = intlTelInput(this.textInput, {
       countryOrder: ['us', 'ca'],
-      initialCountry: this.codeInput.value.toLowerCase(),
+      initialCountry: this.codeInput.value.toLowerCase() as Iso2,
       i18n: {
         ...countryCodePairs,
         selectedCountryAriaLabel: this.strings.country_code_label,
       },
-      onlyCountries: supportedCountryCodes?.map((c) => c.toLowerCase()),
+      onlyCountries: supportedCountryCodes?.map((c) => c.toLowerCase() as Iso2),
       autoPlaceholder: 'off',
       formatAsYouType: false,
       useFullscreenPopup: false,

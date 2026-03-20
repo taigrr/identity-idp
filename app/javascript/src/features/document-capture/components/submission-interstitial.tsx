@@ -4,23 +4,19 @@ import { useI18n } from '@/i18n/react';
 import { PageHeading } from '@/components';
 import { getAssetPath } from '@/utils/assets';
 
-/**
- * @typedef SubmissionInterstitialProps
- *
- * @prop {boolean=} autoFocus Whether to focus heading immediately on mount.
- */
+interface SubmissionInterstitialProps {
+  autoFocus?: boolean;
+}
 
-/**
- * @param {SubmissionInterstitialProps} props Props object.
- */
-function SubmissionInterstitial({ autoFocus = false }) {
+function SubmissionInterstitial({ autoFocus = false }: SubmissionInterstitialProps) {
   const { t } = useI18n();
-  const headingRef = useRef(/** @type {?HTMLHeadingElement} */ (null));
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
   useEffect(() => {
     if (autoFocus) {
       headingRef.current?.focus();
     }
-  }, []);
+  }, [autoFocus]);
 
   return (
     <div>

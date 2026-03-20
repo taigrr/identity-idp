@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { useContext } from 'react';
 import { renderHook } from '@testing-library/react';
-import type { ComponentType } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 
 import AnalyticsContext, { AnalyticsContextProvider, LOGGED_STEPS } from './analytics';
 
@@ -10,7 +10,7 @@ describe('AnalyticsContextProvider', () => {
   let wrapper: ComponentType;
   beforeEach(() => {
     trackEvent = sinon.stub();
-    wrapper = ({ children }) => (
+    wrapper = ({ children }: { children?: ReactNode }) => (
       <AnalyticsContextProvider trackEvent={trackEvent}>{children}</AnalyticsContextProvider>
     );
   });

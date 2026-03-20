@@ -5,7 +5,7 @@ import { setupServer } from 'msw/node';
 import type { SetupServer } from 'msw/node';
 import { http, HttpResponse } from 'msw';
 import { SWRConfig } from 'swr';
-import { ComponentType } from 'react';
+import { ComponentType, ReactNode } from 'react';
 
 import { usePropertyValue } from '@/test-helpers';
 import { i18n } from '@/i18n';
@@ -49,7 +49,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
   const usStatesTerritories: [string, string][] = [['Delware', 'DE']];
   const locationsURL = 'https://localhost:3000/locations/endpoint';
   const inPersonURL = '#in_person';
-  const wrapper: ComponentType = ({ children }) => (
+  const wrapper: ComponentType = ({ children }: { children?: ReactNode }) => (
     <InPersonContext.Provider
       value={{
         inPersonURL,

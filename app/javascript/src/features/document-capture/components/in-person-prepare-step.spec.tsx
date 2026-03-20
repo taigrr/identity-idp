@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import type { ComponentType } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 
 import { Provider as MarketingSiteContextProvider } from '../context/marketing-site';
 import { InPersonContext } from '../context';
@@ -74,7 +74,7 @@ describe('InPersonPrepareStep', () => {
 
   context('with marketing site context URL', () => {
     const securityAndPrivacyHowItWorksURL = 'http://example.com/security-and-privacy-how-it-works';
-    const wrapper: ComponentType = ({ children }) => (
+    const wrapper: ComponentType = ({ children }: { children?: ReactNode }) => (
       <MarketingSiteContextProvider
         helpCenterRedirectURL="http://example.com/redirect/"
         securityAndPrivacyHowItWorksURL={securityAndPrivacyHowItWorksURL}

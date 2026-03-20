@@ -28,6 +28,8 @@
   ],
   "exclude": [
     "app/javascript/packages",
+    "spec/javascript/packages",
+    "spec/javascript/packs",
     "**/fixtures",
     "spec/**/*.spec.js",
     "app/javascript/packs/digital-analytics-program.ts",

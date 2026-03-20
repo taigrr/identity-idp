@@ -4,31 +4,28 @@ import { useIfStillMounted } from '@/hooks';
 
 import FileBase64CacheContext from '../context/file-base64-cache';
 
-/**
- * @typedef FileImageProps
- *
- * @prop {Blob} file Image file.
- * @prop {string} alt Image alt text.
- * @prop {string=} className Optional class name.
- */
+interface FileImageProps {
+  file: Blob;
+  alt: string;
+  className?: string;
+}
 
-/**
- * @param {FileImageProps} props Props object.
- */
-function FileImage({ file, alt, className }) {
+function FileImage({ file, alt, className }: FileImageProps) {
   const cache = useContext(FileBase64CacheContext);
-  const [, forceRender] = useState(/** @type {number=} */ (undefined));
+  const [, forceRender] = useState(0);
   const imageData = cache.get(file);
   const ifStillMounted = useIfStillMounted();
 
   useEffect(() => {
     const reader = new window.FileReader();
     reader.onload = ({ target }) => {
-      cache.set(file, /** @type {string} */ (target?.result));
-      ifStillMounted(forceRender)((prevState = 0) => 1 - prevState);
+      if (target?.result && typeof target.result === 'string') {
+        cache.set(file, target.result);
+        ifStillMounted(forceRender)((prevState) => 1 - prevState);
+      }
     };
     reader.readAsDataURL(file);
-  }, [file]);
+  }, [file, cache, ifStillMounted]);
 
   const classes = [
     'document-capture-file-image',

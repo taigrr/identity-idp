@@ -482,7 +482,7 @@ function AcuantCapture(
     setOwnErrorMessage(null);
   }, [value]);
   useDidUpdateEffect(() => setHasStartedCropping(false), [isCapturingEnvironment]);
-  useImperativeHandle(ref, () => inputRef.current);
+  useImperativeHandle(ref, () => inputRef.current!);
 
   useEffect(
     () => () => {
