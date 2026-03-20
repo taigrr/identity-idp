@@ -27,7 +27,7 @@ function LocationCollectionItem({
   const numericDistance = distance?.split(' ')[0];
 
   return (
-    <li className="location-collection-item">
+    <li className="max-w-[64ex] list-none pl-0 items-start border-b border-solid flex my-4 pb-4 border-blue-300 last:border-b-0 last:pb-0">
       <div className="usa-collection__body">
         <div className="grid-row">
           <div className="grid-col-fill">

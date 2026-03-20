@@ -12,7 +12,7 @@ function LoadingSpinner() {
       alt=""
       width="144"
       height="144"
-      className="acuant-capture-canvas__spinner"
+      className="absolute left-1/2 top-1/2 -translate-x-[72px] -translate-y-[72px]"
     />
   );
 }
@@ -47,7 +47,7 @@ function AcuantSelfieCaptureCanvas({
       <div id={acuantCaptureContainerId}>
         <p aria-live="assertive">
           {imageCaptureText && (
-            <span className="document-capture-selfie-feedback">{imageCaptureText}</span>
+            <span className="text-white bg-black fixed left-1/2 top-[10%] -translate-x-1/2 px-[5px] z-[11]">{imageCaptureText}</span>
           )}
         </p>
       </div>

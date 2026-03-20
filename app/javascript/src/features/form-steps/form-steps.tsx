@@ -3,7 +3,6 @@ import type { FC, FormEventHandler, RefCallback } from 'react';
 
 import { Alert } from '@/components';
 import { replaceVariables } from '@/i18n';
-import { useIfStillMounted } from '@/hooks';
 
 import RequiredValueMissingError from './required-value-missing-error';
 import FormStepsContext from './form-steps-context';
@@ -256,7 +255,6 @@ function FormSteps({
   const fields = useRef({} as Record<string, FieldsRefEntry>);
   const didSubmitWithErrors = useRef(false);
   const forceRender = useForceRender();
-  const ifStillMounted = useIfStillMounted();
 
   // Track previous values for change detection
   const prevStepRef = useRef<FormStep | undefined>(undefined);
@@ -486,7 +484,7 @@ function FormSteps({
           value={values}
           errors={activeErrors}
           unknownFieldErrors={unknownFieldErrors}
-          onChange={ifStillMounted((nextValues, { patch } = { patch: true }) => {
+          onChange={(nextValues, { patch } = { patch: true }) => {
             setActiveErrors((prevActiveErrors) =>
               prevActiveErrors.filter(({ field }) => !field || !(field in nextValues)),
             );
@@ -495,14 +493,14 @@ function FormSteps({
             } else {
               setValues(nextValues);
             }
-          })}
-          onError={ifStillMounted((error, { field } = {}) => {
+          }}
+          onError={(error, { field } = {}) => {
             if (field) {
               setActiveErrors((prevActiveErrors) => prevActiveErrors.concat({ field, error }));
             } else {
               setStepErrors([error]);
             }
-          })}
+          }}
           registerField={(field, options = {}) => {
             if (!fields.current[field]) {
               fields.current[field] = {

@@ -7,9 +7,7 @@
     "node": ">=22",
     "npm": ">=10.0.0"
   },
-
   "scripts": {
-
     "typecheck": "tsc",
     "lint": "eslint 'app/javascript/src/**/*.{js,jsx,ts,tsx}' 'app/javascript/packs/**/*.{js,jsx,ts,tsx}' 'app/components/**/*.{js,jsx,ts,tsx}'",
     "lint:css": "stylelint 'app/assets/stylesheets/**/*.scss' 'app/javascript/**/*.scss' 'app/components/*.scss'",
@@ -27,6 +25,7 @@
   },
   "dependencies": {
     "@18f/identity-design-system": "^9.4.0",
+    "@tailwindcss/vite": "^4.2.2",
     "browserslist": "^4.22.3",
     "cleave.js": "^1.6.0",
     "concurrently": "^8.2.2",
@@ -37,6 +36,7 @@
     "react": "^19",
     "react-dom": "^19",
     "smartquotes": "^2.3.2",
+    "tailwindcss": "^4.2.2",
     "vite": "^8.0.0",
     "vite-plugin-ruby": "^5.2.0",
     "zxcvbn": "^4.4.2"

@@ -1,6 +1,4 @@
-import { useContext, useState, useEffect } from 'react';
-
-import { useIfStillMounted } from '@/hooks';
+import { useContext, useState, useEffect, useRef } from 'react';
 
 import FileBase64CacheContext from '../context/file-base64-cache';
 
@@ -14,18 +12,23 @@ function FileImage({ file, alt, className }: FileImageProps) {
   const cache = useContext(FileBase64CacheContext);
   const [, forceRender] = useState(0);
   const imageData = cache.get(file);
-  const ifStillMounted = useIfStillMounted();
+  const isMountedRef = useRef(true);
 
   useEffect(() => {
+    isMountedRef.current = true;
     const reader = new window.FileReader();
     reader.onload = ({ target }) => {
-      if (target?.result && typeof target.result === 'string') {
+      if (target?.result && typeof target.result === 'string' && isMountedRef.current) {
         cache.set(file, target.result);
-        ifStillMounted(forceRender)((prevState) => 1 - prevState);
+        forceRender((prevState) => 1 - prevState);
       }
     };
     reader.readAsDataURL(file);
-  }, [file, cache, ifStillMounted]);
+
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, [file, cache]);
 
   const classes = [
     'document-capture-file-image',

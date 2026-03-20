@@ -38,7 +38,7 @@ function AcuantCaptureCanvas() {
           alt=""
           width="144"
           height="144"
-          className="acuant-capture-canvas__spinner"
+          className="absolute left-1/2 top-1/2 -translate-x-[72px] -translate-y-[72px]"
         />
       )}
       <h2 className="usa-sr-only">{t('doc_auth.accessible_labels.camera_video_capture_label')}</h2>
@@ -47,7 +47,7 @@ function AcuantCaptureCanvas() {
           {t('doc_auth.accessible_labels.camera_video_capture_instructions')}
         </p>
       )}
-      <div id="acuant-camera" ref={cameraRef} className="acuant-capture-canvas__camera" />
+      <div id="acuant-camera" ref={cameraRef} className="absolute left-1/2 top-1/2 max-w-full w-full -translate-x-1/2 -translate-y-1/2 landscape:w-fit" />
       <button
         type="button"
         onClick={clickCanvas}

@@ -4,7 +4,6 @@ import { createPortal } from 'react-dom';
 import type { FocusTrap } from 'focus-trap';
 
 import { useI18n } from '@/i18n/react';
-import { useIfStillMounted } from '@/hooks';
 import { getAssetPath } from '@/utils/assets';
 
 import useToggleBodyClassByPresence from './hooks/use-toggle-body-class-by-presence';
@@ -92,14 +91,13 @@ function FullScreen({
   ref,
 }: FullScreenProps) {
   const { t } = useI18n();
-  const ifStillMounted = useIfStillMounted();
   const containerRef = useRef(null as HTMLDivElement | null);
   const onRequestCloseRef = useRef(onRequestClose);
   onRequestCloseRef.current = onRequestClose;
 
   const onFocusTrapDeactivate = useCallback(() => {
-    ifStillMounted(() => onRequestCloseRef.current())();
-  }, [ifStillMounted]);
+    onRequestCloseRef.current();
+  }, []);
 
   const focusTrap = useFocusTrap(containerRef, {
     clickOutsideDeactivates: true,

@@ -20,7 +20,7 @@ describe('LocationCollectionItem', () => {
     );
 
     const wrapper = container.firstElementChild!;
-    expect(wrapper.classList.contains('location-collection-item')).to.be.true();
+    expect(wrapper.classList.contains('max-w-[64ex]')).to.be.true();
     const locationCollectionItem = wrapper.firstElementChild!;
     expect(locationCollectionItem.classList.contains('usa-collection__body')).to.be.true();
     const display = locationCollectionItem.firstElementChild!;
