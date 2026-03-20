@@ -5,7 +5,7 @@ import { t } from '@/i18n';
 import './step-indicator-element';
 import type StepIndicatorElement from './step-indicator-element';
 
-declare global {
+declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
       'lg-step-indicator': HTMLAttributes<StepIndicatorElement> & { class?: string };

@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import type { SetupServer } from 'msw/node';
@@ -49,13 +49,13 @@ describe('useValidatedUspsLocations', () => {
   });
 
   it('returns location results', async () => {
-    const { result, waitForNextUpdate } = renderHook(() => useValidatedUspsLocations(locationsURL));
+    const { result } = renderHook(() => useValidatedUspsLocations(locationsURL));
 
     const { handleLocationSearch } = result.current;
     handleLocationSearch(new Event('submit'), '200 main', 'Endeavor', 'DE', '12345');
 
-    await waitForNextUpdate();
-
-    expect(result.current.locationResults?.length).to.equal(USPS_RESPONSE.length);
+    await waitFor(() => {
+      expect(result.current.locationResults?.length).to.equal(USPS_RESPONSE.length);
+    });
   });
 });

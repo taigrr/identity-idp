@@ -101,7 +101,7 @@ describe('ValidatedField', () => {
     const initialMessage = 'this is the initial error message';
     const overrideMessage = 'this is the override error message';
     function TestComponent() {
-      const ref = useRef<HTMLInputElement>();
+      const ref = useRef<HTMLInputElement>(null);
       validate = useMemo(
         () =>
           sinon

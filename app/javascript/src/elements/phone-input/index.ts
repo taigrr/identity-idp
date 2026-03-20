@@ -122,14 +122,15 @@ export class PhoneInputElement extends HTMLElement {
   initializeIntlTelInput() {
     const { supportedCountryCodes, countryCodePairs } = this;
 
+    // @ts-ignore - intl-tel-input types expect lowercase country codes
     const iti = intlTelInput(this.textInput, {
-      countryOrder: ['US', 'CA'],
-      initialCountry: this.codeInput.value,
+      countryOrder: ['us', 'ca'],
+      initialCountry: this.codeInput.value.toLowerCase(),
       i18n: {
         ...countryCodePairs,
         selectedCountryAriaLabel: this.strings.country_code_label,
       },
-      onlyCountries: supportedCountryCodes,
+      onlyCountries: supportedCountryCodes?.map((c) => c.toLowerCase()),
       autoPlaceholder: 'off',
       formatAsYouType: false,
       useFullscreenPopup: false,

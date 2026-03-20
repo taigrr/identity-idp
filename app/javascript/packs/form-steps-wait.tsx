@@ -1,4 +1,4 @@
-import { render, unmountComponentAtNode } from 'react-dom';
+import { createRoot, type Root } from 'react-dom/client';
 
 import { Alert } from '@/components';
 import { forceRedirect } from '@/utils/url';
@@ -93,6 +93,8 @@ export class FormStepsWait {
   elements: FormStepsWaitElements;
 
   options: FormStepsWaitOptions;
+
+  errorRoot: Root | null = null;
 
   constructor(form: HTMLFormElement, options?: Partial<FormStepsWaitOptions>) {
     this.elements = { form };
@@ -191,21 +193,24 @@ export class FormStepsWait {
       return;
     }
 
-    const errorRoot = document.querySelector(alertTarget);
-    if (!errorRoot) {
+    const errorRootElement = document.querySelector(alertTarget);
+    if (!errorRootElement) {
       return;
     }
 
     if (message) {
       this.removeSuccessBanner();
-      render(
+      if (!this.errorRoot) {
+        this.errorRoot = createRoot(errorRootElement);
+      }
+      this.errorRoot.render(
         <Alert type="error" className="margin-bottom-4">
           {message}
         </Alert>,
-        errorRoot,
       );
-    } else {
-      unmountComponentAtNode(errorRoot);
+    } else if (this.errorRoot) {
+      this.errorRoot.unmount();
+      this.errorRoot = null;
     }
   }
 

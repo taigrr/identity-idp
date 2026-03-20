@@ -1,4 +1,4 @@
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import {
   DocumentCapture,
@@ -139,7 +139,7 @@ try {
   parsedUsStatesTerritories = JSON.parse(usStatesTerritories);
 } catch {}
 
-render(
+const app = (
   <MarketingSiteContextProvider
     helpCenterRedirectURL={helpCenterRedirectURL}
     securityAndPrivacyHowItWorksURL={securityAndPrivacyHowItWorksURL}
@@ -231,6 +231,7 @@ render(
         </AnalyticsContextProvider>
       </InPersonContext.Provider>
     </DeviceContext.Provider>
-  </MarketingSiteContextProvider>,
-  appRoot,
+  </MarketingSiteContextProvider>
 );
+
+createRoot(appRoot).render(app);

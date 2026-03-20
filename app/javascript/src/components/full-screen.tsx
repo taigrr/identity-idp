@@ -1,5 +1,5 @@
-import { forwardRef, useImperativeHandle, useRef, useEffect } from 'react';
-import type { ReactNode, ForwardedRef, MutableRefObject } from 'react';
+import { useImperativeHandle, useRef, useEffect } from 'react';
+import type { ReactNode, Ref, MutableRefObject } from 'react';
 import { createPortal } from 'react-dom';
 import type { FocusTrap } from 'focus-trap';
 
@@ -47,6 +47,11 @@ interface FullScreenProps {
    * Child elements.
    */
   children: ReactNode;
+
+  /**
+   * Ref forwarded from parent.
+   */
+  ref?: Ref<FullScreenRefHandle>;
 }
 
 export interface FullScreenRefHandle {
@@ -76,18 +81,16 @@ export function useInertSiblingElements(containerRef: MutableRefObject<HTMLEleme
   });
 }
 
-function FullScreen(
-  {
-    onRequestClose = () => {},
-    label,
-    hideCloseButton = false,
-    bgColor = 'white',
-    labelledBy,
-    describedBy,
-    children,
-  }: FullScreenProps,
-  ref: ForwardedRef<FullScreenRefHandle>,
-) {
+function FullScreen({
+  onRequestClose = () => {},
+  label,
+  hideCloseButton = false,
+  bgColor = 'white',
+  labelledBy,
+  describedBy,
+  children,
+  ref,
+}: FullScreenProps) {
   const { t } = useI18n();
   const ifStillMounted = useIfStillMounted();
   const containerRef = useRef(null as HTMLDivElement | null);
@@ -129,4 +132,4 @@ function FullScreen(
   );
 }
 
-export default forwardRef(FullScreen);
+export default FullScreen;

@@ -23,7 +23,7 @@ export class RetrySubmissionError extends Error {}
 
 function SubmissionComplete({ resource }: SubmissionCompleteProps) {
   const [, setRetryError] = useState<Error | undefined>(undefined);
-  const sleepTimeout = useRef<number>();
+  const sleepTimeout = useRef<number>(undefined);
   const { statusPollInterval } = useContext(UploadContext);
   const response = resource.read();
 

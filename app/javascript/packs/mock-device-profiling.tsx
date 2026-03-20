@@ -1,4 +1,4 @@
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { ChangeEvent, useState, useEffect } from 'react';
 
 import { useInstanceId } from '@/hooks';
@@ -115,4 +115,4 @@ function MockDeviceProfilingOptions() {
 
 const appRoot = document.createElement('div');
 currentScript?.after(appRoot);
-render(<MockDeviceProfilingOptions />, appRoot);
+createRoot(appRoot).render(<MockDeviceProfilingOptions />);

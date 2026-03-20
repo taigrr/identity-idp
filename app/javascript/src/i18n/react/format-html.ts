@@ -1,7 +1,7 @@
 import { createElement } from 'react';
-import type { ComponentClass, FunctionComponent, ReactNode } from 'react';
+import type { ComponentClass, FunctionComponent, ReactNode, PropsWithChildren } from 'react';
 
-type Handlers = Record<string, ComponentClass | FunctionComponent | string>;
+type Handler = ComponentClass<PropsWithChildren> | FunctionComponent<PropsWithChildren> | string;
 
 /**
  * Given an HTML string and an object of tag names to React component, returns a new React node
@@ -24,7 +24,7 @@ type Handlers = Record<string, ComponentClass | FunctionComponent | string>;
  * @param html HTML to format.
  * @param handlers Mapping of tag names to tag name or component.
  */
-function formatHTML(html: string, handlers: Handlers): ReactNode {
+function formatHTML(html: string, handlers: Record<string, Handler>): ReactNode {
   const pattern = new RegExp(`</?(?:${Object.keys(handlers).join('|')})(?: .*?)?/?>`, 'g');
   const matches = html.match(pattern);
   if (!matches) {

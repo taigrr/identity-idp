@@ -7,11 +7,15 @@ import type { ButtonProps } from '@/components';
 import type { SpinnerButtonElement } from './spinner-button-element';
 import './spinner-button-element';
 
-declare global {
+declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
       'lg-spinner-button': HTMLAttributes<SpinnerButtonElement> &
-        RefAttributes<SpinnerButtonElement> & { class?: string };
+        RefAttributes<SpinnerButtonElement> & {
+          class?: string;
+          'spin-on-click'?: boolean;
+          'long-wait-duration-ms'?: number;
+        };
     }
   }
 }

@@ -21,6 +21,17 @@ import { t } from '@/i18n';
 import './validated-field-element';
 import type ValidatedFieldElement from './validated-field-element';
 
+declare module 'react' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'lg-validated-field': HTMLAttributes<ValidatedFieldElement> & {
+        class?: string;
+        ref?: MutableRefObject<ValidatedFieldElement | null>;
+      };
+    }
+  }
+}
+
 export type ValidatedFieldValidator = (value: string) => void;
 
 interface ValidatedFieldProps {
@@ -40,17 +51,6 @@ interface ValidatedFieldProps {
    * extended with behaviors for validation.
    */
   children?: ReactNode;
-}
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'lg-validated-field': HTMLAttributes<ValidatedFieldElement> & {
-        class?: string;
-        ref?: MutableRefObject<ValidatedFieldElement | undefined>;
-      };
-    }
-  }
 }
 
 /**
@@ -80,7 +80,7 @@ function ValidatedField<InputType extends HTMLInputElement | HTMLSelectElement>(
   }: ValidatedFieldProps & InputHTMLAttributes<InputType>,
   forwardedRef,
 ) {
-  const fieldRef = useRef<ValidatedFieldElement>();
+  const fieldRef = useRef<ValidatedFieldElement>(null);
   const instanceId = useInstanceId();
   // WILLFIX: we shouldn't be returning the HTML input child below as it could
   //          result in a stale reference. This will be fixed with LG-8494
