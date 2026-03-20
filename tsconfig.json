@@ -13,11 +13,13 @@
     "target": "ESNext",
     "baseUrl": ".",
     "paths": {
+      "@/*": ["app/javascript/src/*"],
       "*": ["typings/*"]
     }
   },
   "include": [
     "app/components",
+    "app/javascript/src",
     "app/javascript/packages",
     "app/javascript/packs",
     "spec/javascript/spec_helper.d.ts",
@@ -30,6 +32,7 @@
     "**/fixtures",
     "spec/**/*.spec.js",
     "app/javascript/packs/digital-analytics-program.ts",
-    "app/javascript/packages/analytics/digital-analytics-program*.js"
+    "app/javascript/packages/analytics/digital-analytics-program*.js",
+    "app/javascript/src/utils/analytics/digital-analytics-program*.js"
   ]
 }

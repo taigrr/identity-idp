@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import SubmissionInterstitial from '@18f/identity-document-capture/components/submission-interstitial';
+import SubmissionInterstitial from '@/features/document-capture/components/submission-interstitial';
 
 describe('document-capture/components/submission-interstitial', () => {
   it('renders interstitial content', () => {

@@ -1,4 +1,4 @@
-import { resolveObjectValues, series } from '@18f/identity-document-capture/components/submission';
+import { resolveObjectValues, series } from '@/features/document-capture/components/submission';
 
 describe('resolveObjectValues', () => {
   it('returns an object with resolved values', async () => {

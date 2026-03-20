@@ -3,10 +3,10 @@ import {
   extractCredentials,
   isExpectedWebauthnError,
   longToByteArray,
-} from '@18f/identity-webauthn';
-import { trackError } from '@18f/identity-analytics';
-import { forceRedirect } from '@18f/identity-url';
-import type { Navigate } from '@18f/identity-url';
+} from '@/utils/webauthn';
+import { trackError } from '@/utils/analytics';
+import { forceRedirect } from '@/utils/url';
+import type { Navigate } from '@/utils/url';
 
 /**
  * Reloads the current page, presenting the message corresponding to the given error key.

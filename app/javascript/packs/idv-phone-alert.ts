@@ -1,4 +1,4 @@
-import type { PhoneInputElement } from '@18f/identity-phone-input';
+import type { PhoneInputElement } from '@/elements/phone-input';
 
 const alertElement = document.getElementById('phone-already-submitted-alert')!;
 const { iti, textInput: input } = document.querySelector('lg-phone-input') as PhoneInputElement;

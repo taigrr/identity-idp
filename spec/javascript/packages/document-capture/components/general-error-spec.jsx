@@ -1,5 +1,5 @@
-import GeneralError from '@18f/identity-document-capture/components/general-error';
-import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
+import GeneralError from '@/features/document-capture/components/general-error';
+import { toFormEntryError } from '@/features/document-capture/services/upload';
 import { within } from '@testing-library/dom';
 import { render } from '../../../support/document-capture';
 

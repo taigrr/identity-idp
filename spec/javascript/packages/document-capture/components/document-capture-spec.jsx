@@ -4,7 +4,7 @@ import { waitFor } from '@testing-library/dom';
 import httpUpload, {
   UploadFormEntriesError,
   toFormEntryError,
-} from '@18f/identity-document-capture/services/upload';
+} from '@/features/document-capture/services/upload';
 import {
   ServiceProviderContextProvider,
   UploadContextProvider,
@@ -12,12 +12,12 @@ import {
   DeviceContext,
   InPersonContext,
   SelfieCaptureContext,
-} from '@18f/identity-document-capture';
-import DocumentCapture from '@18f/identity-document-capture/components/document-capture';
-import { FlowContext } from '@18f/identity-verify-flow';
+} from '@/features/document-capture';
+import DocumentCapture from '@/features/document-capture/components/document-capture';
+import { FlowContext } from '@/features/verify-flow';
 import { expect } from 'chai';
-import { useSandbox } from '@18f/identity-test-helpers';
-import { AcuantDocumentType } from '@18f/identity-document-capture/components/acuant-camera';
+import { useSandbox } from '@/test-helpers';
+import { AcuantDocumentType } from '@/features/document-capture/components/acuant-camera';
 import { render, useAcuant, useDocumentCaptureForm } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 

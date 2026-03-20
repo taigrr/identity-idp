@@ -1,1 +1,1 @@
-import '@18f/identity-memorable-date';
+import '@/elements/memorable-date';

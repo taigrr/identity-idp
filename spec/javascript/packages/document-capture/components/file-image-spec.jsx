@@ -1,4 +1,4 @@
-import FileImage from '@18f/identity-document-capture/components/file-image';
+import FileImage from '@/features/document-capture/components/file-image';
 import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 

@@ -1,4 +1,4 @@
-import { isWebauthnPlatformAuthenticatorAvailable } from '@18f/identity-webauthn';
+import { isWebauthnPlatformAuthenticatorAvailable } from '@/utils/webauthn';
 
 export async function initialize() {
   const input = document.getElementById('platform_authenticator_available') as HTMLInputElement;

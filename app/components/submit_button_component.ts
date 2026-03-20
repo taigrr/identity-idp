@@ -1,1 +1,1 @@
-import '@18f/identity-submit-button/submit-button-element';
+import '@/elements/submit-button/submit-button-element';

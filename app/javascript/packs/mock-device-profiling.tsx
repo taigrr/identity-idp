@@ -1,7 +1,7 @@
 import { render } from 'react-dom';
 import { ChangeEvent, useState, useEffect } from 'react';
 
-import { useInstanceId } from '@18f/identity-react-hooks';
+import { useInstanceId } from '@/hooks';
 
 const { currentScript } = document;
 

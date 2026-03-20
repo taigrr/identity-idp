@@ -1,4 +1,4 @@
-import type { CountdownElement } from '@18f/identity-countdown/countdown-element';
+import type { CountdownElement } from '@/elements/countdown/countdown-element';
 
 type Phase = { at_s: number; classes: string; label: string };
 

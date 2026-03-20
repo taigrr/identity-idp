@@ -1,1 +1,1 @@
-import '@18f/identity-phone-input';
+import '@/elements/phone-input';

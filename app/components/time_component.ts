@@ -1,3 +1,3 @@
-import { TimeElement } from '@18f/identity-time-element';
+import { TimeElement } from '@/elements/time-element';
 
 customElements.define('lg-time', TimeElement);

@@ -1,1 +1,1 @@
-import '@18f/identity-countdown/countdown-element';
+import '@/elements/countdown/countdown-element';

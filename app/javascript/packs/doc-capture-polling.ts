@@ -1,4 +1,4 @@
-import { DocumentCapturePolling } from '@18f/identity-document-capture-polling';
+import { DocumentCapturePolling } from '@/features/document-capture-polling';
 
 new DocumentCapturePolling({
   statusEndpoint: document

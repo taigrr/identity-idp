@@ -1,7 +1,7 @@
 import sinon from 'sinon';
-import { AcuantContextProvider, DeviceContext } from '@18f/identity-document-capture';
-import AcuantCamera from '@18f/identity-document-capture/components/acuant-camera';
-import AcuantCaptureCanvas from '@18f/identity-document-capture/components/acuant-capture-canvas';
+import { AcuantContextProvider, DeviceContext } from '@/features/document-capture';
+import AcuantCamera from '@/features/document-capture/components/acuant-camera';
+import AcuantCaptureCanvas from '@/features/document-capture/components/acuant-capture-canvas';
 import { render, useAcuant } from '../../../support/document-capture';
 
 describe('document-capture/components/acuant-camera', () => {

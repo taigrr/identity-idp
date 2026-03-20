@@ -1,14 +1,14 @@
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import { expect } from 'chai';
-import { t } from '@18f/identity-i18n';
+import { t } from '@/i18n';
 import {
   DeviceContext,
   UploadContextProvider,
   FailedCaptureAttemptsContextProvider,
   SelfieCaptureContext,
-} from '@18f/identity-document-capture';
-import DocumentsStep from '@18f/identity-document-capture/components/documents-step';
+} from '@/features/document-capture';
+import DocumentsStep from '@/features/document-capture/components/documents-step';
 import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 

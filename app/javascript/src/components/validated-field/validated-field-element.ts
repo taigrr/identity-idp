@@ -1,0 +1,152 @@
+class ValidatedFieldElement extends HTMLElement {
+  input: HTMLInputElement | null;
+
+  inputWrapper: HTMLElement | null;
+
+  errorMessage: HTMLElement | null;
+
+  connectedCallback() {
+    this.input = this.querySelector('.validated-field__input');
+    this.inputWrapper = this.querySelector('.validated-field__input-wrapper');
+    this.errorMessage = this.ownerDocument.getElementById(this.errorId);
+    this.input?.addEventListener('input', () => this.setErrorMessage());
+    this.input?.addEventListener('input', () => this.setInputIsValid(true));
+    this.input?.addEventListener('invalid', (event) => this.toggleErrorMessage(event));
+  }
+
+  get errorStrings(): Partial<ValidityState> {
+    try {
+      return JSON.parse(this.querySelector('.validated-field__error-strings')?.textContent || '');
+    } catch {
+      return {};
+    }
+  }
+
+  get errorId(): string {
+    return this.getAttribute('error-id')!;
+  }
+
+  get descriptorIdRefs(): string[] {
+    return this.input?.getAttribute('aria-describedby')?.split(' ').filter(Boolean) || [];
+  }
+
+  get isValid(): boolean {
+    return this.input?.getAttribute('aria-invalid') !== 'true';
+  }
+
+  /**
+   * Handles an invalid event, rendering or hiding an error message based on the input's current
+   * validity.
+   *
+   * @param event Invalid event.
+   */
+  toggleErrorMessage(event: Event) {
+    event.preventDefault();
+
+    const errorMessage = this.getNormalizedValidationMessage(this.input);
+    const isValid = !errorMessage;
+
+    this.setErrorMessage(errorMessage);
+    this.focusOnError(isValid);
+    this.setInputIsValid(isValid);
+  }
+
+  /**
+   * Renders the given message as an error, if present. Otherwise, hides any visible error message.
+   *
+   * @param message Error message to show, or empty to hide.
+   */
+  setErrorMessage(message?: string | null) {
+    if (message) {
+      this.getOrCreateErrorMessageElement();
+      this.errorMessage!.textContent = message;
+      this.errorMessage!.classList.remove('display-none');
+    } else if (this.errorMessage) {
+      this.errorMessage.textContent = '';
+      this.errorMessage.classList.add('display-none');
+    }
+  }
+
+  /**
+   * Sets input attributes corresponding to given validity state.
+   *
+   * @param isValid Whether input is valid.
+   */
+  setInputIsValid(isValid: boolean) {
+    if (isValid === this.isValid) {
+      return;
+    }
+
+    this.input?.classList.toggle('usa-input--error', !isValid);
+    this.input?.setAttribute('aria-invalid', String(!isValid));
+
+    const idRefs = this.descriptorIdRefs.filter((idRef) => idRef !== this.errorId);
+    if (!isValid) {
+      idRefs.push(this.errorId);
+    }
+    this.input?.setAttribute('aria-describedby', idRefs.join(' '));
+  }
+
+  /**
+   * Returns a validation message for the given input, normalized to use customized error strings.
+   * An empty string is returned for a valid input.
+   *
+   * @param input Input element.
+   *
+   * @return Validation message.
+   */
+  getNormalizedValidationMessage(input?: HTMLInputElement | null): string {
+    if (!input || input.validity.valid) {
+      return '';
+    }
+
+    for (const type in input.validity) {
+      if (type !== 'valid' && input.validity[type] && this.errorStrings[type]) {
+        return this.errorStrings[type];
+      }
+    }
+
+    return input.validationMessage;
+  }
+
+  /**
+   * Returns an error message element. If one doesn't already exist, it is created and appended to
+   * the root.
+   *
+   * @return Error message element.
+   */
+  getOrCreateErrorMessageElement(): Element {
+    if (!this.errorMessage) {
+      this.errorMessage = this.ownerDocument.createElement('div');
+      this.errorMessage.classList.add('usa-error-message');
+      this.errorMessage.id = this.errorId;
+      this.inputWrapper?.appendChild(this.errorMessage);
+    }
+
+    return this.errorMessage;
+  }
+
+  /**
+   * Focus on this input if it's invalid and another error element
+   * does not have focus.
+   *
+   * @param isValid Whether input is valid.
+   */
+  private focusOnError(isValid: boolean) {
+    if (!isValid && !document.activeElement?.classList.contains('usa-input--error')) {
+      this.input?.focus();
+    }
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'lg-validated-field': ValidatedFieldElement;
+  }
+}
+
+if (!customElements.get('lg-validated-field')) {
+  customElements.define('lg-validated-field', ValidatedFieldElement);
+}
+
+export default ValidatedFieldElement;

@@ -2,8 +2,8 @@ import { useContext } from 'react';
 import { renderHook, act } from '@testing-library/react-hooks';
 import FailedCaptureAttemptsContext, {
   Provider as FailedCaptureAttemptsContextProvider,
-} from '@18f/identity-document-capture/context/failed-capture-attempts';
-import SelfieCaptureContext from '@18f/identity-document-capture/context/selfie-capture';
+} from '@/features/document-capture/context/failed-capture-attempts';
+import SelfieCaptureContext from '@/features/document-capture/context/selfie-capture';
 
 describe('FailedCaptureAttemptsContextProvider', () => {
   let wrapper;

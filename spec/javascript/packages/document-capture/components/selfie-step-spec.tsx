@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import { expect } from 'chai';
-import { FailedCaptureAttemptsContextProvider } from '@18f/identity-document-capture';
-import SelfieCaptureContext from '@18f/identity-document-capture/context/selfie-capture';
-import SelfieStep from '@18f/identity-document-capture/components/selfie-step';
+import { FailedCaptureAttemptsContextProvider } from '@/features/document-capture';
+import SelfieCaptureContext from '@/features/document-capture/context/selfie-capture';
+import SelfieStep from '@/features/document-capture/components/selfie-step';
 import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 

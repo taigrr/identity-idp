@@ -1,8 +1,8 @@
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
 import { act } from '@testing-library/react';
-import { AcuantContextProvider, DeviceContext } from '@18f/identity-document-capture';
-import AcuantCaptureCanvas from '@18f/identity-document-capture/components/acuant-capture-canvas';
+import { AcuantContextProvider, DeviceContext } from '@/features/document-capture';
+import AcuantCaptureCanvas from '@/features/document-capture/components/acuant-capture-canvas';
 import { render, useAcuant } from '../../../support/document-capture';
 
 describe('document-capture/components/acuant-capture-canvas', () => {

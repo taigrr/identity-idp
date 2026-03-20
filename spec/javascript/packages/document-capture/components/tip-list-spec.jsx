@@ -1,4 +1,4 @@
-import TipList from '@18f/identity-document-capture/components/tip-list';
+import TipList from '@/features/document-capture/components/tip-list';
 
 import { render } from '../../../support/document-capture';
 

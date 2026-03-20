@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { renderHook } from '@testing-library/react-hooks';
-import ServiceProviderContext from '@18f/identity-document-capture/context/service-provider';
+import ServiceProviderContext from '@/features/document-capture/context/service-provider';
 
 describe('document-capture/context/service-provider', () => {
   it('has expected default properties', () => {

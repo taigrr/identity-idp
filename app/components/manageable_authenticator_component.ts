@@ -1,1 +1,1 @@
-import '@18f/identity-manageable-authenticator/manageable-authenticator-element';
+import '@/elements/manageable-authenticator/manageable-authenticator-element';

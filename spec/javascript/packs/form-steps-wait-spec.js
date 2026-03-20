@@ -1,5 +1,5 @@
 import { fireEvent, findByRole } from '@testing-library/dom';
-import { useSandbox } from '@18f/identity-test-helpers';
+import { useSandbox } from '@/test-helpers';
 import {
   FormStepsWait,
   getDOMFromHTML,

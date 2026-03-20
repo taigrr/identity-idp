@@ -1,1 +1,1 @@
-import '@18f/identity-spinner-button/spinner-button-element';
+import '@/components/spinner-button/spinner-button-element';

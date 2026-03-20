@@ -1,13 +1,13 @@
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import { expect } from 'chai';
-import { t } from '@18f/identity-i18n';
+import { t } from '@/i18n';
 import {
   DeviceContext,
   UploadContextProvider,
   FailedCaptureAttemptsContextProvider,
-} from '@18f/identity-document-capture';
-import PassportStep from '@18f/identity-document-capture/components/passport-step';
+} from '@/features/document-capture';
+import PassportStep from '@/features/document-capture/components/passport-step';
 import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 

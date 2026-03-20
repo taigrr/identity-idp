@@ -1,8 +1,8 @@
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
-import { AnalyticsContext } from '@18f/identity-document-capture';
-import Warning from '@18f/identity-document-capture/components/warning';
-import { TroubleshootingOptions } from '@18f/identity-components';
+import { AnalyticsContext } from '@/features/document-capture';
+import Warning from '@/features/document-capture/components/warning';
+import { TroubleshootingOptions } from '@/components';
 import { render } from '../../../support/document-capture';
 
 describe('document-capture/components/warning', () => {

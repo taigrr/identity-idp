@@ -1,1 +1,1 @@
-import '@18f/identity-countdown/countdown-alert-element';
+import '@/elements/countdown/countdown-alert-element';

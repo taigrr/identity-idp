@@ -7,8 +7,8 @@ import FileInput, {
   getAcceptPattern,
   isImage,
   isValidForAccepts,
-} from '@18f/identity-document-capture/components/file-input';
-import DeviceContext from '@18f/identity-document-capture/context/device';
+} from '@/features/document-capture/components/file-input';
+import DeviceContext from '@/features/document-capture/context/device';
 import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 

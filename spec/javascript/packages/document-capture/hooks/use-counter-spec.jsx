@@ -1,6 +1,6 @@
 import { act } from 'react-test-renderer';
 import { renderHook } from '@testing-library/react-hooks';
-import useCounter from '@18f/identity-document-capture/hooks/use-counter';
+import useCounter from '@/features/document-capture/hooks/use-counter';
 
 describe('document-capture/hooks/use-counter', () => {
   it('defaults to 0', () => {

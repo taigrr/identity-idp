@@ -3,8 +3,8 @@ import {
   hasMediaAccess,
   isCameraCapableMobile,
   isIPad,
-} from '@18f/identity-device';
-import { useDefineProperty } from '@18f/identity-test-helpers';
+} from '@/utils/device';
+import { useDefineProperty } from '@/test-helpers';
 
 describe('isIPad', () => {
   const defineProperty = useDefineProperty();

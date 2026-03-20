@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { renderHook } from '@testing-library/react-hooks';
-import useCookie from '@18f/identity-document-capture/hooks/use-cookie';
+import useCookie from '@/features/document-capture/hooks/use-cookie';
 
 describe('document-capture/hooks/use-cookie', () => {
   it('gives the current cookie value', () => {

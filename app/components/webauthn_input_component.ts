@@ -1,1 +1,1 @@
-import '@18f/identity-webauthn/webauthn-input-element';
+import '@/utils/webauthn/webauthn-input-element';

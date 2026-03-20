@@ -1,0 +1,32 @@
+import { createContext } from 'react';
+
+interface SelfieCaptureProps {
+  /**
+   * Specify whether to show the selfie capture on the doc capture screen.
+   */
+  isSelfieCaptureEnabled: boolean;
+  /**
+   * Specify whether to allow manual uploads for document capture.
+   */
+  isUploadEnabled: boolean;
+  /**
+   * Specify whether to allow uploads for selfie when in test mode.
+   */
+  isDesktopTestMode: boolean;
+  /**
+   * Specify whether to show help and an action button before showing
+   * the capture component.
+   */
+  showHelpInitially: boolean;
+}
+
+const SelfieCaptureContext = createContext<SelfieCaptureProps>({
+  isSelfieCaptureEnabled: false,
+  isUploadEnabled: true,
+  isDesktopTestMode: false,
+  showHelpInitially: true,
+});
+
+SelfieCaptureContext.displayName = 'SelfieCaptureContext';
+
+export default SelfieCaptureContext;

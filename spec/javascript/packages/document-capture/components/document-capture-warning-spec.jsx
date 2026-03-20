@@ -1,10 +1,10 @@
 import sinon from 'sinon';
-import { AnalyticsContext } from '@18f/identity-document-capture';
+import { AnalyticsContext } from '@/features/document-capture';
 import { render, screen, within } from '@testing-library/react';
-import { InPersonContext } from '@18f/identity-document-capture/context';
-import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
+import { InPersonContext } from '@/features/document-capture/context';
+import { toFormEntryError } from '@/features/document-capture/services/upload';
 import { expect } from 'chai';
-import DocumentCaptureWarning from '@18f/identity-document-capture/components/document-capture-warning';
+import DocumentCaptureWarning from '@/features/document-capture/components/document-capture-warning';
 
 describe('DocumentCaptureWarning', () => {
   const trackEvent = sinon.spy();

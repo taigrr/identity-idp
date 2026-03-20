@@ -1,0 +1,98 @@
+import { useContext } from 'react';
+
+import { PageHeading } from '@/components';
+import { FormStepsButton } from '@/features/form-steps';
+import { Cancel } from '@/features/verify-flow';
+import { useI18n, HtmlTextWithStrongNoWrap } from '@/i18n/react';
+import type { FormStepComponentProps } from '@/features/form-steps';
+
+import { SelfieCaptureContext, UploadContext } from '../context';
+
+import GeneralError from './general-error';
+import { DocumentsCaptureStep } from './documents-step';
+import { SelfieCaptureStep } from './selfie-step';
+import type { ReviewIssuesStepValue } from './review-issues-step';
+
+interface DocumentCaptureReviewIssuesProps extends FormStepComponentProps<ReviewIssuesStepValue> {
+  isFailedSelfie: boolean;
+  isFailedDocType: boolean;
+  isFailedSelfieLivenessOrQuality: boolean;
+  remainingSubmitAttempts: number;
+  hasDismissed: boolean;
+}
+
+function DocumentCaptureReviewIssues({
+  isFailedDocType,
+  isFailedSelfie,
+  isFailedSelfieLivenessOrQuality,
+  remainingSubmitAttempts = Infinity,
+  registerField = () => undefined,
+  unknownFieldErrors = [],
+  errors = [],
+  onChange = () => undefined,
+  onError = () => undefined,
+  value,
+  hasDismissed,
+}: DocumentCaptureReviewIssuesProps) {
+  const { t } = useI18n();
+  const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
+  const { idType } = useContext(UploadContext);
+  const idIsPassport = idType === 'passport';
+
+  const pageHeading = idIsPassport
+    ? t('doc_auth.headings.review_issues_passport')
+    : t('doc_auth.headings.review_issues');
+
+  const defaultSideProps = {
+    registerField,
+    onChange,
+    errors,
+    onError,
+  };
+
+  function ReviewDocumentImagesSubheader() {
+    const heading = idIsPassport
+      ? t('doc_auth.headings.passport_capture')
+      : t('doc_auth.headings.document_capture');
+
+    return <h2>{heading}</h2>;
+  }
+
+  return (
+    <>
+      <PageHeading>{pageHeading}</PageHeading>
+      {isSelfieCaptureEnabled && <ReviewDocumentImagesSubheader />}
+      <GeneralError
+        unknownFieldErrors={unknownFieldErrors}
+        isFailedDocType={isFailedDocType}
+        isFailedSelfie={isFailedSelfie}
+        isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
+        altIsFailedSelfieDontIncludeAttempts
+        altFailedDocTypeMsg={isFailedDocType ? t('doc_auth.errors.doc.doc_type_check') : null}
+        hasDismissed={hasDismissed}
+        isPassportError={idIsPassport}
+      />
+      {Number.isFinite(remainingSubmitAttempts) && (
+        <p>
+          <HtmlTextWithStrongNoWrap
+            text={t('idv.failure.attempts_html', { count: remainingSubmitAttempts })}
+          />
+        </p>
+      )}
+      <DocumentsCaptureStep defaultSideProps={defaultSideProps} value={value} isReviewStep />
+      {isSelfieCaptureEnabled && (
+        <SelfieCaptureStep
+          defaultSideProps={defaultSideProps}
+          selfieValue={value.selfie}
+          isReviewStep
+          showHelp={false}
+          showSelfieHelp={() => undefined}
+        />
+      )}
+      <FormStepsButton.Submit />
+      <Cancel />
+    </>
+  );
+}
+
+export default DocumentCaptureReviewIssues;

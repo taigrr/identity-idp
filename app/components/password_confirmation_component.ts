@@ -1,1 +1,1 @@
-import '@18f/identity-password-confirmation/password-confirmation-element';
+import '@/elements/password-confirmation/password-confirmation-element';

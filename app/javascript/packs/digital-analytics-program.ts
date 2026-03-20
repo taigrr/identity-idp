@@ -1,1 +1,1 @@
-import '@18f/identity-analytics/digital-analytics-program';
+import '@/utils/analytics/digital-analytics-program';

@@ -2,8 +2,8 @@ import {
   DeviceContext,
   SelfieCaptureContext,
   UploadContextProvider,
-} from '@18f/identity-document-capture';
-import DocumentSideAcuantCapture from '@18f/identity-document-capture/components/document-side-acuant-capture';
+} from '@/features/document-capture';
+import DocumentSideAcuantCapture from '@/features/document-capture/components/document-side-acuant-capture';
 import { expect } from 'chai';
 import { render } from '../../../support/document-capture';
 

@@ -1,1 +1,1 @@
-import '@18f/identity-clipboard-button/clipboard-button-element';
+import '@/elements/clipboard-button/clipboard-button-element';

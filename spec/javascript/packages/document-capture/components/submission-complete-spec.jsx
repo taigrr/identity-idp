@@ -1,11 +1,11 @@
 import { waitFor } from '@testing-library/dom';
-import useAsync from '@18f/identity-document-capture/hooks/use-async';
-import { UploadContextProvider } from '@18f/identity-document-capture';
+import useAsync from '@/features/document-capture/hooks/use-async';
+import { UploadContextProvider } from '@/features/document-capture';
 import SubmissionComplete, {
   RetrySubmissionError,
-} from '@18f/identity-document-capture/components/submission-complete';
-import SuspenseErrorBoundary from '@18f/identity-document-capture/components/suspense-error-boundary';
-import { useSandbox } from '@18f/identity-test-helpers';
+} from '@/features/document-capture/components/submission-complete';
+import SuspenseErrorBoundary from '@/features/document-capture/components/suspense-error-boundary';
+import { useSandbox } from '@/test-helpers';
 import { render, useDocumentCaptureForm } from '../../../support/document-capture';
 
 describe('document-capture/components/submission-complete-step', () => {

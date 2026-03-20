@@ -1,8 +1,8 @@
-import { forceRedirect } from '@18f/identity-url';
-import { requestSessionStatus, extendSession } from '@18f/identity-session';
-import type { SessionStatus } from '@18f/identity-session';
-import type { CountdownElement } from '@18f/identity-countdown/countdown-element';
-import type { ModalElement } from '@18f/identity-modal';
+import { forceRedirect } from '@/utils/url';
+import { requestSessionStatus, extendSession } from '@/services/session';
+import type { SessionStatus } from '@/services/session';
+import type { CountdownElement } from '@/elements/countdown/countdown-element';
+import type { ModalElement } from '@/elements/modal';
 
 const warningEl = document.getElementById('session-timeout-cntnr');
 

@@ -1,8 +1,8 @@
 import AcuantContext, {
   Provider as AcuantContextProvider,
   dirname,
-} from '@18f/identity-document-capture/context/acuant';
-import { AnalyticsContext, DeviceContext } from '@18f/identity-document-capture';
+} from '@/features/document-capture/context/acuant';
+import { AnalyticsContext, DeviceContext } from '@/features/document-capture';
 import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
 import { useContext } from 'react';

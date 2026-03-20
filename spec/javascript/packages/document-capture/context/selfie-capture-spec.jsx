@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { renderHook } from '@testing-library/react-hooks';
-import SelfieCaptureContext from '@18f/identity-document-capture/context/selfie-capture';
+import SelfieCaptureContext from '@/features/document-capture/context/selfie-capture';
 
 describe('document-capture/context/selfie-capture', () => {
   it('has expected default properties', () => {

@@ -1,1 +1,1 @@
-import '@18f/identity-webauthn/webauthn-verify-button-element';
+import '@/utils/webauthn/webauthn-verify-button-element';

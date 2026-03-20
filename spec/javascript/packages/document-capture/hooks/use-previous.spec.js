@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
-import usePrevious from '@18f/identity-document-capture/hooks/use-previous';
+import usePrevious from '@/features/document-capture/hooks/use-previous';
 
 describe('document-capture/hooks/use-previous', () => {
   it('returns undefined on first render', () => {

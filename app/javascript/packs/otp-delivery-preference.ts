@@ -1,6 +1,5 @@
-import { t } from '@18f/identity-i18n';
-
-import type { PhoneInputElement } from '@18f/identity-phone-input';
+import { t } from '@/i18n';
+import type { PhoneInputElement } from '@/elements/phone-input';
 
 /**
  * Returns the OTP delivery preference element.

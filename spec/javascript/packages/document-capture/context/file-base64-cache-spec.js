@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { renderHook } from '@testing-library/react-hooks';
-import FileBase64Cache from '@18f/identity-document-capture/context/file-base64-cache';
+import FileBase64Cache from '@/features/document-capture/context/file-base64-cache';
 
 describe('document-capture/context/file-base64-cache', () => {
   it('defaults to WeakMap', () => {

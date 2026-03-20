@@ -6,11 +6,11 @@ import {
   InPersonContext,
   FailedCaptureAttemptsContextProvider,
   SelfieCaptureContext,
-} from '@18f/identity-document-capture';
-import { I18n } from '@18f/identity-i18n';
-import { I18nContext } from '@18f/identity-react-i18n';
-import ReviewIssuesStep from '@18f/identity-document-capture/components/review-issues-step';
-import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
+} from '@/features/document-capture';
+import { I18n } from '@/i18n';
+import { I18nContext } from '@/i18n/react';
+import ReviewIssuesStep from '@/features/document-capture/components/review-issues-step';
+import { toFormEntryError } from '@/features/document-capture/services/upload';
 import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 

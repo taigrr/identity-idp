@@ -2,9 +2,9 @@ import { useContext } from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import UploadContext, {
   Provider as UploadContextProvider,
-} from '@18f/identity-document-capture/context/upload';
-import defaultUpload from '@18f/identity-document-capture/services/upload';
-import { useSandbox } from '@18f/identity-test-helpers';
+} from '@/features/document-capture/context/upload';
+import defaultUpload from '@/features/document-capture/services/upload';
+import { useSandbox } from '@/test-helpers';
 
 describe('document-capture/context/upload', () => {
   const sandbox = useSandbox();

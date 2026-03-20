@@ -58,7 +58,9 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'app/javascript'),
+      // New consolidated src/ directory
+      '@': resolve(__dirname, 'app/javascript/src'),
+      // Keep old package aliases for backwards compat during migration
       ...packageAliases,
     },
     // Enable source condition to resolve TypeScript source files directly

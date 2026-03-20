@@ -1,1 +1,1 @@
-import '@18f/identity-validated-field/validated-field-element';
+import '@/components/validated-field/validated-field-element';

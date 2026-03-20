@@ -1,4 +1,4 @@
-import { trackError, isTrackableErrorEvent } from '@18f/identity-analytics';
+import { trackError, isTrackableErrorEvent } from '@/utils/analytics';
 
 export interface WindowWithInitialErrors extends Window {
   _e: ErrorEvent[];

@@ -1,7 +1,9 @@
 import sinon from 'sinon';
 import { JSDOM, ResourceLoader } from 'jsdom';
-import matchMediaPolyfill from 'mq-polyfill';
+import mqPolyfill from 'mq-polyfill';
 import * as clipboard from 'clipboard-polyfill'; // See: https://github.com/jsdom/jsdom/issues/1568
+
+const matchMediaPolyfill = mqPolyfill.default || mqPolyfill;
 
 const TEST_URL = 'http://example.test';
 

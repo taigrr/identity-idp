@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { render } from '@testing-library/react';
-import CallbackOnMount from '@18f/identity-document-capture/components/callback-on-mount';
+import CallbackOnMount from '@/features/document-capture/components/callback-on-mount';
 
 describe('document-capture/components/callback-on-mount', () => {
   it('calls callback once on mount', () => {

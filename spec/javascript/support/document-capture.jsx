@@ -1,7 +1,7 @@
 import { render as baseRender, cleanup } from '@testing-library/react';
 import sinon from 'sinon';
 // @ts-ignore
-import { UploadContextProvider } from '@18f/identity-document-capture';
+import { UploadContextProvider } from '@/features/document-capture';
 
 /** @typedef {import('@testing-library/react').RenderOptions} BaseRenderOptions */
 

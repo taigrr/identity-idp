@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import withProps from '@18f/identity-document-capture/higher-order/with-props';
+import withProps from '@/features/document-capture/higher-order/with-props';
 
 describe('document-capture/higher-order/with-props', () => {
   describe('passes in property to component', () => {

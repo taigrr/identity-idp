@@ -1,0 +1,75 @@
+import { useContext } from 'react';
+
+import { TroubleshootingOptions } from '@/components';
+import { useI18n } from '@/i18n/react';
+import type { TroubleshootingOption } from '@/components/troubleshooting-options';
+
+import MarketingSiteContext from '../context/marketing-site';
+import { InPersonContext } from '../context';
+
+import InPersonCallToAction from './in-person-call-to-action';
+
+interface DocumentCaptureTroubleshootingOptionsProps {
+  /**
+   * Custom heading to show in place of default.
+   */
+  heading?: string;
+
+  /**
+   * Location parameter to append to links.
+   */
+  location?: string;
+
+  /**
+   * Whether to include tips for taking a good photo.
+   */
+  showDocumentTips?: boolean;
+}
+
+function DocumentCaptureTroubleshootingOptions({
+  heading,
+  location = 'document_capture_troubleshooting_options',
+  showDocumentTips = true,
+}: DocumentCaptureTroubleshootingOptionsProps) {
+  const { t } = useI18n();
+  const { chooseIdTypePath, inPersonURL } = useContext(InPersonContext);
+  const { getHelpCenterURL } = useContext(MarketingSiteContext);
+
+  return (
+    <>
+      {inPersonURL && <InPersonCallToAction />}
+      <TroubleshootingOptions
+        heading={heading}
+        options={
+          [
+            {
+              url: chooseIdTypePath,
+              text: t('idv.troubleshooting.options.use_another_id_type'),
+              isExternal: false,
+            },
+            showDocumentTips && {
+              url: getHelpCenterURL({
+                category: 'verify-your-identity',
+                article: 'how-to-add-images-of-your-state-issued-id',
+                location,
+              }),
+              text: t('idv.troubleshooting.options.doc_capture_tips'),
+              isExternal: true,
+            },
+            showDocumentTips && {
+              url: getHelpCenterURL({
+                category: 'verify-your-identity',
+                article: 'accepted-identification-documents',
+                location,
+              }),
+              text: t('idv.troubleshooting.options.supported_documents'),
+              isExternal: true,
+            },
+          ].filter(Boolean) as TroubleshootingOption[]
+        }
+      />
+    </>
+  );
+}
+
+export default DocumentCaptureTroubleshootingOptions;

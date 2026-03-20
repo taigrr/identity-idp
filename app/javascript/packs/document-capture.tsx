@@ -12,12 +12,12 @@ import {
   InPersonContext,
   SelfieCaptureContext,
   PassportCaptureContext,
-} from '@18f/identity-document-capture';
-import { isCameraCapableMobile } from '@18f/identity-device';
-import { FlowContext } from '@18f/identity-verify-flow';
-import { trackEvent as baseTrackEvent } from '@18f/identity-analytics';
-import { extendSession } from '@18f/identity-session';
-import type { FlowPath, DeviceContextValue } from '@18f/identity-document-capture';
+} from '@/features/document-capture';
+import { isCameraCapableMobile } from '@/utils/device';
+import { FlowContext } from '@/features/verify-flow';
+import { trackEvent as baseTrackEvent } from '@/utils/analytics';
+import { extendSession } from '@/services/session';
+import type { FlowPath, DeviceContextValue } from '@/features/document-capture';
 
 /**
  * @see MarketingSiteContextProvider

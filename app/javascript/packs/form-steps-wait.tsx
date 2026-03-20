@@ -1,8 +1,8 @@
 import { render, unmountComponentAtNode } from 'react-dom';
-import { Alert } from '@18f/identity-components';
 
-import { forceRedirect } from '@18f/identity-url';
-import type { Navigate } from '@18f/identity-url';
+import { Alert } from '@/components';
+import { forceRedirect } from '@/utils/url';
+import type { Navigate } from '@/utils/url';
 
 interface FormStepsWaitElements {
   form: HTMLFormElement;

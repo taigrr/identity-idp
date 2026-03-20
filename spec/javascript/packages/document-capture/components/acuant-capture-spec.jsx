@@ -3,17 +3,17 @@ import AcuantCapture, {
   getDecodedBase64ByteSize,
   getNormalizedAcuantCaptureFailureMessage,
   isAcuantCameraAccessFailure,
-} from '@18f/identity-document-capture/components/acuant-capture';
+} from '@/features/document-capture/components/acuant-capture';
 import {
   AcuantContextProvider,
   AnalyticsContext,
   FailedCaptureAttemptsContextProvider,
-} from '@18f/identity-document-capture';
+} from '@/features/document-capture';
 import { createEvent, waitFor, screen } from '@testing-library/dom';
 
-import DeviceContext from '@18f/identity-document-capture/context/device';
-import { I18n } from '@18f/identity-i18n';
-import { I18nContext } from '@18f/identity-react-i18n';
+import DeviceContext from '@/features/document-capture/context/device';
+import { I18n } from '@/i18n';
+import { I18nContext } from '@/i18n/react';
 import { fireEvent } from '@testing-library/react';
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';

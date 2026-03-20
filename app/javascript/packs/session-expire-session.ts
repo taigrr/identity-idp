@@ -1,6 +1,6 @@
-import { extendSession } from '@18f/identity-session';
-import type { CountdownElement } from '@18f/identity-countdown/countdown-element';
-import type { ModalElement } from '@18f/identity-modal';
+import { extendSession } from '@/services/session';
+import type { CountdownElement } from '@/elements/countdown/countdown-element';
+import type { ModalElement } from '@/elements/modal';
 
 const warningEl = document.getElementById('session-timeout-cntnr')!;
 

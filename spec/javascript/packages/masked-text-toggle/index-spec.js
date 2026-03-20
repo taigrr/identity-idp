@@ -1,4 +1,4 @@
-import MaskedTextToggle from '@18f/identity-masked-text-toggle';
+import MaskedTextToggle from '@/elements/masked-text-toggle';
 import { screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 

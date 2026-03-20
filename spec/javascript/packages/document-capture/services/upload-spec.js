@@ -3,8 +3,8 @@ import upload, {
   UploadFormEntryError,
   toFormData,
   toFormEntryError,
-} from '@18f/identity-document-capture/services/upload';
-import { useSandbox } from '@18f/identity-test-helpers';
+} from '@/features/document-capture/services/upload';
+import { useSandbox } from '@/test-helpers';
 
 describe('document-capture/services/upload', () => {
   const sandbox = useSandbox();

@@ -1,4 +1,4 @@
-import type { ModalElement } from '@18f/identity-modal';
+import type { ModalElement } from '@/elements/modal';
 
 const modal = document.querySelector<ModalElement>('lg-modal.reactivate-account-modal');
 const modalTrigger = document.getElementById('no-key-reactivate');

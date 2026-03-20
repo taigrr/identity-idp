@@ -1,8 +1,8 @@
 import sinon from 'sinon';
 import { render } from '@testing-library/react';
-import { useLogCameraInfo } from '@18f/identity-document-capture/hooks/use-log-camera-info';
-import { AnalyticsContextProvider } from '@18f/identity-document-capture/context/analytics';
-import { useDefineProperty } from '@18f/identity-test-helpers';
+import { useLogCameraInfo } from '@/features/document-capture/hooks/use-log-camera-info';
+import { AnalyticsContextProvider } from '@/features/document-capture/context/analytics';
+import { useDefineProperty } from '@/test-helpers';
 import { waitFor } from '@testing-library/dom';
 
 interface MockComponentProps {

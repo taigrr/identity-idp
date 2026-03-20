@@ -5,7 +5,7 @@ describe('platform-authenticator-available', () => {
   let isWebauthnPlatformAuthenticatorAvailable;
 
   before(async () => {
-    quibble('@18f/identity-webauthn', {
+    quibble('@/utils/webauthn', {
       isWebauthnPlatformAuthenticatorAvailable: () =>
         Promise.resolve(isWebauthnPlatformAuthenticatorAvailable),
     });

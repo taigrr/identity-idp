@@ -1,1 +1,1 @@
-import '@18f/identity-tooltip/tooltip-element';
+import '@/elements/tooltip/tooltip-element';

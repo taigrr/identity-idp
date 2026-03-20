@@ -1,7 +1,7 @@
-import { AcuantContextProvider, DeviceContext } from '@18f/identity-document-capture';
-import AcuantSelfieCamera from '@18f/identity-document-capture/components/acuant-selfie-camera';
-import AcuantSelfieCaptureCanvas from '@18f/identity-document-capture/components/acuant-selfie-capture-canvas';
-import { t } from '@18f/identity-i18n';
+import { AcuantContextProvider, DeviceContext } from '@/features/document-capture';
+import AcuantSelfieCamera from '@/features/document-capture/components/acuant-selfie-camera';
+import AcuantSelfieCaptureCanvas from '@/features/document-capture/components/acuant-selfie-capture-canvas';
+import { t } from '@/i18n';
 import { render, useAcuant } from '../../../support/document-capture';
 
 describe('document-capture/components/acuant-selfie-camera', () => {

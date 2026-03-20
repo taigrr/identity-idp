@@ -1,4 +1,5 @@
 import { webcrypto } from 'crypto';
+import React from 'react';
 import chai from 'chai';
 import dirtyChai from 'dirty-chai';
 import sinonChai from 'sinon-chai';
@@ -7,6 +8,9 @@ import { createDOM, useCleanDOM } from './support/dom';
 import { chaiConsoleSpy, useConsoleLogSpy } from './support/console';
 import { sinonChaiAsPromised } from './support/sinon';
 import { createObjectURLAsDataURL } from './support/file';
+
+// Make React available globally for JSX files using classic runtime
+global.React = React;
 
 chai.use(sinonChai);
 chai.use(chaiAsPromised);

@@ -1,4 +1,4 @@
-import { isCameraCapableMobile } from '@18f/identity-device';
+import { isCameraCapableMobile } from '@/utils/device';
 
 if (isCameraCapableMobile()) {
   const form = document.querySelector<HTMLFormElement>('.js-consent-continue-form')!;

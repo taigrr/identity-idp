@@ -1,5 +1,5 @@
 import sinon from 'sinon';
-import { useObservableProperty } from '@18f/identity-document-capture/hooks/use-observable-property';
+import { useObservableProperty } from '@/features/document-capture/hooks/use-observable-property';
 import { renderHook } from '@testing-library/react-hooks';
 
 describe('document-capture/hooks/use-observable-property', () => {
