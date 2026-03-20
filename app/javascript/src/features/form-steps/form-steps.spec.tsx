@@ -24,6 +24,76 @@ interface StepValues {
 
 const sleep = (ms: number) => () => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
+function FirstStepForm({ errors }: FormStepComponentProps<StepValues>) {
+  return (
+    <>
+      <PageHeading>First Title</PageHeading>
+      <span>First</span>
+      <FormStepsButton.Continue />
+      <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
+      <span>Errors: {errors.map(({ error }) => error.message).join(',')}</span>
+    </>
+  );
+}
+
+function SecondStepForm({
+  value = {},
+  errors = [],
+  onChange,
+  onError,
+  registerField,
+  toPreviousStep,
+}: FormStepComponentProps<StepValues>) {
+  return (
+    <>
+      <PageHeading>Second Title</PageHeading>
+      <input
+        aria-label="Second Input One"
+        ref={registerField('secondInputOne', { isRequired: true })}
+        value={value.secondInputOne || ''}
+        data-is-error={errors.some(({ field }) => field === 'secondInputOne') || undefined}
+        onChange={(event) => {
+          if (event.target.validationMessage) {
+            onError(new Error(event.target.validationMessage), { field: 'secondInputOne' });
+          } else {
+            onChange({ changed: true });
+            onChange({ secondInputOne: event.target.value });
+          }
+        }}
+      />
+      <input
+        aria-label="Second Input Two"
+        ref={registerField('secondInputTwo', { isRequired: true })}
+        value={value.secondInputTwo || ''}
+        data-is-error={errors.some(({ field }) => field === 'secondInputTwo') || undefined}
+        onChange={(event) => {
+          onChange({ changed: true });
+          onChange({ secondInputTwo: event.target.value });
+        }}
+      />
+      <button type="button" onClick={toPreviousStep}>
+        Back
+      </button>
+      <button type="button" onClick={() => onError(new Error())}>
+        Create Step Error
+      </button>
+      <FormStepsButton.Continue />
+      <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
+    </>
+  );
+}
+
+function LastStepForm() {
+  return (
+    <>
+      <PageHeading>Last Title</PageHeading>
+      <span>Last</span>
+      <FormStepsButton.Submit />
+      <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
+    </>
+  );
+}
+
 describe('FormSteps', () => {
   const sandbox = sinon.createSandbox();
 
@@ -42,73 +112,15 @@ describe('FormSteps', () => {
     {
       name: 'first',
       title: 'First Title',
-      form: ({ errors }) => (
-        <>
-          <PageHeading>First Title</PageHeading>
-          <span>First</span>
-          <FormStepsButton.Continue />
-          <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
-          <span>Errors: {errors.map(({ error }) => error.message).join(',')}</span>
-        </>
-      ),
+      form: FirstStepForm,
     },
     {
       name: 'second',
-      form: ({
-        value = {},
-        errors = [],
-        onChange,
-        onError,
-        registerField,
-        toPreviousStep,
-      }: FormStepComponentProps<StepValues>) => (
-        <>
-          <PageHeading>Second Title</PageHeading>
-          <input
-            aria-label="Second Input One"
-            ref={registerField('secondInputOne', { isRequired: true })}
-            value={value.secondInputOne || ''}
-            data-is-error={errors.some(({ field }) => field === 'secondInputOne') || undefined}
-            onChange={(event) => {
-              if (event.target.validationMessage) {
-                onError(new Error(event.target.validationMessage), { field: 'secondInputOne' });
-              } else {
-                onChange({ changed: true });
-                onChange({ secondInputOne: event.target.value });
-              }
-            }}
-          />
-          <input
-            aria-label="Second Input Two"
-            ref={registerField('secondInputTwo', { isRequired: true })}
-            value={value.secondInputTwo || ''}
-            data-is-error={errors.some(({ field }) => field === 'secondInputTwo') || undefined}
-            onChange={(event) => {
-              onChange({ changed: true });
-              onChange({ secondInputTwo: event.target.value });
-            }}
-          />
-          <button type="button" onClick={toPreviousStep}>
-            Back
-          </button>
-          <button type="button" onClick={() => onError(new Error())}>
-            Create Step Error
-          </button>
-          <FormStepsButton.Continue />
-          <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
-        </>
-      ),
+      form: SecondStepForm,
     },
     {
       name: 'last',
-      form: () => (
-        <>
-          <PageHeading>Last Title</PageHeading>
-          <span>Last</span>
-          <FormStepsButton.Submit />
-          <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
-        </>
-      ),
+      form: LastStepForm,
     },
   ];
 
@@ -244,29 +256,31 @@ describe('FormSteps', () => {
   });
 
   it('provides set onChange option for non-patch value change', async () => {
+    function NonPatchTestForm({ onChange, value }: FormStepComponentProps<{ a?: number; b?: number }>) {
+      const handleClick = useCallback(
+        sinon
+          .stub()
+          .onFirstCall()
+          .callsFake(() => onChange({ a: 1 }))
+          .onSecondCall()
+          .callsFake(() => onChange({ b: 2 }, { patch: false })),
+        [],
+      );
+      return (
+        <>
+          <button type="button" onClick={handleClick}>
+            Change Value
+          </button>
+          <span data-testid="value">{JSON.stringify(value)}</span>
+        </>
+      );
+    }
+
     const steps = [
       {
         name: 'first',
         title: 'First Title',
-        form: ({ onChange, value }) => (
-          <>
-            <button
-              type="button"
-              onClick={useCallback(
-                sinon
-                  .stub()
-                  .onFirstCall()
-                  .callsFake(() => onChange({ a: 1 }))
-                  .onSecondCall()
-                  .callsFake(() => onChange({ b: 2 }, { patch: false })),
-                [],
-              )}
-            >
-              Change Value
-            </button>
-            <span data-testid="value">{JSON.stringify(value)}</span>
-          </>
-        ),
+        form: NonPatchTestForm,
       },
     ];
 
@@ -638,19 +652,24 @@ describe('FormSteps', () => {
   });
 
   it('allows context consumers to trigger content reset', async () => {
+    function ContentResetForm() {
+      const { onPageTransition } = useContext(FormStepsContext);
+      return (
+        <>
+          <h1>Content Title</h1>
+          <button type="button" onClick={onPageTransition}>
+            Replace
+          </button>
+        </>
+      );
+    }
+
     const { getByRole } = render(
       <FormSteps
         steps={[
           {
             name: 'content-reset',
-            form: () => (
-              <>
-                <h1>Content Title</h1>
-                <button type="button" onClick={useContext(FormStepsContext).onPageTransition}>
-                  Replace
-                </button>
-              </>
-            ),
+            form: ContentResetForm,
           },
         ]}
       />,
