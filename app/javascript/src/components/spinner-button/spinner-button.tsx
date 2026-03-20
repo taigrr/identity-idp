@@ -51,7 +51,7 @@ function SpinnerButton(
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
-    if (!wrapper) return;
+    if (!wrapper) {return;}
 
     const handleSpinnerStart = () => toggleSpinner(true);
     const handleSpinnerStop = () => toggleSpinner(false);
@@ -67,11 +67,11 @@ function SpinnerButton(
   }, [toggleSpinner]);
 
   useEffect(() => {
-    if (!spinOnClick) return;
+    if (!spinOnClick) {return;}
 
     const wrapper = wrapperRef.current;
     const form = wrapper?.closest('form');
-    if (!form) return;
+    if (!form) {return;}
 
     const handleSubmit = () => toggleSpinner(true);
     form.addEventListener('submit', handleSubmit);

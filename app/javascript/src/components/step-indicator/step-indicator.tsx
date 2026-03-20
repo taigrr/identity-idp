@@ -15,10 +15,10 @@ function StepIndicator({ className, children }: StepIndicatorProps) {
 
   const setScrollOffset = useCallback(() => {
     const scroller = scrollerRef.current;
-    if (!scroller) return;
+    if (!scroller) {return;}
 
     const currentStep = scroller.querySelector('.step-indicator__step--current') as HTMLElement | null;
-    if (!currentStep) return;
+    if (!currentStep) {return;}
 
     const scrollerPaddingLeft = parseInt(window.getComputedStyle(scroller).paddingLeft, 10);
     const { scrollWidth, clientWidth } = scroller;
@@ -28,7 +28,7 @@ function StepIndicator({ className, children }: StepIndicatorProps) {
 
   const toggleWrapperFocusable = useCallback((isSmallViewport: boolean) => {
     const scroller = scrollerRef.current;
-    if (!scroller) return;
+    if (!scroller) {return;}
 
     if (isSmallViewport) {
       scroller.setAttribute('tabindex', '0');

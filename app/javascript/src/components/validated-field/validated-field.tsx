@@ -79,14 +79,14 @@ function ValidatedField<InputType extends HTMLInputElement | HTMLSelectElement>(
 
   useImperativeHandle(forwardedRef, () => inputRef.current!);
 
-  const updateValidState = useCallback((valid: boolean, message: string = '') => {
+  const updateValidState = useCallback((valid: boolean, message = '') => {
     setIsValid(valid);
     setErrorMessage(message);
   }, []);
 
   useEffect(() => {
     const input = inputRef.current;
-    if (!input) return;
+    if (!input) {return;}
 
     const originalCheckValidity = input.checkValidity.bind(input);
     const originalReportValidity = input.reportValidity.bind(input);
