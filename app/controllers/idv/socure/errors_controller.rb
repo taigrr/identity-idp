@@ -72,6 +72,7 @@ module Idv
           issuer: decorated_sp_session&.sp_issuer,
           passport_requested: document_capture_session&.passport_requested?,
           flow_path:,
+          doc_auth_vendor: document_capture_session&.doc_auth_vendor,
         )
       end
     end

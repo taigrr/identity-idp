@@ -75,6 +75,7 @@ module Idv
             issuer: service_provider&.issuer,
             passport_requested: document_capture_session&.passport_requested?,
             flow_path: :hybrid,
+            doc_auth_vendor: document_capture_session&.doc_auth_vendor,
           )
         end
 

@@ -25,6 +25,7 @@ RSpec.describe 'idv/socure/errors/show.html.erb' do
       issuer: decorated_sp_session&.sp_issuer,
       passport_requested:,
       flow_path:,
+      doc_auth_vendor: Idp::Constants::Vendors::SOCURE,
     )
   end
 

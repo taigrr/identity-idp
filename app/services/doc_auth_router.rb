@@ -210,6 +210,10 @@ module DocAuthRouter
           warn_notifier: warn_notifier,
         ),
       )
+    when Idp::Constants::Vendors::STRIPE
+      DocAuthErrorTranslatorProxy.new(
+        DocAuth::Stripe::StripeClient.new,
+      )
     else
       raise "#{vendor} is not a valid doc auth vendor"
     end
@@ -218,6 +222,8 @@ module DocAuthRouter
 
   def self.doc_auth_vendor_for_bucket(bucket, selfie: false, passport_requested: false)
     case bucket
+    when :stripe
+      Idp::Constants::Vendors::STRIPE
     when :socure
       Idp::Constants::Vendors::SOCURE
     when :lexis_nexis
@@ -228,7 +234,7 @@ module DocAuthRouter
       Idp::Constants::Vendors::MOCK
     when :mock_socure
       Idp::Constants::Vendors::SOCURE_MOCK
-    else # e.g., nil
+    else
       if selfie
         IdentityConfig.store.doc_auth_selfie_vendor_default
       elsif passport_requested

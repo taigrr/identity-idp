@@ -29,3 +29,33 @@
     </div>
   <% end %>
 </div>
+
+<div class="margin-top-4">
+  <div class="card">
+    <h2 class="margin-0">Emails</h2>
+
+    <% if @emails.empty? %>
+      <p class="margin-top-2">No emails sent yet.</p>
+    <% end %>
+
+    <% @emails.each do |email| %>
+      <div class="margin-top-4">
+        <p class="margin-y-05">
+          <strong>To:</strong> <%= email.to %>
+        </p>
+        <p class="margin-y-05">
+          <strong>Subject:</strong> <%= email.subject %>
+        </p>
+        <p class="margin-y-05">
+          <strong>Sent at:</strong> <%= email.sent_at.strftime(t('time.formats.event_timestamp')) %>
+        </p>
+        <p class="margin-y-05">
+          <% if email.confirm_link %>
+            <%= link_to 'Confirm email', email.confirm_link, class: 'usa-button margin-top-1' %>
+          <% end %>
+          <%= button_to 'Delete', test_telephony_email_path(id: email.id), method: :delete, class: 'usa-button usa-button--secondary margin-top-1' %>
+        </p>
+      </div>
+    <% end %>
+  </div>
+</div>
