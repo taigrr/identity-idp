@@ -1,0 +1,73 @@
+services:
+  postgres:
+    image: postgres:16.4-alpine
+    container_name: login-gov-idp-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: idp_admin
+      POSTGRES_PASSWORD: idp_dev_password
+      POSTGRES_DB: identity_idp
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U idp_admin -d identity_idp"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: login-gov-idp-redis
+    restart: unless-stopped
+    command: redis-server --requirepass idp_dev_redis_password
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "idp_dev_redis_password", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Optional: pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: login-gov-idp-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@login.gov
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles:
+      - tools
+
+  # Optional: Redis Commander for cache management
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: login-gov-idp-redis-commander
+    restart: unless-stopped
+    environment:
+      REDIS_HOSTS: local:redis:6379:0:idp_dev_redis_password
+    ports:
+      - "8081:8081"
+    depends_on:
+      redis:
+        condition: service_healthy
+    profiles:
+      - tools
+
+volumes:
+  postgres_data:
+  redis_data:
+  pgadmin_data:
