@@ -8,7 +8,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
-import { getConnectedAccount, revokeConnectedAccount, type ConnectedAccount } from '../actions';
+import { getConnectedAccount, revokeConnectedAccount, type ConnectedAccount } from '../../actions';
 
 export default function RevokeConnectedAccountPage() {
   const router = useRouter();

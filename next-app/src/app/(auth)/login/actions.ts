@@ -124,7 +124,7 @@ export async function login(
   // Create authenticated session
   const sessionId = generateSessionId();
   const newSession: SessionData = {
-    userId: String(user.id),
+    userId: user.id,
     userUuid: user.uuid,
     signInFlow: 'sign_in',
     signInFailureCount: 0,

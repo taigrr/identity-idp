@@ -1,161 +1,187 @@
-/**
- * Signup actions - Server Actions for user registration
- * Mirrors: app/controllers/sign_up/registrations_controller.rb
- */
-
 'use server';
 
-import { cookies } from 'next/headers';
+/**
+ * Sign Up Actions
+ * Handles user registration flow
+ * Mirrors: app/controllers/sign_up/ controllers
+ */
+
 import { redirect } from 'next/navigation';
-import { z } from 'zod';
-import { randomUUID } from 'crypto';
-import { eq } from 'drizzle-orm';
-import { db } from '@/db';
-import { users } from '@/db/schema/users';
-import { emailAddresses } from '@/db/schema/email-addresses';
-import { fingerprintEmail } from '@/lib/auth/user-service';
-import { createPiiEncryptor } from '@/lib/encryption';
-import { getSessionManager, generateSessionId, type SessionData } from '@/lib/auth/session-manager';
-import { getConfig } from '@/lib/config';
+import { cookies } from 'next/headers';
 
-const signupSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-  termsAccepted: z.boolean().refine((val) => val === true, {
-    message: 'You must accept the terms of use',
-  }),
-  emailLanguage: z.string().optional(),
-});
+const SESSION_COOKIE_NAME = 'session_id';
 
-export interface SignupState {
+interface RegisterState {
   error?: string;
   fieldErrors?: {
-    email?: string[];
-    termsAccepted?: string[];
+    email?: string;
+    terms?: string;
   };
 }
 
-export async function signup(
-  _prevState: SignupState,
-  formData: FormData
-): Promise<SignupState> {
+interface CompletionState {
+  error?: string;
+}
+
+interface SessionData {
+  userId?: string;
+  email?: string;
+  termsAccepted?: boolean;
+  signInFlow?: string;
+  spSession?: {
+    requestUrl?: string;
+    issuer?: string;
+  };
+  selectedEmailIdForLinkedIdentity?: string;
+}
+
+// TODO: Replace with actual implementations
+async function getSession(sessionId: string): Promise<SessionData | null> {
+  console.log('Getting session:', sessionId?.slice(0, 8) + '...');
+  return null;
+}
+
+async function updateSession(sessionId: string, data: Partial<SessionData>): Promise<void> {
+  console.log('Updating session:', sessionId?.slice(0, 8) + '...', data);
+}
+
+async function createUser(email: string, emailLanguage: string): Promise<{ success: boolean; userId?: string; emailTaken?: boolean }> {
+  console.log('Creating user with email:', email);
+  // TODO: Replace with actual user creation
+  return { success: true, userId: 'new-user-id' };
+}
+
+async function sendConfirmationEmail(email: string): Promise<boolean> {
+  console.log('Sending confirmation email to:', email);
+  return true;
+}
+
+async function isEmailTaken(email: string): Promise<boolean> {
+  console.log('Checking if email is taken:', email);
+  return false;
+}
+
+/**
+ * Register new user email
+ */
+export async function registerEmail(
+  _prevState: RegisterState,
+  formData: FormData,
+): Promise<RegisterState> {
+  const email = formData.get('email')?.toString().trim().toLowerCase();
+  const emailLanguage = formData.get('email_language')?.toString() || 'en';
+  const termsAccepted = formData.get('terms_accepted') === 'true';
+
+  // Validate email
+  if (!email) {
+    return { fieldErrors: { email: 'Email is required' } };
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return { fieldErrors: { email: 'Please enter a valid email address' } };
+  }
+
+  // Validate terms acceptance
+  if (!termsAccepted) {
+    return { fieldErrors: { terms: 'You must accept the terms of use' } };
+  }
+
+  // Create user or check if email exists
+  const result = await createUser(email, emailLanguage);
+
+  if (!result.success) {
+    return { error: 'Failed to create account. Please try again.' };
+  }
+
+  // Send confirmation email (even if email is taken for security)
+  await sendConfirmationEmail(email);
+
+  // Store email in session
   const cookieStore = await cookies();
-  const sessionManager = getSessionManager();
-
-  // Validate input
-  const validation = signupSchema.safeParse({
-    email: formData.get('email'),
-    termsAccepted: formData.get('termsAccepted') === 'on',
-    emailLanguage: formData.get('emailLanguage') ?? 'en',
-  });
-
-  if (!validation.success) {
-    return {
-      fieldErrors: validation.error.flatten().fieldErrors,
-    };
+  const sessionId = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+  if (sessionId) {
+    await updateSession(sessionId, {
+      email,
+      termsAccepted,
+      signInFlow: 'create_account',
+    });
   }
 
-  const { email, emailLanguage } = validation.data;
-  const normalizedEmail = email.toLowerCase().trim();
-  const fingerprint = fingerprintEmail(normalizedEmail);
+  // Redirect to verify email page
+  redirect('/signup/verify-email');
+}
 
-  // Check if email already exists
-  const existingEmail = await db
-    .select()
-    .from(emailAddresses)
-    .where(eq(emailAddresses.emailFingerprint, fingerprint))
-    .limit(1);
+/**
+ * Resend confirmation email
+ */
+export async function resendConfirmationEmail(): Promise<{ success: boolean; error?: string }> {
+  const cookieStore = await cookies();
+  const sessionId = cookieStore.get(SESSION_COOKIE_NAME)?.value;
 
-  if (existingEmail.length > 0) {
-    // Email exists - we still "succeed" but send a different email
-    // This prevents email enumeration attacks
-    // In production, this would trigger a "someone tried to sign up with your email" notification
-
-    // Store email in session and redirect to verification page
-    const sessionId = generateSessionId();
-    const session: SessionData = {
-      signInFlow: 'sign_up',
-      flash: {
-        flashes: {
-          email: normalizedEmail,
-        },
-      },
-    };
-
-    await sessionManager.create(sessionId, session);
-
-    cookieStore.set('session_id', sessionId, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24,
-    });
-
-    redirect('/signup/verify-email');
+  if (!sessionId) {
+    return { success: false, error: 'Session expired' };
   }
 
-  // Create new user
-  const config = getConfig();
-  const userUuid = randomUUID();
-  const piiEncryptor = createPiiEncryptor(config.passwordPepper);
-
-  // Encrypt email for storage
-  const encryptedEmail = await piiEncryptor.encrypt(normalizedEmail, userUuid);
-
-  try {
-    // Create user
-    const [newUser] = await db
-      .insert(users)
-      .values({
-        uuid: userUuid,
-        emailLanguage: emailLanguage ?? 'en',
-        acceptedTermsAt: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
-      .returning();
-
-    // Generate confirmation token
-    const confirmationToken = randomUUID();
-
-    // Create email address record
-    await db.insert(emailAddresses).values({
-      userId: newUser.id,
-      encryptedEmail,
-      emailFingerprint: fingerprint,
-      confirmationToken,
-      confirmationSentAt: new Date(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
-
-    // TODO: Send confirmation email
-    // await sendConfirmationEmail(normalizedEmail, confirmationToken);
-
-    // Create session
-    const sessionId = generateSessionId();
-    const session: SessionData = {
-      signInFlow: 'sign_up',
-      flash: {
-        flashes: {
-          email: normalizedEmail,
-        },
-      },
-    };
-
-    await sessionManager.create(sessionId, session);
-
-    cookieStore.set('session_id', sessionId, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24,
-    });
-
-    redirect('/signup/verify-email');
-  } catch (error) {
-    console.error('Error creating user:', error);
-    return {
-      error: 'An error occurred while creating your account. Please try again.',
-    };
+  const session = await getSession(sessionId);
+  if (!session?.email) {
+    return { success: false, error: 'No email found in session' };
   }
+
+  const sent = await sendConfirmationEmail(session.email);
+  return { success: sent };
+}
+
+/**
+ * Complete registration and redirect to SP
+ */
+export async function completeRegistration(
+  _prevState: CompletionState,
+  formData: FormData,
+): Promise<CompletionState> {
+  const cookieStore = await cookies();
+  const sessionId = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+
+  if (!sessionId) {
+    redirect('/sign-in');
+  }
+
+  const session = await getSession(sessionId);
+  if (!session?.userId) {
+    redirect('/sign-in');
+  }
+
+  // Record selected email for SP
+  const selectedEmailId = formData.get('selected_email_id')?.toString();
+  if (selectedEmailId) {
+    await updateSession(sessionId, {
+      selectedEmailIdForLinkedIdentity: selectedEmailId,
+    });
+  }
+
+  // Redirect to SP or account
+  if (session.spSession?.requestUrl) {
+    redirect(session.spSession.requestUrl);
+  }
+
+  redirect('/account');
+}
+
+/**
+ * Cancel registration
+ */
+export async function cancelRegistration(): Promise<void> {
+  const cookieStore = await cookies();
+  const sessionId = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+
+  if (sessionId) {
+    // Clear session data
+    await updateSession(sessionId, {
+      email: undefined,
+      termsAccepted: undefined,
+      signInFlow: undefined,
+    });
+  }
+
+  redirect('/');
 }

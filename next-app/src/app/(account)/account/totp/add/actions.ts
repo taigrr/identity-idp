@@ -7,7 +7,8 @@
 
 import { cookies } from 'next/headers';
 import { getSessionManager } from '@/lib/auth/session-manager';
-import { generateTotpSecret, verifyTotp, generateTotpUri, generateQrCodeSvg } from '@/lib/mfa/totp';
+import { generateSecret, verifyTotpCode, generateTotpUri } from '@/lib/mfa/totp';
+import { toDataURL } from 'qrcode';
 
 export interface TotpSetupData {
   secret: string;
@@ -41,7 +42,7 @@ export async function setupTotp(): Promise<TotpSetupResult> {
   }
 
   // Generate a new TOTP secret
-  const secret = generateTotpSecret();
+  const secret = generateSecret();
   const issuer = process.env.TOTP_ISSUER || 'Login.gov';
 
   // Store secret in session for verification
@@ -55,7 +56,7 @@ export async function setupTotp(): Promise<TotpSetupResult> {
 
   // Generate QR code
   const uri = generateTotpUri(secret, userEmail, issuer);
-  const qrCodeSvg = await generateQrCodeSvg(uri);
+  const qrCodeSvg = await toDataURL(uri);
 
   return {
     success: true,
@@ -90,8 +91,8 @@ export async function verifyTotpSetup(params: {
   }
 
   // Verify the code
-  const isValid = verifyTotp(secret, params.code);
-  if (!isValid) {
+  const timestamp = verifyTotpCode(secret, params.code);
+  if (timestamp === null) {
     return { success: false, error: 'Invalid code. Please try again.' };
   }
 

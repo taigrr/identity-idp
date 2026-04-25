@@ -7,12 +7,26 @@
 
 import { useActionState } from 'react';
 import Link from 'next/link';
-import { verifyBackupCode, BackupCodeActionState } from '../../actions';
+import { verifyBackupCode } from '../actions';
+
+interface BackupCodeActionState {
+  success: boolean;
+  error?: string;
+}
+
+async function verifyBackupCodeAction(
+  prevState: BackupCodeActionState,
+  formData: FormData
+): Promise<BackupCodeActionState> {
+  const code = formData.get('code') as string;
+  const result = await verifyBackupCode({ code });
+  return { success: result.success, error: result.error };
+}
 
 const initialState: BackupCodeActionState = { success: false };
 
 export default function BackupCodeVerificationPage() {
-  const [state, formAction, pending] = useActionState(verifyBackupCode, initialState);
+  const [state, formAction, pending] = useActionState(verifyBackupCodeAction, initialState);
 
   return (
     <div className="backup-code-verification-page">
@@ -36,9 +50,6 @@ export default function BackupCodeVerificationPage() {
             Backup code
           </label>
           <span className="usa-hint">12 characters, xxxx-xxxx-xxxx format</span>
-          {state.fieldErrors?.code && (
-            <span className="usa-error-message">{state.fieldErrors.code}</span>
-          )}
           <input
             className="usa-input"
             id="code"

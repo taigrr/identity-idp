@@ -1,0 +1,20 @@
+{
+  "common": {
+    "app_name": "Login.gov",
+    "continue": "Continuer",
+    "cancel": "Annuler",
+    "submit": "Soumettre",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "back": "Retour",
+    "close": "Fermer",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès"
+  },
+  "auth": {
+    "sign_in": "Se connecter",
+    "sign_out": "Se déconnecter",
+    "sign_up": "Créer un compte"
+  }
+}

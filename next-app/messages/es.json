@@ -1,0 +1,107 @@
+{
+  "common": {
+    "app_name": "Login.gov",
+    "continue": "Continuar",
+    "cancel": "Cancelar",
+    "submit": "Enviar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "back": "Atrás",
+    "close": "Cerrar",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito"
+  },
+  "account": {
+    "welcome": "Bienvenido",
+    "navigation": {
+      "your_account": "Su cuenta",
+      "connected_accounts": "Sus cuentas conectadas",
+      "two_factor_authentication": "Sus métodos de autenticación",
+      "history": "Historial",
+      "delete_account": "Eliminar cuenta",
+      "edit_password": "Editar contraseña",
+      "add_email": "Agregar dirección de correo electrónico",
+      "add_phone_number": "Agregar número de teléfono",
+      "add_security_key": "Agregar clave de seguridad",
+      "add_platform_authenticator": "Agregar desbloqueo facial o táctil",
+      "add_authentication_apps": "Agregar aplicaciones de autenticación",
+      "add_federal_id": "Agregar su identificación de empleado del gobierno",
+      "get_backup_codes": "Obtener códigos de respaldo",
+      "reset_personal_key": "Restablecer clave personal",
+      "forget_browsers": "Olvidar todos los navegadores",
+      "customer_support": "Atención al cliente"
+    },
+    "index": {
+      "email": "Dirección de correo electrónico",
+      "email_addresses": "Direcciones de correo electrónico",
+      "email_add": "Agregar nuevo correo electrónico",
+      "password": "Contraseña",
+      "phone": "Números de teléfono",
+      "phone_add": "Agregar teléfono",
+      "backup_codes": "Códigos de respaldo",
+      "backup_codes_exist": "Generados",
+      "backup_codes_no_exist": "No generados",
+      "webauthn": "Clave de seguridad",
+      "webauthn_add": "Agregar clave de seguridad",
+      "webauthn_platform": "Desbloqueo facial o táctil",
+      "webauthn_platform_add": "Agregar desbloqueo facial o táctil",
+      "auth_app_add": "Agregar aplicación",
+      "auth_app_enabled": "habilitado",
+      "auth_app_disabled": "no habilitado",
+      "piv_cac_add": "Agregar ID",
+      "default": "predeterminado"
+    }
+  },
+  "auth": {
+    "sign_in": "Iniciar sesión",
+    "sign_out": "Cerrar sesión",
+    "sign_up": "Crear una cuenta",
+    "email": {
+      "label": "Dirección de correo electrónico",
+      "placeholder": "Ingrese su correo electrónico"
+    },
+    "password": {
+      "label": "Contraseña",
+      "placeholder": "Ingrese su contraseña",
+      "forgot": "¿Olvidó su contraseña?"
+    },
+    "two_factor": {
+      "title": "Autenticación de dos factores",
+      "options": "Opciones de autenticación",
+      "enter_code": "Ingrese su código de un solo uso",
+      "code_sent": "Enviamos un código a {destination}",
+      "resend": "Reenviar código",
+      "remember_device": "Recordar este dispositivo por 30 días"
+    }
+  },
+  "mfa": {
+    "sms": {
+      "name": "Mensaje de texto (SMS)",
+      "description": "Reciba un código enviado a su teléfono por mensaje de texto"
+    },
+    "voice": {
+      "name": "Llamada telefónica",
+      "description": "Reciba un código mediante una llamada telefónica automatizada"
+    },
+    "totp": {
+      "name": "Aplicación de autenticación",
+      "description": "Use una aplicación como Google Authenticator"
+    },
+    "webauthn": {
+      "name": "Clave de seguridad",
+      "description": "Use una clave de seguridad física"
+    },
+    "backup_codes": {
+      "name": "Códigos de respaldo",
+      "description": "Use un código de respaldo pregenerado"
+    }
+  },
+  "errors": {
+    "general": "Algo salió mal. Por favor, inténtelo de nuevo.",
+    "invalid_email": "Ingrese una dirección de correo electrónico válida",
+    "invalid_password": "La contraseña es incorrecta",
+    "invalid_otp": "Ese código no es válido. Por favor, inténtelo de nuevo.",
+    "rate_limited": "Demasiados intentos. Por favor, inténtelo más tarde."
+  }
+}

@@ -9,7 +9,25 @@ import { useActionState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { verifyOtp, resendOtp, OtpActionState } from '../../actions';
+import { verifySmsCode, sendSmsCode } from '../actions';
+
+interface OtpActionState {
+  success: boolean;
+  error?: string;
+  fieldErrors?: Record<string, string>;
+}
+
+async function verifyOtp(prevState: OtpActionState, formData: FormData): Promise<OtpActionState> {
+  const code = formData.get('code') as string;
+  const result = await verifySmsCode({ code });
+  return { success: result.success, error: result.error };
+}
+
+async function resendOtp(prevState: OtpActionState, formData: FormData): Promise<OtpActionState> {
+  const method = formData.get('method') as string;
+  const result = await sendSmsCode({ deliveryMethod: method === 'voice' ? 'voice' : 'sms' });
+  return { success: result.success, error: result.error };
+}
 
 const initialState: OtpActionState = { success: false };
 

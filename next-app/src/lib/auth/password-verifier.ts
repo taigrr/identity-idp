@@ -196,3 +196,27 @@ export class PasswordVerifier {
 export function createPasswordVerifier(): PasswordVerifier {
   return new PasswordVerifier();
 }
+
+/**
+ * Convenience function to hash a password for storage
+ */
+export async function hashPassword(password: string, userUuid?: string): Promise<string> {
+  const verifier = createPasswordVerifier();
+  return verifier.createDigest(password, userUuid || 'anonymous');
+}
+
+/**
+ * Convenience function to verify a password against a stored digest
+ */
+export async function verifyPassword(
+  password: string,
+  storedDigest: string,
+  userUuid?: string
+): Promise<boolean> {
+  const verifier = createPasswordVerifier();
+  return verifier.verify(
+    password,
+    { multi_region: storedDigest },
+    userUuid || 'anonymous'
+  );
+}

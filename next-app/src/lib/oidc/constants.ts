@@ -39,12 +39,18 @@ export const ACR_VALUES = {
 // All valid ACR values
 export const VALID_AUTHN_CONTEXTS = Object.values(ACR_VALUES);
 
-// Facial match IAL contexts
+// Facial match IAL contexts (all facial match options)
 export const FACIAL_MATCH_IAL_CONTEXTS = [
   ACR_VALUES.IAL_VERIFIED_FACIAL_MATCH_REQUIRED,
   ACR_VALUES.IAL_VERIFIED_FACIAL_MATCH_PREFERRED,
   ACR_VALUES.IAL2_BIO_REQUIRED,
   ACR_VALUES.IAL2_BIO_PREFERRED,
+];
+
+// Facial match REQUIRED contexts (not preferred)
+export const FACIAL_MATCH_REQUIRED_IAL_CONTEXTS = [
+  ACR_VALUES.IAL_VERIFIED_FACIAL_MATCH_REQUIRED,
+  ACR_VALUES.IAL2_BIO_REQUIRED,
 ];
 
 // ACR to IAL mapping (0 = IALMAX, 1 = IAL1, 2 = IAL2)

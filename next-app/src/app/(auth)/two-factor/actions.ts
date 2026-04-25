@@ -1,254 +1,266 @@
 /**
- * 2FA Options page - Select MFA method
- * Mirrors: app/controllers/two_factor_authentication/options_controller.rb
+ * Two-Factor Authentication Actions
+ * Mirrors: app/controllers/two_factor_authentication/*_controller.rb
  */
 
 'use server';
 
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
-import { getSessionManager, type SessionData } from '@/lib/auth/session-manager';
+import { getSession, updateSession } from '@/lib/auth/session-manager';
+import { authenticateAuthApp } from '@/lib/db/auth-app';
+import { validateAndConsumeBackupCode } from '@/lib/db/backup-codes';
 
-export type MfaMethod = 'totp' | 'sms' | 'voice' | 'webauthn' | 'backup_code';
+const SESSION_COOKIE_NAME = 'session_id';
 
-export interface MfaOption {
+interface VerifyResult {
+  success: boolean;
+  redirectTo?: string;
+  error?: string;
+}
+
+interface SendCodeResult {
+  success: boolean;
+  error?: string;
+}
+
+async function getSessionId(): Promise<string | null> {
+  const cookieStore = await cookies();
+  return cookieStore.get(SESSION_COOKIE_NAME)?.value || null;
+}
+
+export async function verifyTotpCode(params: {
+  code: string;
+  rememberDevice?: boolean;
+}): Promise<VerifyResult> {
+  const sessionId = await getSessionId();
+  if (!sessionId) {
+    return { success: false, error: 'Not authenticated' };
+  }
+
+  const session = await getSession(sessionId);
+  if (!session?.userId) {
+    return { success: false, error: 'Session expired' };
+  }
+
+  const { code, rememberDevice } = params;
+
+  // Validate code format
+  const cleanCode = code.replace(/\s/g, '');
+  if (!/^\d{6}$/.test(cleanCode)) {
+    return { success: false, error: 'Code must be 6 digits' };
+  }
+
+  try {
+    const config = await authenticateAuthApp(session.userId, cleanCode);
+
+    if (!config) {
+      return { success: false, error: 'Invalid code. Please try again.' };
+    }
+
+    // Mark MFA as verified
+    await updateSession(sessionId, {
+      mfaVerified: true,
+      mfaVerifiedAt: new Date().toISOString(),
+    });
+
+    // Determine redirect
+    const spSession = session.spSession;
+    const redirectTo = spSession?.requestUrl || '/account';
+
+    return { success: true, redirectTo };
+  } catch (error) {
+    console.error('Failed to verify TOTP:', error);
+    return { success: false, error: 'An error occurred. Please try again.' };
+  }
+}
+
+export async function verifyBackupCode(params: {
+  code: string;
+}): Promise<VerifyResult> {
+  const sessionId = await getSessionId();
+  if (!sessionId) {
+    return { success: false, error: 'Not authenticated' };
+  }
+
+  const session = await getSession(sessionId);
+  if (!session?.userId) {
+    return { success: false, error: 'Session expired' };
+  }
+
+  const { code } = params;
+
+  if (!code || code.length < 6) {
+    return { success: false, error: 'Please enter a valid backup code' };
+  }
+
+  try {
+    const createdAt = await validateAndConsumeBackupCode(session.userId, code);
+
+    if (!createdAt) {
+      return {
+        success: false,
+        error: 'Invalid backup code. Please try again.',
+      };
+    }
+
+    // Mark MFA as verified
+    await updateSession(sessionId, {
+      mfaVerified: true,
+      mfaVerifiedAt: new Date().toISOString(),
+    });
+
+    // Determine redirect
+    const spSession = session.spSession;
+    const redirectTo = spSession?.requestUrl || '/account';
+
+    return { success: true, redirectTo };
+  } catch (error) {
+    console.error('Failed to verify backup code:', error);
+    return { success: false, error: 'An error occurred. Please try again.' };
+  }
+}
+
+export async function sendSmsCode(params?: {
+  deliveryMethod?: 'sms' | 'voice';
+}): Promise<SendCodeResult> {
+  const sessionId = await getSessionId();
+  if (!sessionId) {
+    return { success: false, error: 'Not authenticated' };
+  }
+
+  const session = await getSession(sessionId);
+  if (!session?.userId) {
+    return { success: false, error: 'Session expired' };
+  }
+
+  // Generate OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  await updateSession(sessionId, {
+    twoFactorOtp: otp,
+    twoFactorOtpSentAt: Date.now(),
+  });
+
+  // TODO: Send actual SMS/voice OTP via Telephony service
+  console.log(`[DEV] 2FA OTP: ${otp}`);
+
+  return { success: true };
+}
+
+export async function verifySmsCode(params: {
+  code: string;
+  rememberDevice?: boolean;
+}): Promise<VerifyResult> {
+  const sessionId = await getSessionId();
+  if (!sessionId) {
+    return { success: false, error: 'Not authenticated' };
+  }
+
+  const session = await getSession(sessionId);
+  if (!session?.userId) {
+    return { success: false, error: 'Session expired' };
+  }
+
+  const { code } = params;
+
+  // Validate code format
+  const cleanCode = code.replace(/\s/g, '');
+  if (!/^\d{6}$/.test(cleanCode)) {
+    return { success: false, error: 'Code must be 6 digits' };
+  }
+
+  // Check code against session
+  const storedOtp = session.twoFactorOtp;
+  const sentAt = session.twoFactorOtpSentAt;
+
+  if (!storedOtp) {
+    return { success: false, error: 'Code not sent. Please resend.' };
+  }
+
+  // Check expiry (10 minutes)
+  if (sentAt && Date.now() - (sentAt as number) > 10 * 60 * 1000) {
+    return { success: false, error: 'Code has expired. Please resend.' };
+  }
+
+  // Verify code
+  if (cleanCode !== storedOtp) {
+    return { success: false, error: 'Invalid code. Please try again.' };
+  }
+
+  // Mark MFA as verified
+  await updateSession(sessionId, {
+    mfaVerified: true,
+    mfaVerifiedAt: new Date().toISOString(),
+    twoFactorOtp: undefined,
+    twoFactorOtpSentAt: undefined,
+  });
+
+  // Determine redirect
+  const spSession = session.spSession;
+  const redirectTo = spSession?.requestUrl || '/account';
+
+  return { success: true, redirectTo };
+}
+
+// MFA method types and exports
+export type MfaMethod = 'totp' | 'sms' | 'voice' | 'backup_code' | 'webauthn' | 'piv_cac';
+
+interface MfaOption {
   method: MfaMethod;
   label: string;
   configured: boolean;
 }
 
-export interface TwoFactorState {
-  userId?: string;
-  userUuid?: string;
+interface MfaState {
   availableMethods: MfaOption[];
-  error?: string;
+  selectedMethod?: MfaMethod;
 }
 
-export async function getAvailableMfaMethods(): Promise<TwoFactorState> {
-  const cookieStore = await cookies();
-  const sessionManager = getSessionManager();
-  const sessionId = cookieStore.get('session_id')?.value;
-
+export async function getAvailableMfaMethods(): Promise<MfaState> {
+  const sessionId = await getSessionId();
   if (!sessionId) {
-    redirect('/login');
+    return { availableMethods: [] };
   }
 
-  const session = await sessionManager.get(sessionId);
+  const session = await getSession(sessionId);
   if (!session?.userId) {
-    redirect('/login');
+    return { availableMethods: [] };
   }
 
-  // TODO: Fetch actual MFA configurations from database
-  // For now, return mock data
-  const availableMethods: MfaOption[] = [
-    { method: 'totp', label: 'Authentication app', configured: false },
-    { method: 'sms', label: 'Text message (SMS)', configured: false },
-    { method: 'voice', label: 'Phone call', configured: false },
-    { method: 'webauthn', label: 'Security key', configured: false },
-    { method: 'backup_code', label: 'Backup codes', configured: false },
-  ];
-
+  // TODO: Query database for configured MFA methods
+  // For now, return default set
   return {
-    userId: session.userId,
-    userUuid: session.userUuid,
-    availableMethods,
+    availableMethods: [
+      { method: 'totp', label: 'Authentication app', configured: true },
+      { method: 'sms', label: 'Text message (SMS)', configured: true },
+      { method: 'backup_code', label: 'Backup code', configured: true },
+    ],
   };
 }
 
-export async function selectMfaMethod(method: MfaMethod): Promise<void> {
-  const cookieStore = await cookies();
-  const sessionManager = getSessionManager();
-  const sessionId = cookieStore.get('session_id')?.value;
-
+export async function selectMfaMethod(method: MfaMethod): Promise<{ success: boolean; redirectTo?: string }> {
+  const sessionId = await getSessionId();
   if (!sessionId) {
-    redirect('/login');
-  }
-
-  const session = await sessionManager.get(sessionId);
-  if (!session?.userId) {
-    redirect('/login');
+    return { success: false };
   }
 
   // Store selected method in session
-  await sessionManager.update(sessionId, {
-    ...session,
-    mfaMethod: method,
-  } as SessionData);
-
-  // Redirect to appropriate verification page
-  switch (method) {
-    case 'totp':
-      redirect('/two-factor/totp');
-    case 'sms':
-    case 'voice':
-      redirect('/two-factor/otp');
-    case 'webauthn':
-      redirect('/two-factor/webauthn');
-    case 'backup_code':
-      redirect('/two-factor/backup-code');
-    default:
-      redirect('/two-factor');
+  const session = await getSession(sessionId);
+  if (session) {
+    await updateSession(sessionId, {
+      selectedMfaMethod: method,
+    });
   }
-}
 
-// OTP Verification Actions
-export interface OtpActionState {
-  success: boolean;
-  error?: string;
-  fieldErrors?: {
-    code?: string;
+  // Redirect based on method
+  const redirectMap: Record<MfaMethod, string> = {
+    totp: '/two-factor/totp',
+    sms: '/two-factor/sms',
+    voice: '/two-factor/voice',
+    backup_code: '/two-factor/backup-code',
+    webauthn: '/two-factor/webauthn',
+    piv_cac: '/two-factor/piv-cac',
   };
-}
 
-export async function verifyOtp(
-  prevState: OtpActionState,
-  formData: FormData
-): Promise<OtpActionState> {
-  const cookieStore = await cookies();
-  const sessionManager = getSessionManager();
-  const sessionId = cookieStore.get('session_id')?.value;
-
-  if (!sessionId) {
-    return { success: false, error: 'Not authenticated' };
-  }
-
-  const session = await sessionManager.get(sessionId);
-  if (!session?.userId) {
-    return { success: false, error: 'Not authenticated' };
-  }
-
-  const code = formData.get('code') as string;
-  const method = formData.get('method') as string;
-  const rememberDevice = formData.get('rememberDevice') === 'true';
-
-  // Validate code format
-  if (!code || !/^\d{6}$/.test(code)) {
-    return {
-      success: false,
-      fieldErrors: { code: 'Please enter a valid 6-digit code' },
-    };
-  }
-
-  // TODO: Verify OTP against stored value
-  // In a real implementation, this would:
-  // 1. Get the expected OTP from session or database
-  // 2. Verify it matches and hasn't expired
-  // 3. Mark the user as fully authenticated
-
-  // Mock verification - accept code "123456" for testing
-  const sessionData = session as Record<string, unknown>;
-  const expectedOtp = sessionData.pendingOtp as string | undefined;
-
-  if (expectedOtp && code !== expectedOtp && code !== '123456') {
-    return {
-      success: false,
-      fieldErrors: { code: 'Invalid code. Please try again.' },
-    };
-  }
-
-  // Mark user as fully authenticated
-  await sessionManager.update(sessionId, {
-    ...session,
-    fullyAuthenticated: true,
-    authenticatedAt: Date.now(),
-    rememberDevice,
-  } as SessionData);
-
-  // Clear pending OTP
-  const { pendingOtp: _, ...cleanSession } = sessionData;
-  await sessionManager.update(sessionId, cleanSession as SessionData);
-
-  redirect('/account');
-}
-
-export async function resendOtp(
-  prevState: OtpActionState,
-  formData: FormData
-): Promise<OtpActionState> {
-  const cookieStore = await cookies();
-  const sessionManager = getSessionManager();
-  const sessionId = cookieStore.get('session_id')?.value;
-
-  if (!sessionId) {
-    return { success: false, error: 'Not authenticated' };
-  }
-
-  const session = await sessionManager.get(sessionId);
-  if (!session?.userId) {
-    return { success: false, error: 'Not authenticated' };
-  }
-
-  const method = formData.get('method') as string;
-
-  // Generate new OTP
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-  // Store OTP in session
-  await sessionManager.update(sessionId, {
-    ...session,
-    pendingOtp: otp,
-    otpSentAt: Date.now(),
-  } as SessionData);
-
-  // TODO: Send OTP via SMS or voice call
-  console.log(`[DEV] Resent OTP via ${method}: ${otp}`);
-
-  return { success: true };
-}
-
-// Backup Code Verification Actions
-export interface BackupCodeActionState {
-  success: boolean;
-  error?: string;
-  fieldErrors?: {
-    code?: string;
-  };
-}
-
-export async function verifyBackupCode(
-  prevState: BackupCodeActionState,
-  formData: FormData
-): Promise<BackupCodeActionState> {
-  const cookieStore = await cookies();
-  const sessionManager = getSessionManager();
-  const sessionId = cookieStore.get('session_id')?.value;
-
-  if (!sessionId) {
-    return { success: false, error: 'Not authenticated' };
-  }
-
-  const session = await sessionManager.get(sessionId);
-  if (!session?.userId) {
-    return { success: false, error: 'Not authenticated' };
-  }
-
-  const code = formData.get('code') as string;
-
-  // Validate code format (xxxx-xxxx-xxxx)
-  const cleanCode = code.replace(/-/g, '').toUpperCase();
-  if (!cleanCode || cleanCode.length !== 12) {
-    return {
-      success: false,
-      fieldErrors: { code: 'Please enter a valid backup code' },
-    };
-  }
-
-  // TODO: Verify backup code against stored hashes
-  // In a real implementation:
-  // 1. Get user's backup codes from database
-  // 2. Compare hash of submitted code against stored hashes
-  // 3. If match, mark code as used and authenticate user
-
-  // Mock verification - accept any properly formatted code
-  console.log(`[DEV] Backup code verified: ${cleanCode}`);
-
-  // Mark user as fully authenticated
-  await sessionManager.update(sessionId, {
-    ...session,
-    fullyAuthenticated: true,
-    authenticatedAt: Date.now(),
-    authenticatedVia: 'backup_code',
-  } as SessionData);
-
-  redirect('/account');
+  return { success: true, redirectTo: redirectMap[method] };
 }

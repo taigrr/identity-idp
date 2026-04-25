@@ -1,99 +1,69 @@
-/**
- * Signup page - Create account form
- * Mirrors: app/views/sign_up/registrations/new.html.erb
- */
-
 'use client';
 
-import { useActionState } from 'react';
-import { signup, type SignupState } from './actions';
+/**
+ * Signup Page
+ * /signup
+ * User registration with email
+ * Mirrors: app/controllers/sign_up/registrations_controller.rb
+ */
 
-const initialState: SignupState = {};
+import { useState, useActionState } from 'react';
+import Link from 'next/link';
+import { registerEmail } from './actions';
+
+const initialState = {
+  error: undefined,
+  fieldErrors: undefined,
+};
 
 export default function SignupPage() {
-  const [state, formAction, isPending] = useActionState(signup, initialState);
+  const [state, formAction, isPending] = useActionState(registerEmail, initialState);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   return (
-    <main
-      style={{
-        maxWidth: '500px',
-        margin: '0 auto',
-        padding: '2rem',
-        fontFamily: 'system-ui, sans-serif',
-      }}
-    >
-      <h1 style={{ marginBottom: '1.5rem' }}>Create your account</h1>
+    <div className="max-w-md mx-auto">
+      <h1 className="text-2xl font-bold mb-2">Create your account</h1>
+      <p className="text-gray-600 mb-6">
+        Enter your email address to get started.
+      </p>
 
       {state.error && (
-        <div
-          role="alert"
-          style={{
-            padding: '1rem',
-            marginBottom: '1rem',
-            backgroundColor: '#fee2e2',
-            border: '1px solid #fca5a5',
-            borderRadius: '4px',
-            color: '#b91c1c',
-          }}
-        >
-          {state.error}
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+          <p className="text-red-800">{state.error}</p>
         </div>
       )}
 
-      <form action={formAction}>
-        <div style={{ marginBottom: '1rem' }}>
-          <label
-            htmlFor="email"
-            style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}
-          >
+      <form action={formAction} className="space-y-6">
+        {/* Email */}
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
             Email address
           </label>
           <input
+            type="email"
             id="email"
             name="email"
-            type="email"
             autoComplete="email"
             required
-            aria-describedby={state.fieldErrors?.email ? 'email-error' : undefined}
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              border: state.fieldErrors?.email
-                ? '2px solid #b91c1c'
-                : '1px solid #d1d5db',
-              borderRadius: '4px',
-              fontSize: '1rem',
-            }}
+            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+              state.fieldErrors?.email ? 'border-red-500' : 'border-gray-300'
+            }`}
           />
           {state.fieldErrors?.email && (
-            <p
-              id="email-error"
-              style={{ marginTop: '0.25rem', color: '#b91c1c', fontSize: '0.875rem' }}
-            >
-              {state.fieldErrors.email[0]}
-            </p>
+            <p className="mt-1 text-sm text-red-600">{state.fieldErrors.email}</p>
           )}
         </div>
 
-        <div style={{ marginBottom: '1rem' }}>
-          <label
-            htmlFor="emailLanguage"
-            style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}
-          >
+        {/* Email Language */}
+        <div>
+          <label htmlFor="email_language" className="block text-sm font-medium text-gray-700 mb-1">
             Email language preference
           </label>
           <select
-            id="emailLanguage"
-            name="emailLanguage"
+            id="email_language"
+            name="email_language"
             defaultValue="en"
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              border: '1px solid #d1d5db',
-              borderRadius: '4px',
-              fontSize: '1rem',
-              backgroundColor: 'white',
-            }}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="en">English</option>
             <option value="es">Español</option>
@@ -102,65 +72,47 @@ export default function SignupPage() {
           </select>
         </div>
 
-        <div style={{ marginBottom: '1.5rem' }}>
-          <label
-            style={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: '0.75rem',
-              cursor: 'pointer',
-            }}
-          >
-            <input
-              type="checkbox"
-              name="termsAccepted"
-              required
-              style={{ marginTop: '0.25rem' }}
-            />
-            <span style={{ fontSize: '0.875rem' }}>
-              I have read and accept the{' '}
-              <a
-                href="/rules-of-use"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: '#0050d8', textDecoration: 'underline' }}
-              >
-                Login.gov Rules of Use
-              </a>
-            </span>
+        {/* Terms */}
+        <div className="flex items-start">
+          <input
+            type="checkbox"
+            id="terms_accepted"
+            name="terms_accepted"
+            value="true"
+            checked={termsAccepted}
+            onChange={(e) => setTermsAccepted(e.target.checked)}
+            className={`mt-1 h-4 w-4 text-blue-600 rounded focus:ring-blue-500 ${
+              state.fieldErrors?.terms ? 'border-red-500' : 'border-gray-300'
+            }`}
+          />
+          <label htmlFor="terms_accepted" className="ml-3 text-sm text-gray-700">
+            I agree to the{' '}
+            <Link href="/rules-of-use" className="text-blue-600 hover:text-blue-800">
+              Login.gov Rules of Use
+            </Link>
           </label>
-          {state.fieldErrors?.termsAccepted && (
-            <p style={{ marginTop: '0.25rem', color: '#b91c1c', fontSize: '0.875rem' }}>
-              {state.fieldErrors.termsAccepted[0]}
-            </p>
-          )}
         </div>
+        {state.fieldErrors?.terms && (
+          <p className="text-sm text-red-600">{state.fieldErrors.terms}</p>
+        )}
 
         <button
           type="submit"
           disabled={isPending}
-          style={{
-            width: '100%',
-            padding: '0.75rem 1.5rem',
-            backgroundColor: isPending ? '#9ca3af' : '#0050d8',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            fontSize: '1rem',
-            fontWeight: 500,
-            cursor: isPending ? 'not-allowed' : 'pointer',
-          }}
+          className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {isPending ? 'Creating account...' : 'Continue'}
         </button>
       </form>
 
-      <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-        <span>Already have an account? </span>
-        <a href="/login" style={{ color: '#0050d8', textDecoration: 'underline' }}>
-          Sign in
-        </a>
+      <div className="mt-6 text-center">
+        <p className="text-gray-600">
+          Already have an account?{' '}
+          <Link href="/sign-in" className="text-blue-600 hover:text-blue-800 font-medium">
+            Sign in
+          </Link>
+        </p>
       </div>
-    </main>
+    </div>
   );
 }

@@ -7,7 +7,10 @@
 
 import { cookies } from 'next/headers';
 import { getSessionManager } from '@/lib/auth/session-manager';
-import { generateOtp } from '@/lib/mfa/backup-codes';
+
+function generateOtp(length: number = 6): string {
+  return Math.floor(Math.pow(10, length - 1) + Math.random() * (Math.pow(10, length) - Math.pow(10, length - 1) - 1)).toString();
+}
 
 export interface AddPhoneParams {
   phone: string;

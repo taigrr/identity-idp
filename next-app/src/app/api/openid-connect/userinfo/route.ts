@@ -5,233 +5,230 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { AttributeScoper, getOidcConfig } from '@/lib/oidc';
+import {
+  verifyAccessToken,
+  buildUserInfo,
+  getOidcConfig,
+  type UserInfoIdentity,
+  type UserInfoUser,
+  type UserInfoServiceProvider,
+  type UserInfoDeps,
+  type AccessTokenVerifierDeps,
+} from '@/lib/oidc';
 
-interface ServiceProviderIdentity {
-  id: string;
-  userId: string;
-  serviceProvider: string;
-  scope: string;
-  ial: number;
-  acr_values: string | null;
-  requestedAalValue: string | null;
-  railsSessionId: string;
-  pivCacEnabled: boolean;
-  emailAddress: {
-    email: string;
-  };
-  user: {
-    uuid: string;
-    confirmedEmailAddresses: { email: string }[];
-    activeProfile: {
-      id: string;
-      verifiedAt: Date | null;
-    } | null;
-    identityVerified: boolean;
-  };
-}
+// Database query functions - these would be implemented with actual DB access
+// For now, they're stubs that demonstrate the expected interface
 
-interface UserInfo {
-  sub: string;
-  iss: string;
-  email?: string;
-  email_verified?: boolean;
-  all_emails?: string[];
-  locale?: string;
-  given_name?: string;
-  family_name?: string;
-  birthdate?: string;
-  address?: {
-    formatted: string;
-    street_address: string;
-    locality: string;
-    region: string;
-    postal_code: string;
-  };
-  phone?: string;
-  phone_verified?: boolean;
-  social_security_number?: string;
-  verified_at?: number;
-  ial?: string;
-  aal?: string;
-  x509_subject?: string;
-  x509_issuer?: string;
-  x509_presented?: boolean;
-}
-
-// In a real implementation, these would come from the database
-async function findIdentityByAccessToken(
-  accessToken: string,
-): Promise<ServiceProviderIdentity | null> {
-  // TODO: Replace with actual database lookup
-  // ServiceProviderIdentity.find_by(access_token: accessToken)
+async function findIdentityByAccessToken(accessToken: string): Promise<{
+  identity: UserInfoIdentity;
+  user: UserInfoUser;
+  serviceProvider: UserInfoServiceProvider | null;
+  email: string;
+} | null> {
+  // TODO: Implement with actual database query
+  // SELECT i.*, u.*, sp.*, ea.email
+  // FROM identities i
+  // JOIN users u ON i.user_id = u.id
+  // LEFT JOIN service_providers sp ON i.service_provider = sp.issuer
+  // JOIN email_addresses ea ON i.email_address_id = ea.id
+  // WHERE i.access_token = $1
   console.log('Looking up identity by access token:', accessToken?.slice(0, 8) + '...');
   return null;
 }
 
-async function getSessionTtl(railsSessionId: string): Promise<number> {
-  // TODO: Replace with actual Redis lookup
+async function getSessionTtl(sessionId: string): Promise<number> {
+  // TODO: Implement with actual Redis lookup
   // OutOfBandSessionAccessor.new(rails_session_id).ttl
+  console.log('Getting session TTL for:', sessionId);
   const config = getOidcConfig();
-  return config.tokenTtl;
+  return config.sessionTimeout;
 }
 
-async function loadPii(
-  profileId: string,
-): Promise<{
-  firstName?: string;
-  lastName?: string;
-  dob?: string;
-  ssn?: string;
-  phone?: string;
-  address1?: string;
-  address2?: string;
-  city?: string;
-  state?: string;
-  zipcode?: string;
-} | null> {
-  // TODO: Replace with actual PII lookup from session/encrypted storage
+async function loadPii(profileId: string) {
+  // TODO: Implement with actual encrypted PII lookup from session storage
   console.log('Loading PII for profile:', profileId);
   return null;
 }
 
-async function loadX509Data(
-  railsSessionId: string,
-): Promise<{
-  subject?: string;
-  issuer?: string;
-  presented?: boolean;
-} | null> {
-  // TODO: Replace with actual X509 data lookup
-  console.log('Loading X509 data for session:', railsSessionId);
+async function loadX509(sessionId: string) {
+  // TODO: Implement with actual X509 data lookup from session
+  console.log('Loading X509 data for session:', sessionId);
   return null;
 }
 
-async function loadWebLocale(railsSessionId: string): Promise<string | null> {
-  // TODO: Replace with actual locale lookup from session
-  console.log('Loading locale for session:', railsSessionId);
+async function loadWebLocale(sessionId: string): Promise<string | null> {
+  // TODO: Implement with actual locale lookup from session
+  console.log('Loading web locale for session:', sessionId);
   return null;
 }
 
-function extractBearerToken(authHeader: string | null): string | null {
-  if (!authHeader) return null;
+async function getAgencyUuid(identity: UserInfoIdentity): Promise<string> {
+  // TODO: Implement with AgencyIdentityLinker logic
+  // AgencyIdentityLinker.new(identity).link_identity.uuid
+  return identity.uuid;
+}
 
-  const parts = authHeader.split(' ');
-  if (parts.length !== 2 || parts[0] !== 'Bearer') {
-    return null;
-  }
-
-  return parts[1] || null;
+function t(key: string): string {
+  // Simple translation function - in production would use i18n
+  const translations: Record<string, string> = {
+    'openid_connect.user_info.errors.no_authorization': 'No authorization header',
+    'openid_connect.user_info.errors.malformed_authorization': 'Malformed authorization header',
+    'openid_connect.user_info.errors.not_found': 'Access token not found or expired',
+  };
+  return translations[key] ?? key;
 }
 
 export async function GET(request: NextRequest) {
   const config = getOidcConfig();
 
-  // Extract bearer token from Authorization header
+  // Create dependencies for access token verifier
+  const verifierDeps: AccessTokenVerifierDeps = {
+    findIdentityByAccessToken: async (token) => {
+      const result = await findIdentityByAccessToken(token);
+      if (!result) return null;
+      return {
+        id: result.identity.id,
+        userId: result.identity.userId,
+        serviceProvider: result.identity.serviceProvider,
+        accessToken: token,
+        ial: result.identity.ial ?? undefined,
+        railsSessionId: result.identity.railsSessionId ?? undefined,
+        verifiedAt: result.identity.verifiedAt,
+      };
+    },
+    getSessionTtl,
+    t,
+  };
+
+  // Verify the access token
   const authHeader = request.headers.get('Authorization');
-  const accessToken = extractBearerToken(authHeader);
+  const verifyResult = await verifyAccessToken(authHeader, verifierDeps);
+
+  if (!verifyResult.success) {
+    return NextResponse.json(
+      { error: verifyResult.errors.map((e) => e.message).join(' ') },
+      { status: 401 }
+    );
+  }
+
+  // Load full identity data with user and service provider
+  const accessToken = authHeader?.split(' ')[1];
+  const fullData = await findIdentityByAccessToken(accessToken!);
+
+  if (!fullData) {
+    return NextResponse.json(
+      { error: 'Identity not found' },
+      { status: 401 }
+    );
+  }
+
+  // Create dependencies for userinfo presenter
+  const userinfoDeps: UserInfoDeps = {
+    getIssuerUrl: () => config.issuer,
+    loadPii,
+    loadX509,
+    loadWebLocale,
+    getAgencyUuid,
+  };
+
+  // Build the userinfo response
+  const userInfo = await buildUserInfo(
+    fullData.identity,
+    fullData.user,
+    fullData.serviceProvider,
+    fullData.email,
+    userinfoDeps
+  );
+
+  return NextResponse.json(userInfo);
+}
+
+/**
+ * POST handler for userinfo endpoint
+ * Accepts access_token in form body
+ */
+export async function POST(request: NextRequest) {
+  const config = getOidcConfig();
+
+  // Get access token from form body
+  const formData = await request.formData();
+  const accessToken = formData.get('access_token') as string | null;
 
   if (!accessToken) {
     return NextResponse.json(
-      { error: 'No authorization header' },
-      { status: 401 },
+      { error: t('openid_connect.user_info.errors.no_authorization') },
+      { status: 401 }
     );
   }
 
-  // Find identity by access token
-  const identity = await findIdentityByAccessToken(accessToken);
-
-  if (!identity) {
-    return NextResponse.json(
-      { error: 'Invalid access token' },
-      { status: 401 },
-    );
-  }
-
-  // Check if session is still valid
-  const ttl = await getSessionTtl(identity.railsSessionId);
-  if (ttl <= 0) {
-    return NextResponse.json(
-      { error: 'Session expired' },
-      { status: 401 },
-    );
-  }
-
-  // Build user info based on requested scopes
-  const scoper = new AttributeScoper(identity.scope);
-
-  const userInfo: UserInfo = {
-    sub: identity.user.uuid,
-    iss: config.issuer,
-    email: identity.emailAddress.email,
-    email_verified: true,
-    ial: identity.acr_values ?? undefined,
-    aal: identity.requestedAalValue ?? undefined,
+  // Create dependencies for access token verifier
+  const verifierDeps: AccessTokenVerifierDeps = {
+    findIdentityByAccessToken: async (token) => {
+      const result = await findIdentityByAccessToken(token);
+      if (!result) return null;
+      return {
+        id: result.identity.id,
+        userId: result.identity.userId,
+        serviceProvider: result.identity.serviceProvider,
+        accessToken: token,
+        ial: result.identity.ial ?? undefined,
+        railsSessionId: result.identity.railsSessionId ?? undefined,
+        verifiedAt: result.identity.verifiedAt,
+      };
+    },
+    getSessionTtl,
+    t,
   };
 
-  // Add all_emails if requested
-  if (scoper.allEmailsRequested()) {
-    userInfo.all_emails = identity.user.confirmedEmailAddresses.map((e) => e.email);
+  // Verify using Bearer header format internally
+  const verifyResult = await verifyAccessToken(`Bearer ${accessToken}`, verifierDeps);
+
+  if (!verifyResult.success) {
+    return NextResponse.json(
+      { error: verifyResult.errors.map((e) => e.message).join(' ') },
+      { status: 401 }
+    );
   }
 
-  // Add locale if requested
-  if (scoper.localeRequested()) {
-    const locale = await loadWebLocale(identity.railsSessionId);
-    if (locale) {
-      userInfo.locale = locale;
-    }
+  // Load full identity data with user and service provider
+  const fullData = await findIdentityByAccessToken(accessToken);
+
+  if (!fullData) {
+    return NextResponse.json(
+      { error: 'Identity not found' },
+      { status: 401 }
+    );
   }
 
-  // Add IAL2 attributes if identity proofing was requested and user is verified
-  const isIal2Request = identity.ial === 2 || identity.ial === 0; // 0 = IALMAX
-  const hasActiveProfile = identity.user.activeProfile !== null;
+  // Create dependencies for userinfo presenter
+  const userinfoDeps: UserInfoDeps = {
+    getIssuerUrl: () => config.issuer,
+    loadPii,
+    loadX509,
+    loadWebLocale,
+    getAgencyUuid,
+  };
 
-  if (isIal2Request && hasActiveProfile && scoper.ial2ScopesRequested()) {
-    const pii = await loadPii(identity.user.activeProfile!.id);
-    if (pii) {
-      if (pii.firstName) userInfo.given_name = pii.firstName;
-      if (pii.lastName) userInfo.family_name = pii.lastName;
-      if (pii.dob) userInfo.birthdate = pii.dob;
-      if (pii.ssn) userInfo.social_security_number = pii.ssn;
-      if (pii.phone) {
-        userInfo.phone = pii.phone;
-        userInfo.phone_verified = true;
-      }
-      if (pii.address1) {
-        const streetAddress = [pii.address1, pii.address2]
-          .filter(Boolean)
-          .join('\n');
-        const postalCode = pii.zipcode?.trim().slice(0, 5);
-        userInfo.address = {
-          formatted: `${streetAddress}\n${pii.city}, ${pii.state} ${postalCode}`,
-          street_address: streetAddress,
-          locality: pii.city ?? '',
-          region: pii.state ?? '',
-          postal_code: postalCode ?? '',
-        };
-      }
-    }
+  // Build the userinfo response
+  const userInfo = await buildUserInfo(
+    fullData.identity,
+    fullData.user,
+    fullData.serviceProvider,
+    fullData.email,
+    userinfoDeps
+  );
 
-    // Add verified_at if requested and available
-    if (scoper.verifiedAtRequested() && identity.user.activeProfile?.verifiedAt) {
-      userInfo.verified_at = Math.floor(
-        identity.user.activeProfile.verifiedAt.getTime() / 1000,
-      );
-    }
-  }
+  return NextResponse.json(userInfo);
+}
 
-  // Add X509 attributes if requested and PIV/CAC was used
-  if (scoper.x509ScopesRequested() && identity.pivCacEnabled) {
-    const x509Data = await loadX509Data(identity.railsSessionId);
-    if (x509Data) {
-      if (x509Data.subject) userInfo.x509_subject = x509Data.subject;
-      if (x509Data.issuer) userInfo.x509_issuer = x509Data.issuer;
-      userInfo.x509_presented = x509Data.presented ?? false;
-    }
-  }
-
-  // Filter user info based on requested scopes
-  const filteredUserInfo = scoper.filter(userInfo);
-
-  return NextResponse.json(filteredUserInfo);
+// Support CORS preflight for userinfo endpoint
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Authorization, Content-Type',
+    },
+  });
 }

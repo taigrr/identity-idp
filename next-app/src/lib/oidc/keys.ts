@@ -6,9 +6,11 @@
 
 import * as jose from 'jose';
 
+type KeyLike = jose.CryptoKey | jose.KeyObject;
+
 export interface OidcKeyPair {
-  privateKey: jose.KeyLike;
-  publicKey: jose.KeyLike;
+  privateKey: KeyLike;
+  publicKey: KeyLike;
   kid: string;
 }
 
@@ -56,7 +58,7 @@ export async function importKeyPair(
   const privateKey = await jose.importPKCS8(privateKeyPem, 'RS256');
 
   // If public key provided, use it; otherwise we need to extract from PEM
-  let publicKey: jose.KeyLike;
+  let publicKey: KeyLike;
   if (publicKeyPem) {
     publicKey = await jose.importSPKI(publicKeyPem, 'RS256');
   } else {

@@ -1,0 +1,20 @@
+{
+  "common": {
+    "app_name": "Login.gov",
+    "continue": "继续",
+    "cancel": "取消",
+    "submit": "提交",
+    "save": "保存",
+    "delete": "删除",
+    "back": "返回",
+    "close": "关闭",
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功"
+  },
+  "auth": {
+    "sign_in": "登录",
+    "sign_out": "退出",
+    "sign_up": "创建账户"
+  }
+}

@@ -10,8 +10,9 @@ import { SessionEncryptor } from '../encryption/session-encryptor';
 import { getConfig } from '../config';
 
 export interface SessionData {
-  userId?: string;
+  userId?: number;
   userUuid?: string;
+  email?: string;
   signInFlow?: 'sign_in' | 'sign_up';
   signInFailureCount?: number;
   maxSignInFailuresAt?: number;
@@ -27,6 +28,11 @@ export interface SessionData {
   flash?: {
     flashes?: Record<string, unknown>;
   };
+  // MFA setup flow
+  totpSetupSecret?: string;
+  backupCodes?: string[];
+  mfaSelections?: string[];
+  completedMfa?: string[];
   [key: string]: unknown;
 }
 
@@ -136,4 +142,33 @@ export function resetSessionManager(): void {
     sessionManagerInstance.close();
     sessionManagerInstance = null;
   }
+}
+
+/**
+ * Convenience functions for server actions
+ */
+export async function getSession(sessionId: string): Promise<SessionData | null> {
+  const manager = getSessionManager();
+  return manager.get(sessionId);
+}
+
+export async function updateSession(
+  sessionId: string,
+  data: Partial<SessionData>
+): Promise<void> {
+  const manager = getSessionManager();
+  await manager.update(sessionId, data);
+}
+
+export async function createSession(
+  sessionId: string,
+  data: SessionData
+): Promise<void> {
+  const manager = getSessionManager();
+  await manager.create(sessionId, data);
+}
+
+export async function destroySession(sessionId: string): Promise<void> {
+  const manager = getSessionManager();
+  await manager.destroy(sessionId);
 }

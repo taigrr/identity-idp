@@ -133,6 +133,11 @@ module Identity
 
     config.middleware.delete Rack::ETag
 
+    # Next.js proxy middleware - proxies specific routes to Next.js app when enabled
+    # Set NEXT_JS_PROXY_ENABLED=true to enable, configure routes with NEXT_JS_PROXY_ROUTES
+    require 'next_js_proxy'
+    config.middleware.use NextJsProxy
+
     require 'headers_filter'
     config.middleware.insert_before 0, HeadersFilter
     require 'utf8_sanitizer'

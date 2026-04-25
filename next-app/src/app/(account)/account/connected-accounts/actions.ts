@@ -1,173 +1,160 @@
 /**
- * Connected Accounts Server Actions
- * Mirrors: app/presenters/account_show_presenter.rb connected_accounts
+ * Connected Accounts Actions
+ * Mirrors: app/controllers/users/service_provider_revoke_controller.rb
  */
 
 'use server';
 
 import { cookies } from 'next/headers';
-import { getSessionManager } from '@/lib/auth/session-manager';
+import { eq, and } from 'drizzle-orm';
+import { db, identities } from '@/db';
+import { getSession } from '@/lib/auth/session-manager';
+import { decrypt } from '@/lib/encryption';
+
+const SESSION_COOKIE_NAME = 'session_id';
 
 export interface ConnectedAccount {
   id: string;
   issuer: string;
   friendlyName: string;
   description?: string;
-  logoUrl?: string;
-  connectedAt: Date;
-  lastUsedAt?: Date;
+  connectedAt: string;
+  lastAuthenticatedAt: string | null;
+  lastUsedAt?: string;
   sharedEmail?: string;
-  identityVerified: boolean;
+  sharedAttributes: string[];
+  logoUrl?: string;
+  identityVerified?: boolean;
 }
 
-export interface ConnectedAccountsResult {
+interface GetAccountResult {
+  success: boolean;
+  account?: ConnectedAccount;
+  error?: string;
+}
+
+interface GetAccountsResult {
   success: boolean;
   accounts?: ConnectedAccount[];
   error?: string;
 }
 
-export interface RevokeResult {
+interface RevokeResult {
   success: boolean;
   error?: string;
 }
 
-export async function getConnectedAccounts(): Promise<ConnectedAccountsResult> {
+async function getSessionId(): Promise<string | null> {
   const cookieStore = await cookies();
-  const sessionManager = getSessionManager();
-  const sessionId = cookieStore.get('session_id')?.value;
-
-  if (!sessionId) {
-    return { success: false, error: 'Not authenticated' };
-  }
-
-  const session = await sessionManager.get(sessionId);
-  if (!session?.userId) {
-    return { success: false, error: 'Not authenticated' };
-  }
-
-  // TODO: Fetch connected accounts from database
-  // const identities = await db.query.identities.findMany({
-  //   where: eq(identities.userId, session.userId),
-  //   with: {
-  //     serviceProvider: true,
-  //   },
-  // });
-
-  // For now, return mock data
-  const mockAccounts: ConnectedAccount[] = [
-    {
-      id: '1',
-      issuer: 'urn:gov:gsa:openidconnect.profiles:sp:sso:usajobs',
-      friendlyName: 'USAJOBS',
-      description: 'Find federal jobs and employment opportunities',
-      logoUrl: undefined,
-      connectedAt: new Date('2024-01-15'),
-      lastUsedAt: new Date('2024-03-01'),
-      sharedEmail: 'user@example.gov',
-      identityVerified: true,
-    },
-    {
-      id: '2',
-      issuer: 'urn:gov:gsa:openidconnect.profiles:sp:sso:tsa',
-      friendlyName: 'TSA PreCheck',
-      description: 'TSA PreCheck application program',
-      logoUrl: undefined,
-      connectedAt: new Date('2023-11-20'),
-      lastUsedAt: new Date('2024-02-15'),
-      sharedEmail: 'user@example.gov',
-      identityVerified: true,
-    },
-  ];
-
-  return {
-    success: true,
-    accounts: mockAccounts,
-  };
+  return cookieStore.get(SESSION_COOKIE_NAME)?.value || null;
 }
 
-export async function getConnectedAccount(id: string): Promise<{
-  success: boolean;
-  account?: ConnectedAccount;
-  error?: string;
-}> {
-  const cookieStore = await cookies();
-  const sessionManager = getSessionManager();
-  const sessionId = cookieStore.get('session_id')?.value;
-
+export async function getConnectedAccounts(): Promise<GetAccountsResult> {
+  const sessionId = await getSessionId();
   if (!sessionId) {
     return { success: false, error: 'Not authenticated' };
   }
 
-  const session = await sessionManager.get(sessionId);
+  const session = await getSession(sessionId);
   if (!session?.userId) {
-    return { success: false, error: 'Not authenticated' };
+    return { success: false, error: 'Session expired' };
   }
 
-  // TODO: Fetch specific account from database
-  // const identity = await db.query.identities.findFirst({
-  //   where: and(
-  //     eq(identities.id, id),
-  //     eq(identities.userId, session.userId)
-  //   ),
-  //   with: {
-  //     serviceProvider: true,
-  //   },
-  // });
+  try {
+    const userIdentities = await db.query.identities.findMany({
+      where: eq(identities.userId, session.userId),
+    });
 
-  // Mock data
-  const mockAccount: ConnectedAccount = {
-    id,
-    issuer: 'urn:gov:gsa:openidconnect.profiles:sp:sso:usajobs',
-    friendlyName: 'USAJOBS',
-    description: 'Find federal jobs and employment opportunities',
-    connectedAt: new Date('2024-01-15'),
-    lastUsedAt: new Date('2024-03-01'),
-    sharedEmail: 'user@example.gov',
-    identityVerified: true,
-  };
+    const accounts: ConnectedAccount[] = userIdentities.map((identity) => ({
+      id: identity.id.toString(),
+      issuer: identity.serviceProvider || '',
+      friendlyName: identity.serviceProvider || 'Unknown Service',
+      description: undefined,
+      connectedAt: identity.createdAt?.toISOString() || '',
+      lastAuthenticatedAt: identity.lastAuthenticatedAt?.toISOString() || null,
+      sharedAttributes: [],
+    }));
 
-  return {
-    success: true,
-    account: mockAccount,
-  };
+    return { success: true, accounts };
+  } catch (error) {
+    console.error('Failed to get connected accounts:', error);
+    return { success: false, error: 'Failed to load connected accounts' };
+  }
 }
 
-export async function revokeConnectedAccount(id: string): Promise<RevokeResult> {
-  const cookieStore = await cookies();
-  const sessionManager = getSessionManager();
-  const sessionId = cookieStore.get('session_id')?.value;
-
+export async function getConnectedAccount(
+  accountId: string
+): Promise<GetAccountResult> {
+  const sessionId = await getSessionId();
   if (!sessionId) {
     return { success: false, error: 'Not authenticated' };
   }
 
-  const session = await sessionManager.get(sessionId);
+  const session = await getSession(sessionId);
   if (!session?.userId) {
+    return { success: false, error: 'Session expired' };
+  }
+
+  try {
+    const identity = await db.query.identities.findFirst({
+      where: and(
+        eq(identities.id, parseInt(accountId, 10)),
+        eq(identities.userId, session.userId)
+      ),
+    });
+
+    if (!identity) {
+      return { success: false, error: 'Connected account not found' };
+    }
+
+    const account: ConnectedAccount = {
+      id: identity.id.toString(),
+      issuer: identity.serviceProvider || '',
+      friendlyName: identity.serviceProvider || 'Unknown Service',
+      description: undefined,
+      connectedAt: identity.createdAt?.toISOString() || '',
+      lastAuthenticatedAt: identity.lastAuthenticatedAt?.toISOString() || null,
+      sharedAttributes: [],
+    };
+
+    return { success: true, account };
+  } catch (error) {
+    console.error('Failed to get connected account:', error);
+    return { success: false, error: 'Failed to load account details' };
+  }
+}
+
+export async function revokeConnectedAccount(
+  accountId: string
+): Promise<RevokeResult> {
+  const sessionId = await getSessionId();
+  if (!sessionId) {
     return { success: false, error: 'Not authenticated' };
   }
 
-  // TODO: Delete the identity from database
-  // const identity = await db.query.identities.findFirst({
-  //   where: and(
-  //     eq(identities.id, id),
-  //     eq(identities.userId, session.userId)
-  //   ),
-  // });
-  //
-  // if (!identity) {
-  //   return { success: false, error: 'Connected account not found' };
-  // }
-  //
-  // await db.delete(identities).where(eq(identities.id, id));
+  const session = await getSession(sessionId);
+  if (!session?.userId) {
+    return { success: false, error: 'Session expired' };
+  }
 
-  console.log(`[DEV] Revoked connected account ${id} for user ${session.userId}`);
+  try {
+    const result = await db
+      .delete(identities)
+      .where(
+        and(
+          eq(identities.id, parseInt(accountId, 10)),
+          eq(identities.userId, session.userId)
+        )
+      )
+      .returning();
 
-  // TODO: Send email notification
-  // await sendEmail({
-  //   to: session.email,
-  //   template: 'account_disconnected_from_sp',
-  //   data: { spName: serviceProvider.friendlyName },
-  // });
+    if (result.length === 0) {
+      return { success: false, error: 'Connected account not found' };
+    }
 
-  return { success: true };
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to revoke connected account:', error);
+    return { success: false, error: 'Failed to disconnect account' };
+  }
 }

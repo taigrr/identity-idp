@@ -86,7 +86,7 @@ export async function getWebauthnSetupOptions(
       challenge: challengeArray,
       rpId,
       rpName,
-      userId: userUuid,
+      userId: String(userUuid),
       userName: userEmail,
       userDisplayName: userEmail,
       excludeCredentials,

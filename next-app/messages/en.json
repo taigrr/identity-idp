@@ -1,0 +1,213 @@
+{
+  "common": {
+    "app_name": "Login.gov",
+    "continue": "Continue",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "save": "Save",
+    "delete": "Delete",
+    "back": "Back",
+    "close": "Close",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "account": {
+    "welcome": "Welcome",
+    "navigation": {
+      "your_account": "Your Account",
+      "connected_accounts": "Your connected accounts",
+      "two_factor_authentication": "Your authentication methods",
+      "history": "History",
+      "delete_account": "Delete account",
+      "edit_password": "Edit password",
+      "add_email": "Add email address",
+      "add_phone_number": "Add phone number",
+      "add_security_key": "Add security key",
+      "add_platform_authenticator": "Add face or touch unlock",
+      "add_authentication_apps": "Add authentication apps",
+      "add_federal_id": "Add your government employee ID",
+      "get_backup_codes": "Get backup codes",
+      "reset_personal_key": "Reset personal key",
+      "forget_browsers": "Forget all browsers",
+      "customer_support": "Customer support"
+    },
+    "index": {
+      "email": "Email address",
+      "email_addresses": "Email addresses",
+      "email_add": "Add new email",
+      "password": "Password",
+      "phone": "Phone numbers",
+      "phone_add": "Add phone",
+      "backup_codes": "Backup codes",
+      "backup_codes_exist": "Generated",
+      "backup_codes_no_exist": "Not generated",
+      "webauthn": "Security key",
+      "webauthn_add": "Add security key",
+      "webauthn_platform": "Face or touch unlock",
+      "webauthn_platform_add": "Add face or touch unlock",
+      "auth_app_add": "Add app",
+      "auth_app_enabled": "enabled",
+      "auth_app_disabled": "not enabled",
+      "piv_cac_add": "Add ID",
+      "default": "default"
+    },
+    "verification": {
+      "identity_verification": "Identity verification",
+      "verified_badge": "Verified",
+      "unverified_badge": "Unverified",
+      "pending_badge": "Pending",
+      "success": "We verified your information",
+      "continue_idv": "Continue identity verification"
+    },
+    "personal_key": {
+      "get_new": "Get a new personal key",
+      "reset_success": "Your personal key has been reset",
+      "last_generated": "Last generated on {timestamp}"
+    },
+    "email_language": {
+      "edit_title": "Edit email language preference",
+      "updated": "Your email language preference has been updated.",
+      "languages_list": "You will receive emails from {app_name} in the language you choose.",
+      "name": {
+        "en": "English",
+        "es": "Español",
+        "fr": "Français",
+        "zh": "中文（简体）"
+      }
+    }
+  },
+  "auth": {
+    "sign_in": "Sign in",
+    "sign_out": "Sign out",
+    "sign_up": "Create an account",
+    "email": {
+      "label": "Email address",
+      "placeholder": "Enter your email"
+    },
+    "password": {
+      "label": "Password",
+      "placeholder": "Enter your password",
+      "forgot": "Forgot your password?"
+    },
+    "two_factor": {
+      "title": "Two-factor authentication",
+      "options": "Authentication options",
+      "enter_code": "Enter your one-time code",
+      "code_sent": "We sent a code to {destination}",
+      "resend": "Resend code",
+      "remember_device": "Remember this device for 30 days"
+    }
+  },
+  "mfa": {
+    "sms": {
+      "name": "Text message (SMS)",
+      "description": "Get a code sent to your phone via text message"
+    },
+    "voice": {
+      "name": "Phone call",
+      "description": "Get a code via automated phone call"
+    },
+    "totp": {
+      "name": "Authentication app",
+      "description": "Use an app like Google Authenticator"
+    },
+    "webauthn": {
+      "name": "Security key",
+      "description": "Use a physical security key"
+    },
+    "webauthn_platform": {
+      "name": "Face or touch unlock",
+      "description": "Use your device's biometric authentication"
+    },
+    "backup_codes": {
+      "name": "Backup codes",
+      "description": "Use a pre-generated backup code"
+    },
+    "piv_cac": {
+      "name": "Government employee ID",
+      "description": "Use your PIV/CAC card"
+    },
+    "personal_key": {
+      "name": "Personal key",
+      "description": "Use your 16-character personal key"
+    }
+  },
+  "idv": {
+    "title": "Verify your identity",
+    "agreement": {
+      "title": "How verifying your identity works",
+      "continue": "Continue"
+    },
+    "document_capture": {
+      "title": "Add your state-issued ID",
+      "front": "Front of your ID",
+      "back": "Back of your ID"
+    },
+    "ssn": {
+      "title": "Enter your Social Security number"
+    },
+    "verify_info": {
+      "title": "Verify your information"
+    },
+    "phone": {
+      "title": "Enter a phone number",
+      "description": "This phone number will be used to verify your identity"
+    },
+    "personal_key": {
+      "title": "Save your personal key",
+      "description": "You'll need this key if you forget your password"
+    },
+    "success": {
+      "title": "Your identity has been verified"
+    }
+  },
+  "errors": {
+    "general": "Something went wrong. Please try again.",
+    "invalid_email": "Enter a valid email address",
+    "invalid_password": "Password is incorrect",
+    "password_too_short": "Password must be at least 12 characters",
+    "invalid_otp": "That code is invalid. Please try again.",
+    "expired_otp": "That code has expired. Please request a new code.",
+    "rate_limited": "Too many attempts. Please try again later.",
+    "session_expired": "Your session has expired. Please sign in again."
+  },
+  "forms": {
+    "required": "Required",
+    "optional": "Optional",
+    "show_password": "Show password",
+    "hide_password": "Hide password"
+  },
+  "user_mailer": {
+    "email_confirmation_instructions": {
+      "subject": "Confirm your email"
+    },
+    "reset_password_instructions": {
+      "subject": "{app_name} - Reset your password"
+    },
+    "password_changed": {
+      "subject": "Password changed"
+    },
+    "new_device_sign_in": {
+      "subject": "New sign-in to your {app_name} account"
+    },
+    "account_reset_request": {
+      "subject": "{app_name} - Delete account request"
+    },
+    "account_reset_granted": {
+      "subject": "{app_name} - Your account can now be deleted"
+    },
+    "account_reset_complete": {
+      "subject": "Your account has been deleted"
+    },
+    "account_reset_cancel": {
+      "subject": "{app_name} - Account deletion cancelled"
+    },
+    "personal_key_regenerated": {
+      "subject": "Personal key regenerated"
+    },
+    "personal_key_sign_in": {
+      "subject": "Personal key used to sign in"
+    }
+  }
+}

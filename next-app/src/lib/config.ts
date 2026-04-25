@@ -26,6 +26,12 @@ export interface AppConfig {
 
   // Session
   sessionEncryptorAlertEnabled: boolean;
+
+  // Account reset
+  accountResetWaitPeriodDays: number;
+
+  // Email
+  maxEmailsPerUser: number;
 }
 
 let configInstance: AppConfig | null = null;
@@ -66,10 +72,20 @@ export function getConfig(): AppConfig {
     // Session
     sessionEncryptorAlertEnabled:
       process.env.SESSION_ENCRYPTOR_ALERT_ENABLED === 'true',
+
+    // Account reset
+    accountResetWaitPeriodDays:
+      parseInt(process.env.ACCOUNT_RESET_WAIT_PERIOD_DAYS ?? '1', 10),
+
+    // Email
+    maxEmailsPerUser: parseInt(process.env.MAX_EMAILS_PER_USER ?? '12', 10),
   };
 
   return configInstance;
 }
+
+// Export config as default export for convenience
+export const config = getConfig();
 
 /**
  * Reset config (useful for testing)

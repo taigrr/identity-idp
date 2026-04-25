@@ -27,3 +27,19 @@ export {
   createUserService,
   getUserService,
 } from './user-service';
+
+// Remember Device
+export {
+  RememberDeviceCookie,
+  createRememberDeviceCookie,
+  parseRememberDeviceCookie,
+  COOKIE_ROLE,
+} from './remember-device';
+
+// Email Normalizer
+export {
+  normalizeEmail,
+  normalizeEmailAsync,
+  extractEmailParts,
+  isValidEmailFormat,
+} from './email-normalizer';

@@ -5,16 +5,18 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createHash } from 'crypto';
 import {
   verifyCodeChallenge,
   validateClientAssertion,
   getTokenEndpointUrl,
   buildIdToken,
-  generateAccessToken,
   getOidcConfig,
   CLIENT_ASSERTION_TYPE,
+  createOidcQueries,
+  type TokenIdentity,
+  type ServiceProviderData,
 } from '@/lib/oidc';
+import { db } from '@/db';
 
 interface TokenRequest {
   grant_type?: string;
@@ -29,58 +31,15 @@ interface TokenError {
   error_description?: string;
 }
 
-interface ServiceProviderIdentity {
-  id: string;
-  userId: string;
-  serviceProvider: string;
-  sessionUuid: string | null;
-  accessToken: string;
-  nonce: string | null;
-  scope: string;
-  codeChallenge: string | null;
-  acr_values: string | null;
-  ial: number;
-  requestedAalValue: string | null;
-  updatedAt: Date;
-  railsSessionId: string;
-  emailAddress: {
-    email: string;
-  };
-  user: {
-    uuid: string;
-  };
-}
+// Create queries with database instance
+const queries = createOidcQueries(db);
 
-interface ServiceProvider {
-  issuer: string;
-  pkce: boolean | null;
-  sslCerts: string[];
-}
-
-// In a real implementation, these would come from the database
-async function findIdentityByCode(code: string): Promise<ServiceProviderIdentity | null> {
-  // TODO: Replace with actual database lookup
-  // This is a placeholder for the database query:
-  // ServiceProviderIdentity.where(session_uuid: code).order(updated_at: :desc).first
-  console.log('Looking up identity by code:', code?.slice(0, 8) + '...');
-  return null;
-}
-
-async function findServiceProvider(issuer: string): Promise<ServiceProvider | null> {
-  // TODO: Replace with actual database lookup
-  // ServiceProvider.find_by(issuer: issuer)
-  console.log('Looking up service provider:', issuer);
-  return null;
-}
-
-async function clearAuthorizationCode(identityId: string): Promise<void> {
-  // TODO: Replace with actual database update
-  // identity.update(session_uuid: nil)
-  console.log('Clearing authorization code for identity:', identityId);
-}
-
-async function getSessionTtl(railsSessionId: string): Promise<number> {
-  // TODO: Replace with actual Redis lookup
+/**
+ * Get session TTL from Rails session (Redis)
+ * TODO: Implement Redis lookup for session TTL
+ */
+async function getSessionTtl(_railsSessionId: string): Promise<number> {
+  // In production, this would look up the TTL from Redis:
   // OutOfBandSessionAccessor.new(identity.rails_session_id).ttl
   const config = getOidcConfig();
   return config.tokenTtl;
@@ -126,7 +85,16 @@ export async function POST(request: NextRequest) {
   }
 
   // Find identity by code
-  const identity = await findIdentityByCode(params.code!);
+  let identity: TokenIdentity | null = null;
+  try {
+    identity = await queries.findIdentityByCode(params.code!);
+  } catch (error) {
+    console.error('Database error finding identity:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 },
+    );
+  }
 
   if (!identity || !identity.user) {
     return NextResponse.json(
@@ -137,7 +105,7 @@ export async function POST(request: NextRequest) {
 
   // Check if code has expired
   const sessionExpiration = new Date(Date.now() - sessionTimeout * 1000);
-  if (identity.updatedAt < sessionExpiration) {
+  if (identity.updatedAt && identity.updatedAt < sessionExpiration) {
     return NextResponse.json(
       { error: 'Authorization code has expired' },
       { status: 400 },
@@ -145,7 +113,18 @@ export async function POST(request: NextRequest) {
   }
 
   // Get service provider
-  const serviceProvider = await findServiceProvider(identity.serviceProvider);
+  let serviceProvider: ServiceProviderData | null = null;
+  if (identity.serviceProvider) {
+    try {
+      serviceProvider = await queries.findServiceProvider(identity.serviceProvider);
+    } catch (error) {
+      console.error('Database error finding service provider:', error);
+      return NextResponse.json(
+        { error: 'Internal server error' },
+        { status: 500 },
+      );
+    }
+  }
 
   // Determine authentication method: PKCE or private_key_jwt
   const isPkce = serviceProvider?.pkce !== false &&
@@ -200,7 +179,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const certs = serviceProvider?.sslCerts ?? [];
+    const certs = serviceProvider?.certs ?? [];
     if (certs.length === 0) {
       return NextResponse.json(
         { error: 'No certificates configured for service provider' },
@@ -211,7 +190,7 @@ export async function POST(request: NextRequest) {
     const validation = await validateClientAssertion(
       params.client_assertion,
       params.client_assertion_type,
-      identity.serviceProvider,
+      identity.serviceProvider!,
       certs,
       getTokenEndpointUrl(),
     );
@@ -225,23 +204,33 @@ export async function POST(request: NextRequest) {
   }
 
   // Clear the authorization code (single use)
-  await clearAuthorizationCode(identity.id);
+  try {
+    await queries.clearAuthorizationCode(identity.id);
+  } catch (error) {
+    console.error('Database error clearing authorization code:', error);
+    // Continue - this is not a blocking error
+  }
 
   // Get session TTL
-  const ttl = await getSessionTtl(identity.railsSessionId);
+  const ttl = await getSessionTtl(identity.railsSessionId ?? '');
 
   // Build ID token
+  // For email, we need to decrypt the encrypted email
+  // TODO: Implement email decryption via KMS
+  const email = identity.emailAddress?.encryptedEmail ?? '';
+  const decryptedEmail = email; // Placeholder - needs KMS decryption
+
   const { token: idToken } = await buildIdToken({
     subject: identity.user.uuid,
-    audience: identity.serviceProvider,
+    audience: identity.serviceProvider!,
     nonce: identity.nonce ?? undefined,
-    accessToken: identity.accessToken,
+    accessToken: identity.accessToken!,
     code: params.code!,
-    acr: identity.acr_values ?? undefined,
+    acr: identity.acrValues ?? undefined,
     userInfo: {
-      email: identity.emailAddress.email,
+      email: decryptedEmail,
       email_verified: true,
-      ial: identity.acr_values ?? undefined,
+      ial: identity.acrValues ?? undefined,
       aal: identity.requestedAalValue ?? undefined,
     },
     ttl,

@@ -9,6 +9,9 @@ import { redirect } from 'next/navigation';
 import { updateIdvSession, clearIdvSession, type IdvPii } from '@/lib/idv/session';
 import { randomUUID } from 'crypto';
 
+// Re-export type for use by pages
+export type { IdvPii };
+
 export async function startIdv(): Promise<void> {
   await clearIdvSession();
   

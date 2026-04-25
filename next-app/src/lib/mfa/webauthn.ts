@@ -60,8 +60,8 @@ export async function generateWebAuthnRegistrationOptions(
     userDisplayName: userEmail,
     attestationType: 'none',
     excludeCredentials: existingCredentials.map((cred) => ({
-      id: Buffer.from(cred.credentialId, 'base64url'),
-      type: 'public-key',
+      id: cred.credentialId,
+      type: 'public-key' as const,
       transports: cred.transports,
     })),
     authenticatorSelection: {
@@ -124,8 +124,8 @@ export async function generateWebAuthnAuthenticationOptions(
   const options = await generateAuthenticationOptions({
     rpID: RP_ID,
     allowCredentials: credentials.map((cred) => ({
-      id: Buffer.from(cred.credentialId, 'base64url'),
-      type: 'public-key',
+      id: cred.credentialId,
+      type: 'public-key' as const,
       transports: cred.transports,
     })),
     userVerification: 'preferred',
@@ -163,7 +163,7 @@ export async function verifyWebAuthnAuthentication(
       expectedOrigin: ORIGIN,
       expectedRPID: RP_ID,
       credential: {
-        id: Buffer.from(credential.credentialId, 'base64url'),
+        id: credential.credentialId,
         publicKey: Buffer.from(credential.credentialPublicKey, 'base64'),
         counter: credential.counter,
         transports: credential.transports,
